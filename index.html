@@ -1,535 +1,378 @@
-Here is an HTML document that creates a dynamic, animated visual representation of the name "blazerbits".
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>BlazerBits with Style</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Under Construction 🚧</title>
 
-    body {
-      min-height: 100vh;
-      background: radial-gradient(circle at 20% 30%, #0a0f1e, #03050b);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Segoe UI', 'Orbitron', 'Poppins', 'Courier New', monospace;
-      overflow: hidden;
-      position: relative;
-      cursor: default;
-    }
+<style>
+:root {
+    --dark-bg: #121212;
+    --text-color: #e0e0e0;
+    --accent-color: #ffc107;
+    --button-hover: #ff9800;
+    --card-bg: #1e1e1e;
+    --brightness-filter: none;
+}
 
-    /* dynamic noise overlay for "bits" texture */
-    .noise-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-radial-gradient(circle at 20% 30%, rgba(0,255,255,0.02) 0px, rgba(255,0,255,0.02) 2px, transparent 3px);
-      pointer-events: none;
-      z-index: 1;
-      mix-blend-mode: overlay;
-    }
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #121212, #1e1e1e);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    filter: var(--brightness-filter);
+    transition: filter 0.3s;
+}
 
-    .container {
-      text-align: center;
-      z-index: 10;
-      position: relative;
-      backdrop-filter: blur(2px);
-      padding: 2rem;
-      border-radius: 3rem;
-      animation: fadeGlow 2s ease-out;
-    }
+.container {
+    width: 90%;
+    max-width: 1000px;
+}
 
-    /* MAIN TEXT: BLAZERBITS */
-    .blazerbits-word {
-      font-size: clamp(2.6rem, 12vw, 6rem);
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      font-family: 'Orbitron', 'Segoe UI', monospace;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #ff6a00, #ee0979, #00f2fe, #4facfe);
-      background-size: 300% 300%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: gradientShift 4s ease infinite, textGlitch 3s infinite alternate;
-      text-shadow: 0 0 12px rgba(255, 100, 0, 0.6), 0 0 20px rgba(0, 255, 255, 0.4);
-      position: relative;
-      display: inline-block;
-      margin-bottom: 1rem;
-      transition: all 0.2s;
-    }
+h1 {
+    text-align: center;
+    color: var(--accent-color);
+}
 
-    /* glitch pseudo-elements for digital feel */
-    .blazerbits-word::before,
-    .blazerbits-word::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #ff6a00, #ee0979, #00f2fe, #4facfe);
-      background-size: 300% 300%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      opacity: 0.6;
-      z-index: -1;
-    }
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
 
-    .blazerbits-word::before {
-      animation: glitchShift 0.3s infinite linear alternate-reverse;
-      left: 2px;
-      text-shadow: -2px 0 red;
-    }
+.card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid rgba(42, 158, 194, 0.5);
+}
+    
+button {
+    background: var(--accent-color);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
 
-    .blazerbits-word::after {
-      animation: glitchShift 0.25s infinite linear alternate-reverse;
-      left: -2px;
-      text-shadow: 2px 0 cyan;
-    }
+button:hover {
+    background: var(--button-hover);
+}
 
-    /* Subtitle bits effect */
-    .bits-sub {
-      font-family: 'Courier New', monospace;
-      font-size: 1.2rem;
-      letter-spacing: 4px;
-      color: #8ec5fc;
-      background: rgba(0, 0, 0, 0.5);
-      display: inline-block;
-      padding: 0.5rem 1.2rem;
-      border-radius: 40px;
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(0, 255, 255, 0.4);
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-      margin-bottom: 2rem;
-    }
+#crane-viz {
+    height: 120px;
+    position: relative;
+}
 
-    .bits-sub span {
-      display: inline-block;
-      animation: pulseBit 1.4s infinite;
-      font-weight: bold;
-    }
+#crane-arm {
+    height: 8px;
+    background: #555;
+    transform: scaleX(0.5);
+    transition: transform 1s;
+}
 
-    /* decorative grid of cubes (bits) */
-    .bit-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.9rem;
-      max-width: 550px;
-      margin: 2rem auto 1rem;
-      perspective: 600px;
-    }
+#crane-load {
+    width: 40px;
+    height: 40px;
+    background: red;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 1s;
+}
 
-    .bit-cube {
-      width: 40px;
-      height: 40px;
-      background: rgba(20, 30, 55, 0.7);
-      border: 1px solid rgba(0, 255, 255, 0.6);
-      border-radius: 12px;
-      backdrop-filter: blur(4px);
-      transform-style: preserve-3d;
-      transition: all 0.2s ease;
-      animation: floatBits 3s infinite ease-in-out;
-      box-shadow: 0 0 6px cyan, inset 0 0 4px rgba(255, 100, 0, 0.4);
-      font-size: 1.2rem;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffb347;
-      font-family: monospace;
-    }
+#brightness-control {
+    margin-bottom: 20px;
+}
 
-    /* binary digits inside cubes */
-    .bit-cube::after {
-      content: attr(data-bit);
-      font-size: 1rem;
-      font-weight: bold;
-      text-shadow: 0 0 3px cyan;
-    }
+#brightness-label {
+    font-size: 26px;
+    margin-left: 10px;
+}
 
-    /* different animation delays */
-    .bit-cube:nth-child(odd) { animation-delay: 0.2s; background: rgba(0, 20, 40, 0.8); border-color: #ff884d; }
-    .bit-cube:nth-child(3n) { animation-delay: 0.7s; background: rgba(30, 10, 40, 0.7); }
-    .bit-cube:nth-child(5n+2) { animation-delay: 1s; }
 
-    /* blazing trail effect under the text */
-    .blaze-trail {
-      width: 80%;
-      height: 6px;
-      background: linear-gradient(90deg, #ff4d00, #ffb347, #00e0ff, #ff2d75);
-      margin: 1rem auto 0;
-      border-radius: 10px;
-      filter: blur(4px);
-      animation: trailPulse 1.2s infinite alternate;
-      box-shadow: 0 0 20px #ff6600;
-    }
+/* As there are no memes, hide this card.. */
+.Memehidden {
+    display: none;
+}
 
-    .stats-badge {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 2rem;
-      font-family: monospace;
-      color: #9ef8ff;
-      font-size: 0.8rem;
-      font-weight: bold;
-      background: rgba(0, 0, 0, 0.45);
-      padding: 0.5rem 1rem;
-      border-radius: 60px;
-      backdrop-filter: blur(8px);
-      width: fit-content;
-      margin-left: auto;
-      margin-right: auto;
-      border: 1px solid rgba(0, 255, 255, 0.3);
-    }
+.card {
+    /* transition: transform 0.25s ease, box-shadow 0.25s ease; */
+    will-change: transform;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.5s ease;
 
-    .stats-badge div {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+}
 
-    .stats-badge i {
-      font-style: normal;
-      display: inline-block;
-      animation: blinkBit 1s step-end infinite;
-    }
+.card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 15px 35px rgba(255, 193, 7, 0.4);
+}
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+/* =========================
+   SPARK PARTICLES
+========================= */
+.spark {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, #ffeb3b, #ff5722, transparent);
+    animation: spark-fly 700ms ease-out forwards;
+    z-index: 9999;
+}
 
-    @keyframes glitchShift {
-      0% { transform: translate(0); }
-      20% { transform: translate(-1px, 1px); }
-      40% { transform: translate(1px, -1px); }
-      60% { transform: translate(-1px, 0); }
-      80% { transform: translate(1px, 1px); }
-      100% { transform: translate(0); }
+@keyframes spark-fly {
+    to {
+        transform: translate(var(--x), var(--y));
+        opacity: 0;
     }
+}
 
-    @keyframes textGlitch {
-      0% { text-shadow: -2px 0 red, 2px 0 cyan; opacity: 1;}
-      25% { text-shadow: -3px 0 #ff00c3, 3px 0 #00ffaa; }
-      50% { text-shadow: 1px -1px #ff0066, -1px 1px #00ffff; }
-      75% { text-shadow: 2px 1px #ffaa00, -2px -1px #0ff; }
-      100% { text-shadow: 0 0 8px cyan, 0 0 12px orange; }
-    }
+body {
+    transition: background-image 0.5s ease-in-out;
+}
 
-    @keyframes floatBits {
-      0% { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
-      50% { transform: translateY(-12px) rotate(3deg); opacity: 1; border-color: #ff9966; box-shadow: 0 0 15px #ff7733; }
-      100% { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
-    }
-
-    @keyframes trailPulse {
-      0% { opacity: 0.5; width: 70%; filter: blur(3px); background: #ff4d00; }
-      100% { opacity: 1; width: 90%; filter: blur(5px); background: #ff0080; }
-    }
-
-    @keyframes pulseBit {
-      0% { opacity: 0.4; text-shadow: 0 0 0 cyan; }
-      100% { opacity: 1; text-shadow: 0 0 6px cyan; }
-    }
-
-    @keyframes blinkBit {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; text-shadow: 0 0 0; }
-    }
-
-    @keyframes fadeGlow {
-      0% { opacity: 0; transform: scale(0.96); filter: blur(8px); }
-      100% { opacity: 1; transform: scale(1); filter: blur(0); }
-    }
-
-    /* responsive cubes: smaller on mobile */
-    @media (max-width: 600px) {
-      .bit-cube { width: 32px; height: 32px; font-size: 0.9rem; }
-      .bit-grid { gap: 0.6rem; max-width: 320px; }
-      .bits-sub { font-size: 0.9rem; letter-spacing: 2px; }
-    }
-
-    /* cool cursor effect: glowing bits trail */
-    .glow-cursor {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,100,0,0.6), rgba(0,255,255,0));
-      pointer-events: none;
-      z-index: 999;
-      transition: transform 0.05s;
-      mix-blend-mode: screen;
-      filter: blur(2px);
-    }
-  </style>
+</style>
 </head>
+
 <body>
 
-<div class="noise-overlay"></div>
 <div class="container">
-  <!-- main identity: BLAZERBITS with glitchy effect -->
-  <div class="blazerbits-word" data-text="BLAZERBITS">BLAZERBITS</div>
 
-  <!-- bitstream decorative element -->
-  <div class="bits-sub">
-    <span>&lt; 0x42 &nbsp;|&nbsp; BLAZE // BITS &nbsp;|&nbsp; 0x4C &gt;</span>
-  </div>
+<h1>🚧 Under Construction 🛠️</h1>
 
-  <!-- dynamic grid of "bits" (cubes with binary/floating values) -->
-  <div class="bit-grid" id="bitGrid"></div>
+<div id="brightness-control">
+    
+    <span id="brightness-label">🌞 /🌛</span> <input type="range" id="brightness-slider" min="50" max="200" value="100">
+    
+</div>
+<button id="bg-button">🌄 Change Background</button>
 
-  <!-- blazing trail effect -->
-  <div class="blaze-trail"></div>
+<div class="button-grid">
 
-  <!-- stats + binary vibe -->
-  <div class="stats-badge">
-    <div>🔥 BLAZE MODE: <i>ACTIVE</i></div>
-    <div>⚡ 1010011 01110000 01100101 01100101 01100100</div>
-    <div>🖥️ BITS: <span id="bitCounter">64</span> UNITS</div>
-  </div>
+<!-- Crane -->
+<div class="card">
+    <h3>🏗️ Crane</h3>
+    <div id="crane-viz">
+        <div id="crane-arm"></div>
+        <div id="crane-load"></div>
+    </div>
+    <button id="crane-button">Start</button>
 </div>
 
-<div class="glow-cursor" id="cursorGlow"></div>
+<!-- Load -->
+<div class="card">
+    <h3>🏋️ Load</h3>
+    <div id="load-viz">[LOAD]</div>
+    <button id="load-button">Lift</button>
+</div>
+
+<!-- Joke -->
+<div class="card">
+    <h3>😂 Joke</h3>
+    <button id="joke-button">Tell Joke</button>
+    <div id="joke-output"></div>
+</div>
+
+<!-- Meme -->
+<div class="card Memehidden">
+    <h3>🖼️ Meme</h3>
+    <button id="meme-button">Show Meme</button>
+    <img id="meme-output" />
+</div>
+
+</div>
+</div>
 
 <script>
-  (function() {
-    // --- BIT GRID GENERATION: create 24 cubes each with random binary or hex digit to represent 'bits' 
-    const gridContainer = document.getElementById('bitGrid');
-    const bitCounterSpan = document.getElementById('bitCounter');
+// ==========================
+// BRIGHTNESS CONTROL
+// ==========================
+const slider = document.getElementById('brightness-slider');
+slider.addEventListener('input', () => {
+    document.documentElement.style.setProperty(
+        '--brightness-filter',
+        `brightness(${slider.value}%)`
+    );
+});
+
+
+
+// ==========================
+// JOKE FEATURE
+// ==========================
+const jokes = [
+    "Why don't scientists trust atoms? They make up everything!",
+    "Parallel lines have so much in common. It’s a shame they’ll never meet.",
+    "Why did the scarecrow win an award? He was outstanding in his field!",
+    "Why did the bicycle fall over? Because it was two-tired!",
+    "I told my computer I needed a break… and it said 'No problem — I’ll go to sleep.'",
+    "Why don’t skeletons fight each other? They don’t have the guts.",
+    "What do you call fake spaghetti? An impasta!",
+    "Why did the math book look sad? Because it had too many problems.",
+    "I used to play piano by ear… now I use my hands.",
+    "Why don’t programmers like nature? Too many bugs.",
+    "What do you call cheese that isn’t yours? Nacho cheese!",
+    "Why did the coffee file a police report? It got mugged.",
+    "Why did the golfer bring two pairs of pants? In case he got a hole in one."
+];
+
+document.getElementById('joke-button').onclick = () => {
+    const joke = jokes[Math.floor(Math.random() * jokes.length)];
+    document.getElementById('joke-output').textContent = joke;
+};
+
+// ==========================
+// CRANE ANIMATION
+// ==========================
+document.getElementById('crane-button').onclick = () => {
+    const arm = document.getElementById('crane-arm');
+    const load = document.getElementById('crane-load');
+
+    arm.style.transform = 'scaleX(1.5)';
+    load.style.transform = 'translate(-50%, -80px)';
+
+    setTimeout(() => {
+        arm.style.transform = 'scaleX(0.5)';
+        load.style.transform = 'translate(-50%, 0)';
+    }, 1500);
+};
+
+// ==========================
+// LOAD ANIMATION
+// ==========================
+document.getElementById('load-button').onclick = () => {
+    const el = document.getElementById('load-viz');
+    el.textContent = "🚀 LIFTED!";
     
-    // number of bit cubes: between 16 and 28 depending on screen (dynamic but fixed for consistency)
-    let cubeCount = 24;
-    if(window.innerWidth < 500) cubeCount = 18;
-    else if(window.innerWidth < 800) cubeCount = 21;
-    else cubeCount = 28;
-    
-    const bitValues = ['0','1','B','A','Z','E','R','⚡','0x0','0x1','#','🔥','<b>','</b>','01','10','FF','A7','C3'];
-    // but we want a sleek binary/hex flavor, plus some "blaze" symbols
-    
-    function getRandomBitSymbol() {
-      const symbols = ['0','1','B','Z','R','⚡','🔥','#','0x1','0x0','1T','B1','A1','Z3'];
-      return symbols[Math.floor(Math.random() * symbols.length)];
+    setTimeout(() => {
+        el.textContent = "[LOAD]";
+    }, 1500);
+};
+
+// ==========================
+// MEME (simple random images)
+// ==========================
+const memes = [
+    "https://i.imgur.com/w3duR07.png",
+    "https://i.imgur.com/2vQtZBb.jpg",
+    "https://i.imgur.com/fYzGZ0p.jpeg"
+];
+
+document.getElementById('meme-button').onclick = () => {
+    const img = document.getElementById('meme-output');
+    img.src = memes[Math.floor(Math.random() * memes.length)];
+};
+
+// ==========================
+// 🔥 CLICK SPARK EFFECT
+// ==========================
+document.addEventListener('click', (e) => {
+    for (let i = 0; i < 15; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'spark';
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 80;
+
+        spark.style.left = `${e.clientX}px`;
+        spark.style.top = `${e.clientY}px`;
+        spark.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+        spark.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
+
+        document.body.appendChild(spark);
+
+        setTimeout(() => spark.remove(), 700);
     }
-    
-    // generate cubes
-    function buildBitGrid() {
-      gridContainer.innerHTML = '';
-      for(let i = 0; i < cubeCount; i++) {
-        const cube = document.createElement('div');
-        cube.className = 'bit-cube';
-        // custom attribute for pseudo-element content
-        let bitChar = getRandomBitSymbol();
-        // make it extra dynamic: sometimes show hexadecimal nibble
-        if(Math.random() > 0.7) bitChar = Math.floor(Math.random()*16).toString(16).toUpperCase();
-        if(Math.random() > 0.85) bitChar = '⚡';
-        cube.setAttribute('data-bit', bitChar);
-        // individual animation delay style
-        const randomDelay = (Math.random() * 1.5).toFixed(2);
-        cube.style.animationDelay = `${randomDelay}s`;
-        // also add hover effect: scale + change color
-        cube.addEventListener('mouseenter', function(e) {
-          this.style.transform = 'scale(1.2) rotate(3deg)';
-          this.style.backgroundColor = 'rgba(255, 80, 40, 0.8)';
-          this.style.borderColor = '#ffcc00';
-          this.style.boxShadow = '0 0 20px #ff5500';
-          // change text content temporarily for blazing effect
-          const originalBit = this.getAttribute('data-bit');
-          this.setAttribute('data-original', originalBit);
-          this.setAttribute('data-bit', '🔥');
-          // update pseudo content needs to re-apply attribute? pseudo uses content attr, works instantly
+});
+
+// ==========================
+// 🧩 CARD TILT EFFECT
+// ==========================
+document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const rotateX = (y / rect.height - 0.5) * -10;
+        const rotateY = (x / rect.width - 0.5) * 10;
+
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+    });
+});
+
+// ==========================
+// 🌄 UNSPLASH BACKGROUNDS
+// ==========================
+document.addEventListener('DOMContentLoaded', () => {
+
+    const bgButton = document.getElementById('bg-button');
+
+    if (!bgButton) {
+        console.warn("⚠️ bg-button not found");
+        return;
+    }
+
+    // 🔁 Add your local image paths here
+    const backgrounds = [
+            "backgrounds/4911.jpg",
+            "backgrounds/4912.jpg",
+            "backgrounds/4917.jpg",
+            "backgrounds/4933.jpg",
+            "backgrounds/4942.jpg",
+            "backgrounds/4943.jpg",
+            "backgrounds/4945.jpg",
+            "backgrounds/4946.jpg",
+            "backgrounds/4951.jpg",
+            "backgrounds/4955.jpg",
+            "backgrounds/4968.jpg",
+            "backgrounds/4972.jpg",
+            "backgrounds/4978.jpg",
+            "backgrounds/4980.jpg",
+            "backgrounds/4982.jpg",
+            "backgrounds/4983.jpg",
+            "backgrounds/4988.jpg",
+            "backgrounds/4991.jpg",
+            "backgrounds/4992.jpg"
+             ];
+
+bgButton.addEventListener('click', () => {
+    const randomIndex = Math.floor(Math.random() * backgrounds.length);
+    const selected = backgrounds[randomIndex];
+
+    document.body.style.backgroundImage = `url('${selected}')`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+
+    // 👇 Make tiles see-through
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.style.opacity = '0.3';
+    });
+
+    // 👇 Restore after 5 seconds
+    setTimeout(() => {
+        cards.forEach(card => {
+            card.style.opacity = '1';
         });
-        cube.addEventListener('mouseleave', function(e) {
-          this.style.transform = 'scale(1) rotate(0deg)';
-          this.style.backgroundColor = '';
-          this.style.borderColor = '';
-          this.style.boxShadow = '';
-          const orig = this.getAttribute('data-original');
-          if(orig) this.setAttribute('data-bit', orig);
-          else this.setAttribute('data-bit', getRandomBitSymbol());
-        });
-        gridContainer.appendChild(cube);
-      }
-      if(bitCounterSpan) bitCounterSpan.innerText = cubeCount;
-    }
-    
-    buildBitGrid();
-    
-    // refresh bits periodically to simulate "digital fire" (blazing bits)
-    let intervalBits = setInterval(() => {
-      const cubes = document.querySelectorAll('.bit-cube');
-      cubes.forEach(cube => {
-        // only change if not being hovered (avoid override while hovering)
-        if(!cube.matches(':hover')) {
-          let newSym = getRandomBitSymbol();
-          if(Math.random() > 0.8) newSym = (Math.floor(Math.random()*16)).toString(16).toUpperCase();
-          if(Math.random() > 0.9) newSym = '💥';
-          cube.setAttribute('data-bit', newSym);
-          // remove any leftover original data if needed
-          if(cube.hasAttribute('data-original')) cube.removeAttribute('data-original');
-        }
-      });
-    }, 1800);
-    
-    // Additional dynamic animation: create floating particles "bits" around the title
-    function createFloatingParticle() {
-      const particle = document.createElement('div');
-      particle.innerHTML = Math.random() > 0.5 ? '1' : '0';
-      particle.style.position = 'fixed';
-      particle.style.fontFamily = 'monospace';
-      particle.style.fontWeight = 'bold';
-      particle.style.fontSize = Math.random() * 16 + 10 + 'px';
-      particle.style.color = `hsl(${Math.random() * 40 + 20}, 100%, 65%)`;
-      particle.style.pointerEvents = 'none';
-      particle.style.zIndex = '1000';
-      particle.style.textShadow = '0 0 5px cyan';
-      particle.style.opacity = '0.8';
-      const startX = Math.random() * window.innerWidth;
-      const startY = window.innerHeight + 20;
-      particle.style.left = startX + 'px';
-      particle.style.top = startY + 'px';
-      particle.style.position = 'fixed';
-      document.body.appendChild(particle);
-      
-      let posY = startY;
-      let drift = (Math.random() - 0.5) * 60;
-      let xOffset = 0;
-      const speed = 1.5 + Math.random() * 1.8;
-      const lifetime = setInterval(() => {
-        posY -= speed;
-        xOffset += (drift * 0.08);
-        particle.style.transform = `translateX(${xOffset}px)`;
-        particle.style.top = posY + 'px';
-        if(posY < -50) {
-          clearInterval(lifetime);
-          particle.remove();
-        }
-      }, 30);
-      // remove after 5 seconds max safety
-      setTimeout(() => {
-        if(particle.parentNode) particle.remove();
-      }, 6000);
-    }
-    
-    // create floating bits occasionally for "blazer" trail effect
-    let particleInterval = setInterval(() => {
-      if(document.hasFocus()) createFloatingParticle();
-    }, 450);
-    
-    // Cursor glow effect with trailing bits
-    const cursor = document.getElementById('cursorGlow');
-    let mouseX = 0, mouseY = 0;
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursor.style.transform = `translate(${mouseX - 10}px, ${mouseY - 10}px)`;
-      
-      // occasionally spawn a tiny bit from cursor
-      if(Math.random() < 0.08) {
-        const miniBit = document.createElement('span');
-        miniBit.innerText = Math.random() > 0.6 ? '1' : '0';
-        miniBit.style.position = 'fixed';
-        miniBit.style.left = mouseX + 'px';
-        miniBit.style.top = mouseY + 'px';
-        miniBit.style.fontSize = '12px';
-        miniBit.style.fontWeight = 'bold';
-        miniBit.style.color = '#ffaa44';
-        miniBit.style.fontFamily = 'monospace';
-        miniBit.style.zIndex = '9999';
-        miniBit.style.pointerEvents = 'none';
-        miniBit.style.textShadow = '0 0 4px orange';
-        miniBit.style.opacity = '0.9';
-        document.body.appendChild(miniBit);
-        setTimeout(() => {
-          miniBit.style.transition = 'all 0.5s ease';
-          miniBit.style.opacity = '0';
-          miniBit.style.transform = 'translateY(-20px)';
-          setTimeout(() => miniBit.remove(), 600);
-        }, 30);
-      }
-    });
-    
-    // resizing: adjust grid count (optional but better for responsive)
-    window.addEventListener('resize', () => {
-      let newCount = 24;
-      if(window.innerWidth < 500) newCount = 18;
-      else if(window.innerWidth < 800) newCount = 21;
-      else newCount = 28;
-      if(newCount !== cubeCount) {
-        cubeCount = newCount;
-        if(bitCounterSpan) bitCounterSpan.innerText = cubeCount;
-        buildBitGrid();
-      }
-    });
-    
-    // Additional "blazer" effect: dynamically change blaze trail color based on time
-    const trail = document.querySelector('.blaze-trail');
-    let hue = 10;
-    setInterval(() => {
-      hue = (hue + 3) % 360;
-      if(trail) {
-        trail.style.background = `linear-gradient(90deg, hsl(${hue}, 100%, 55%), hsl(${hue + 40}, 100%, 60%), #ff3a7c)`;
-      }
-      const textElem = document.querySelector('.blazerbits-word');
-      if(textElem) {
-        // subtle text shadow oscillation
-        textElem.style.textShadow = `0 0 ${8 + Math.sin(Date.now() / 500) * 4}px rgba(255, 100, 0, 0.7), 0 0 15px cyan`;
-      }
-    }, 280);
-    
-    // simulate digital console log in background for 'blazerbits' vibe
-    console.log("%c🔥 BLAZERBITS // INITIALIZED // BINARY STREAM ACTIVE", "color: #ff8800; font-size: 16px; font-family: monospace");
-    console.log("%c⚡ 64 BITS OF BLAZING FIRE ⚡", "color: #0ff; font-weight: bold");
-    
-    // clean intervals on page unload (just good practice)
-    window.addEventListener('beforeunload', () => {
-      clearInterval(intervalBits);
-      clearInterval(particleInterval);
-    });
-    
-    // add an interactive click on the main text to produce explosion of bits
-    const mainTitle = document.querySelector('.blazerbits-word');
-    if(mainTitle) {
-      mainTitle.addEventListener('click', (e) => {
-        for(let i = 0; i < 30; i++) {
-          const burstBit = document.createElement('div');
-          burstBit.innerText = ['0','1','🔥','B','Z','⚡','#'][Math.floor(Math.random()*7)];
-          burstBit.style.position = 'fixed';
-          burstBit.style.left = e.clientX + (Math.random() - 0.5) * 60 + 'px';
-          burstBit.style.top = e.clientY + (Math.random() - 0.5) * 60 + 'px';
-          burstBit.style.fontSize = Math.random() * 20 + 12 + 'px';
-          burstBit.style.fontWeight = 'bold';
-          burstBit.style.color = `hsl(${Math.random() * 60 + 20}, 100%, 60%)`;
-          burstBit.style.fontFamily = 'monospace';
-          burstBit.style.pointerEvents = 'none';
-          burstBit.style.zIndex = '9999';
-          burstBit.style.transition = 'all 0.7s ease-out';
-          burstBit.style.opacity = '1';
-          document.body.appendChild(burstBit);
-          setTimeout(() => {
-            burstBit.style.transform = `translate(${(Math.random() - 0.5)*100}px, ${(Math.random() - 0.8)*120 - 60}px)`;
-            burstBit.style.opacity = '0';
-            setTimeout(() => burstBit.remove(), 800);
-          }, 10);
-        }
-      });
-    }
-  })();
+    }, 5000);
+});
+
+});
+
 </script>
+
 </body>
 </html>
-```
