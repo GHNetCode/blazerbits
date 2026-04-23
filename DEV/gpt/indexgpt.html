@@ -12,14 +12,12 @@
     --accent-color: #ffc107;
     --button-hover: #ff9800;
     --card-bg: #1e1e1e;
-    --brightness-filter: brightness(100%);
-
+    --brightness-filter: none;
 }
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #121212, #06283b);
-    height: 100vh;
+    background: linear-gradient(135deg, #121212, #1e1e1e);
     color: var(--text-color);
     margin: 0;
     padding: 20px;
@@ -27,15 +25,6 @@ body {
     justify-content: center;
     filter: var(--brightness-filter);
     transition: filter 0.3s;
-}
-
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: inherit;
-    filter: var(--brightness-filter);
-    z-index: -1;
 }
 
 .container {
@@ -154,7 +143,7 @@ body {
 
 <body>
 
-<div id="page" class="container">
+<div class="container">
 
 <h1>🚧 Under Construction 🛠️</h1>
 
