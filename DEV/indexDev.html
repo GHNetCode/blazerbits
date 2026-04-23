@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Under Construction 🚧</title>
+
+<style>
+:root {
+    --dark-bg: #121212;
+    --text-color: #e0e0e0;
+    --accent-color: #ffc107;
+    --button-hover: #ff9800;
+    --card-bg: #1e1e1e;
+    --brightness-filter: none;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #121212, #1e1e1e);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    filter: var(--brightness-filter);
+    transition: filter 0.3s;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+}
+
+h1 {
+    text-align: center;
+    color: var(--accent-color);
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid rgba(42, 158, 194, 0.5);
+}
+    
+button {
+    background: var(--accent-color);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: var(--button-hover);
+}
+
+#crane-viz {
+    height: 120px;
+    position: relative;
+}
+
+#crane-arm {
+    height: 8px;
+    background: #555;
+    transform: scaleX(0.5);
+    transition: transform 1s;
+}
+
+#crane-load {
+    width: 40px;
+    height: 40px;
+    background: red;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 1s;
+}
+
+#brightness-control {
+    margin-bottom: 20px;
+}
+
+#brightness-label {
+    font-size: 26px;
+    margin-left: 10px;
+}
+
+
+/* As there are no memes, hide this card.. */
+.Memehidden {
+    display: none;
+}
+
+.card {
+    /* transition: transform 0.25s ease, box-shadow 0.25s ease; */
+    will-change: transform;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.5s ease;
+
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 15px 35px rgba(255, 193, 7, 0.4);
+}
+
+/* =========================
+   SPARK PARTICLES
+========================= */
+.spark {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, #ffeb3b, #ff5722, transparent);
+    animation: spark-fly 700ms ease-out forwards;
+    z-index: 9999;
+}
+
+@keyframes spark-fly {
+    to {
+        transform: translate(var(--x), var(--y));
+        opacity: 0;
+    }
+}
+
+body {
+    transition: background-image 0.5s ease-in-out;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🚧 Under Construction 🛠️</h1>
+
+<div id="brightness-control">
+    
+    <span id="brightness-label">🌞 /🌛</span> <input type="range" id="brightness-slider" min="50" max="200" value="100">
+    
+</div>
+<button id="bg-button">🌄 Change Background</button>
+
+<div class="button-grid">
+
+<!-- Crane -->
+<div class="card">
+    <h3>🏗️ Crane</h3>
+    <div id="crane-viz">
+        <div id="crane-arm"></div>
+        <div id="crane-load"></div>
+    </div>
+    <button id="crane-button">Start</button>
+</div>
+
+<!-- Load -->
+<div class="card">
+    <h3>🏋️ Load</h3>
+    <div id="load-viz">[LOAD]</div>
+    <button id="load-button">Lift</button>
+</div>
+
+<!-- Joke -->
+<div class="card">
+    <h3>😂 Joke</h3>
+    <button id="joke-button">Tell Joke</button>
+    <div id="joke-output"></div>
+</div>
+
+<!-- Meme -->
+<div class="card Memehidden">
+    <h3>🖼️ Meme</h3>
+    <button id="meme-button">Show Meme</button>
+    <img id="meme-output" />
+</div>
+
+</div>
+</div>
+
+<script>
+// ==========================
+// BRIGHTNESS CONTROL
+// ==========================
+const slider = document.getElementById('brightness-slider');
+slider.addEventListener('input', () => {
+    document.documentElement.style.setProperty(
+        '--brightness-filter',
+        `brightness(${slider.value}%)`
+    );
+});
+
+
+
+// ==========================
+// JOKE FEATURE
+// ==========================
+const jokes = [
+    "Why don't scientists trust atoms? They make up everything!",
+    "Parallel lines have so much in common. It’s a shame they’ll never meet.",
+    "Why did the scarecrow win an award? He was outstanding in his field!",
+    "Why did the bicycle fall over? Because it was two-tired!",
+    "I told my computer I needed a break… and it said 'No problem — I’ll go to sleep.'",
+    "Why don’t skeletons fight each other? They don’t have the guts.",
+    "What do you call fake spaghetti? An impasta!",
+    "Why did the math book look sad? Because it had too many problems.",
+    "I used to play piano by ear… now I use my hands.",
+    "Why don’t programmers like nature? Too many bugs.",
+    "What do you call cheese that isn’t yours? Nacho cheese!",
+    "Why did the coffee file a police report? It got mugged.",
+    "Why did the golfer bring two pairs of pants? In case he got a hole in one."
+];
+
+document.getElementById('joke-button').onclick = () => {
+    const joke = jokes[Math.floor(Math.random() * jokes.length)];
+    document.getElementById('joke-output').textContent = joke;
+};
+
+// ==========================
+// CRANE ANIMATION
+// ==========================
+document.getElementById('crane-button').onclick = () => {
+    const arm = document.getElementById('crane-arm');
+    const load = document.getElementById('crane-load');
+
+    arm.style.transform = 'scaleX(1.5)';
+    load.style.transform = 'translate(-50%, -80px)';
+
+    setTimeout(() => {
+        arm.style.transform = 'scaleX(0.5)';
+        load.style.transform = 'translate(-50%, 0)';
+    }, 1500);
+};
+
+// ==========================
+// LOAD ANIMATION
+// ==========================
+document.getElementById('load-button').onclick = () => {
+    const el = document.getElementById('load-viz');
+    el.textContent = "🚀 LIFTED!";
+    
+    setTimeout(() => {
+        el.textContent = "[LOAD]";
+    }, 1500);
+};
+
+// ==========================
+// MEME (simple random images)
+// ==========================
+const memes = [
+    "https://i.imgur.com/w3duR07.png",
+    "https://i.imgur.com/2vQtZBb.jpg",
+    "https://i.imgur.com/fYzGZ0p.jpeg"
+];
+
+document.getElementById('meme-button').onclick = () => {
+    const img = document.getElementById('meme-output');
+    img.src = memes[Math.floor(Math.random() * memes.length)];
+};
+
+// ==========================
+// 🔥 CLICK SPARK EFFECT
+// ==========================
+document.addEventListener('click', (e) => {
+    for (let i = 0; i < 15; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'spark';
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 80;
+
+        spark.style.left = `${e.clientX}px`;
+        spark.style.top = `${e.clientY}px`;
+        spark.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+        spark.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
+
+        document.body.appendChild(spark);
+
+        setTimeout(() => spark.remove(), 700);
+    }
+});
+
+// ==========================
+// 🧩 CARD TILT EFFECT
+// ==========================
+document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const rotateX = (y / rect.height - 0.5) * -10;
+        const rotateY = (x / rect.width - 0.5) * 10;
+
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+    });
+});
+
+// ==========================
+// 🌄 UNSPLASH BACKGROUNDS
+// ==========================
+document.addEventListener('DOMContentLoaded', () => {
+
+    const bgButton = document.getElementById('bg-button');
+
+    if (!bgButton) {
+        console.warn("⚠️ bg-button not found");
+        return;
+    }
+
+    // 🔁 Add your local image paths here
+    const backgrounds = [
+            "backgrounds/4911.jpg",
+            "backgrounds/4912.jpg",
+            "backgrounds/4917.jpg",
+            "backgrounds/4933.jpg",
+            "backgrounds/4942.jpg",
+            "backgrounds/4943.jpg",
+            "backgrounds/4945.jpg",
+            "backgrounds/4946.jpg",
+            "backgrounds/4951.jpg",
+            "backgrounds/4955.jpg",
+            "backgrounds/4968.jpg",
+            "backgrounds/4972.jpg",
+            "backgrounds/4978.jpg",
+            "backgrounds/4980.jpg",
+            "backgrounds/4982.jpg",
+            "backgrounds/4983.jpg",
+            "backgrounds/4988.jpg",
+            "backgrounds/4991.jpg",
+            "backgrounds/4992.jpg"
+             ];
+
+bgButton.addEventListener('click', () => {
+    const randomIndex = Math.floor(Math.random() * backgrounds.length);
+    const selected = backgrounds[randomIndex];
+
+    document.body.style.backgroundImage = `url('${selected}')`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+
+    // 👇 Make tiles see-through
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.style.opacity = '0.3';
+    });
+
+    // 👇 Restore after 5 seconds
+    setTimeout(() => {
+        cards.forEach(card => {
+            card.style.opacity = '1';
+        });
+    }, 5000);
+});
+
+});
+
+</script>
+
+</body>
+</html>
