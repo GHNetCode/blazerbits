@@ -41,4 +41,13 @@ function interpolateColor(start, end, factor) {
 /* MENU TOGGLE */
 hamburger.addEventListener("click", () => {
   menu.classList.toggle("active");
+  hamburger.classList.toggle("active");
+});
+
+//If User Clicks Outside to Close Menu
+  menu.addEventListener("click", (e) => {
+  if (!e.target.closest(".menu-content")) {
+    menu.classList.remove("active");
+    hamburger.classList.remove("active");
+  }
 });
