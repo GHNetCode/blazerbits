@@ -117,15 +117,20 @@ button:hover {
   justify-content: space-between;
 }
 
+.hamburger.active {
+  transform: scale(0.8);
+}
+
 .hamburger span {
   display: block;
   height: 2px;
   width: 100%;
   background: var(--text);
   border-radius: 2px;
-  transition: all 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
   transform-origin: center;
 }
+ 
 
 /* ACTIVE STATE */
 .hamburger.active span:nth-child(1) {

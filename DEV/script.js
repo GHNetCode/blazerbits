@@ -6,19 +6,19 @@ const hamburger = document.getElementById("hamburger");
 
 /* LOAD SAVED THEME */
 const saved = localStorage.getItem("themeValue");
-if (saved) {
-  slider.value = saved;
-  applyTheme(saved);
-console.log(slider.value);
-}
+if (slider) {
+  const saved = localStorage.getItem("themeValue");
+  if (saved) {
+    slider.value = saved;
+    applyTheme(saved);
+  }
 
-/* SLIDER CHANGE */
-slider.addEventListener("input", (e) => {
-  const value = e.target.value;
-  applyTheme(value);
-  localStorage.setItem("themeValue", value);
-  
-});
+  slider.addEventListener("input", (e) => {
+    const value = e.target.value;
+    applyTheme(value);
+    localStorage.setItem("themeValue", value);
+  });
+}
 
 /* APPLY THEME */
 function applyTheme(value) {
