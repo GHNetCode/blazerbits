@@ -16,7 +16,7 @@ pids
 *.pid.lock
 
 #DEV directory
-DEV/
+#DEV/
 
 
 
