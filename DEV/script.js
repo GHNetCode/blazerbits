@@ -1,7 +1,9 @@
 const slider = document.getElementById("themeSlider");
 const root = document.documentElement;
 const menu = document.getElementById("menu");
-const hamburger = document.getElementById("hamburger");
+
+/*Temporarily disabled due to navigation bar added*/
+// const hamburger = document.getElementById("hamburger");
 
 
 /* LOAD SAVED THEME */
@@ -38,16 +40,17 @@ function interpolateColor(start, end, factor) {
   return start.map((s, i) => Math.round(s + factor * (end[i] - s))).join(",");
 }
 
-/* MENU TOGGLE */
-hamburger.addEventListener("click", () => {
-  menu.classList.toggle("active");
-  hamburger.classList.toggle("active");
-});
 
-//If User Clicks Outside to Close Menu
-  menu.addEventListener("click", (e) => {
-  if (!e.target.closest(".menu-content")) {
-    menu.classList.remove("active");
-    hamburger.classList.remove("active");
-  }
-});
+
+/* MENU TOGGLE */ //Temporarily disabled due to navigation bar added.
+  hamburger.addEventListener("click", () => {
+    menu.classList.toggle("active");
+    hamburger.classList.toggle("active");
+  });
+  //If User Clicks Outside to Close Menu
+    menu.addEventListener("click", (e) => {
+    if (!e.target.closest(".menu-content")) {
+      menu.classList.remove("active");
+      hamburger.classList.remove("active");
+    }
+  });

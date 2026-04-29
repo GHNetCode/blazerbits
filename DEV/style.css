@@ -21,8 +21,48 @@ body {
   overflow-x: hidden;
 }
 
+.top-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+.nav-right a {
+  margin-left: 25px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
+.nav-right a:hover {
+  opacity: 1;
+}
+
 /* LANDING */
 .landing {
+  
+
   height: 100vh;
   display: flex;
   align-items: center;
@@ -104,17 +144,16 @@ button:hover {
 
 /* HAMBURGER */
 .hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
   position: fixed;
   top: 20px;
   right: 20px;
   width: 30px;
   height: 24px;
   cursor: pointer;
-  z-index: 1000;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  z-index: 1000; 
 }
 
 .hamburger.active {
@@ -158,7 +197,7 @@ button:hover {
   opacity: 0;
   pointer-events: none;
   transition: 0.4s;
-   z-index: 999; /* 👈 ADD THIS */
+   z-index: 999; 
 }
 
 .menu-overlay.active {
@@ -206,10 +245,10 @@ button:hover {
 
 /* THEME SLIDER */
 .theme-control {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
+  position: relative;
+  top: 0;
+  left: 0;
+  /* z-index: 1000; */
 }
 
 input[type="range"] {
@@ -229,7 +268,7 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-runnable-track {
   height: 4px;
   /* background: linear-gradient(to right, #000, #cccccc); */
-  background: linear-gradient(to right, #cccccc, #000);
+  background: linear-gradient(to right, #5a5f80, #000);
   box-shadow: 0 0 6px rgba(4, 4, 4, 0.3);
   border-radius: 2px;
 }
@@ -268,4 +307,74 @@ input[type="range"]::-moz-range-thumb {
 /* HOVER EFFECT */
 input[type="range"]:hover::-webkit-slider-thumb {
   transform: scale(1.2);
+}
+
+.lang-dropdown {
+  position: relative;
+  cursor: pointer;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.lang-dropdown:hover {
+  opacity: 1;
+}
+
+.lang-menu {
+  position: absolute;
+  top: 100%;   /* 👈 attaches directly under "Lang" */
+  left: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 10px 0;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: 0.3s;
+}
+
+.lang-dropdown:hover .lang-menu {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+.lang-menu a {
+  display: block;
+  padding: 8px 15px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.lang-menu a:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+/* Show hamburger menu only on mobile */
+  .hamburger {
+    display: flex;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+  }
+
+  /* Disable navbar */
+    .nav-right {
+    display: none;
+    }
+    .lang-dropdown {
+    display: none;
+    }
+
+  .theme-control {
+    /* display: none; */
+  }
+
 }
