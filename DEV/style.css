@@ -22,11 +22,11 @@ body {
 }
 
 .top-nav {
+  display: flex;
   position: fixed;
   top: 0;
   width: 100%;
   padding: 15px 40px;
-  display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
@@ -322,15 +322,28 @@ input[type="range"]:hover::-webkit-slider-thumb {
   transform: scale(1.2);
 }
 
+/* LANGUAGE DROPDOWN - Plugin */
+
+.gtranslate_wrapper {
+  display: flex;
+  position:absolute;
+  left: 280px;
+  top: 20px;
+  width: 100px;
+  /* border-radius: 7px;  */
+  /* right: 20px; */
+    /* border: solid red 1px; */
+}
+
 .lang-dropdown {
-  position: relative;
-  cursor: pointer;
   font-size: 0.9rem;
-  opacity: 0.8;
+  opacity: 0.7;
+  /* border-radius: 7px; */
+
 }
 
 .lang-dropdown:hover {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .lang-menu {
@@ -341,7 +354,6 @@ input[type="range"]:hover::-webkit-slider-thumb {
   backdrop-filter: blur(10px);
   border-radius: 8px;
   padding: 10px 0;
-
   opacity: 0;
   pointer-events: none;
   transform: translateY(10px);
@@ -403,7 +415,6 @@ input[type="range"]:hover::-webkit-slider-thumb {
 .mobile-lang-options a:hover {
   opacity: 1;
   border-color: rgba(255,255,255,0.2);
-  /* background: rgba(255,255,255,0.05); */
   background: rgba(255, 255, 255, 0.100);
 }
 
