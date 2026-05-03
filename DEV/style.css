@@ -340,26 +340,25 @@ input[type="range"]:hover::-webkit-slider-thumb {
   .gt_option{
     border-radius: 0 0 7px 7px;
   }
-  
-  
-  /* gt_selected gt_option */
+   /* GTranslate dynamic theme */
+    .gt_switcher {
+      color: var(--text) !important;
+      border-color: var(--text) !important;
+    }
+    
+    .gt_switcher a {
+      color: var(--text) !important;
+    }
+    
+    .gt_option {
+      color: var(--text) !important;
+    }
+   
+    
 
-  /* .gt_switcher.notranslate:hover{
-  border-radius: 7px;
-  } */
 
 
-/* .lang-dropdown {
-  font-size: 1.9rem;
-  position: relative;
-  cursor: pointer;
-  font-size: 0.9rem;
-  opacity: 0.8;
-} */
-/* 
-.lang-dropdown:hover {
-  opacity: 0.8;
-} */
+ 
 
 .lang-menu {
   position: absolute;
