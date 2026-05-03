@@ -329,7 +329,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
     left: 280px;
     top: 20px;
     width: 100px;
-    border: solid rgba(0, 81, 255, 0.436) 1px;
+    border: solid rgba(0, 81, 255, 0.236) 1px;
     border-radius: 7px; 
     opacity: 0.6;
   }
@@ -339,8 +339,6 @@ input[type="range"]:hover::-webkit-slider-thumb {
   } 
   .gt_option{
     border-radius: 0 0 7px 7px;
-    height: 200px;
-  
   }
   
   
@@ -453,7 +451,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
     display: none;
     }
     .lang-dropdown {
-    display: none;
+    /* display: none; */
     }
 
   .theme-control {
