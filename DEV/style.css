@@ -326,12 +326,14 @@ input[type="range"]:hover::-webkit-slider-thumb {
   .gtranslate_wrapper {
     display: flex;
     position:absolute;
-    left: 280px;
+    left: 260px; /* left: 33vw; */
+     
+    
     top: 20px;
     width: 100px;
     border: solid rgba(0, 81, 255, 0.236) 1px;
     border-radius: 7px; 
-    opacity: 0.6;
+    opacity: 0.7;
   }
   .gtranslate_wrapper:hover {opacity: 0.65;}
   .gt_switcher.notranslate{border-radius: 7px;
@@ -340,7 +342,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   .gt_option{
     border-radius: 0 0 7px 7px;
   }
-   /* GTranslate dynamic theme */
+ 
     .gt_switcher {
       color: var(--text) !important;
       border-color: var(--text) !important;
@@ -349,11 +351,29 @@ input[type="range"]:hover::-webkit-slider-thumb {
     .gt_switcher a {
       color: var(--text) !important;
     }
+  
+  /* Add to style.css */
+.gt_switcher img,
+.gt_option img {
+  transition: filter 0.3s ease;
+  filter: brightness(var(--flag-brightness, 0.7)) saturate(var(--flag-saturate, 0.7));
+}
+
+/* Dark theme (when text is light) */
+:root:has([data-theme="dark"]) .gt_switcher img,
+:root:has([data-theme="dark"]) .gt_option img {
+  --flag-brightness: 0.5;
+  --flag-saturate: 0.5;
+}
+
+/* Light theme (when text is dark) */
+:root:has([data-theme="light"]) .gt_switcher img,
+:root:has([data-theme="light"]) .gt_option img {
+  --flag-brightness: 1;
+  --flag-saturate: 1;
+}
+
     
-    .gt_option {
-      color: var(--text) !important;
-    }
-   
     
 
 
@@ -449,15 +469,16 @@ input[type="range"]:hover::-webkit-slider-thumb {
     .nav-right {
     display: none;
     }
-    .lang-dropdown {
+    .gtranslate_wrapper {
     /* display: none; */
+    left: 65vw;
     }
 
   .theme-control {
   display: flex;
     /* position: absolute; */
     /* bottom: 40px; */
-    left: 50%; 
+    left: 10vw; 
     transform: translateX(-50%);
   
   }
