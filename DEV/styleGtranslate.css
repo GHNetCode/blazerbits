@@ -1,0 +1,116 @@
+/* LANGUAGE DROPDOWN - Plugin */
+.gtranslate_wrapper {
+  display: flex;
+  position: absolute;
+  left: 270px;
+  top: 20.4px;
+  width: 100px;
+  opacity: 0.89;
+  transition: opacity 0.3s ease;
+}
+
+/* Make the entire GTranslate wrapper have no background */
+.gtranslate_wrapper,
+.gt_switcher,
+.gt_selected,
+.gt_selected a {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Hover effect - only opacity changes, no background */
+.gtranslate_wrapper:hover {
+  opacity: 0.95;
+}
+
+/* Underline text on hover.. Disabled - TBD!! */
+/* .gt_selected:hover{
+  text-decoration: underline;
+  text-decoration-color: rgb(30, 73, 141);
+  text-decoration-thickness: 1px;
+  opacity: 1;
+} */
+/* .gt_switcher .gt_option a:hover {
+  text-decoration: underline;
+  text-decoration-color: rgb(30, 73, 141);
+  text-decoration-thickness: 2px;
+} */
+
+/* Style the selected language button like your nav links */
+.gt_switcher .gt_selected a {
+  color: var(--text) !important;
+  opacity: 0.9 !important;
+  transition: opacity 0.3s ease !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 0.9rem !important;
+  font-family: system-ui, sans-serif !important;
+ 
+
+}
+ 
+
+
+.gt_switcher .gt_selected a:hover {
+  transition: opacity 0.3s ease !important;
+  opacity: 1 !important;
+  background: transparent !important;
+}
+
+ .gt_option{
+  transform: translateX(-3%); 
+}
+
+/* Remove hover background from individual language options */
+.gt_option a:hover,
+.gt_switcher .gt_option a:hover {
+  background: transparent !important;
+  opacity: 0.8 !important;
+}
+
+/* Style the dropdown container - keep it clean */
+.gt_switcher .gt_option {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0, 81, 255, 0.136) !important;
+  border-radius: 0 0 8px 8px !important;
+  padding: 8px 0 !important;
+  margin-top: 8px !important;
+}
+
+/* Individual dropdown items */
+.gt_option a {
+  color: var(--text) !important;
+  /* padding: 8px 18px !important; */
+  font-size: 0.85rem !important;
+  opacity: 0.75 !important;
+  transition: opacity 0.2s ease !important;
+  background: transparent !important;
+}
+
+/* Hover effect - only text opacity changes, NO background */
+.gt_option a:hover {
+  opacity: 1 !important;
+  background: transparent !important;
+}
+
+.gt_switcher img,
+.gt_option img {
+  transition: filter 0.3s ease;
+  filter: brightness(var(--flag-brightness, 0.7)) saturate(var(--flag-saturate, 0.7));
+}
+
+/* Dark theme (when text is light) */
+:root:has([data-theme="dark"]) .gt_switcher img,
+:root:has([data-theme="dark"]) .gt_option img {
+  --flag-brightness: 0.5;
+  --flag-saturate: 0.5;
+}
+
+/* Light theme (when text is dark) */
+:root:has([data-theme="light"]) .gt_switcher img,
+:root:has([data-theme="light"]) .gt_option img {
+  --flag-brightness: 1;
+  --flag-saturate: 1;
+}

@@ -3,14 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BlazeWebsite</title>
+  <title>BlazeWebsite | BlazerBits</title>
   <link rel="stylesheet" href="style.css"/>
 
-   <link rel="icon" href="favicon.ico">
-   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  
+
 </head>
 <body>
+
+<!-- top navigation bar (fixed) -->
 <nav class="top-nav">
   <div class="nav-left">
     <span class="logo">BlazerBits</span>
@@ -19,64 +23,118 @@
       <input type="range" id="themeSlider" min="18" max="80" value="22">
     </div>
 
-     <div class="lang-dropdown">
-    <!--  <span>Lang ▾</span>
-      <div class="lang-menu">
-        <a href="#">English</a>
-        <a href="#">French</a>
-        <a href="#">German</a>
-        <a href="#">Hungarian</a>
-        <a href="#">Spanish</a>
-      </div> -->
-     <div class="gtranslate_wrapper"></div>
-    </div> 
-
-
-
+    <div class="lang-dropdown">
+      <div class="gtranslate_wrapper"></div>
+    </div>
   </div>
 
-  <div class="nav-right">
+<div class="nav-right">
+  <!-- Explore -->
+  <div class="nav-item">
+    <a href="explore.html">Explore</a>
+    <span class="dropdown-arrow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <div class="dropdown">
+      <a href="#">Blog-Profiles</a>
+      <a href="#">Highlighted Posts</a>
+    </div>
+  </div>
+
+   <!-- About (with Submenu: "About Me" containing "Portfolio" BELOW it) -->
+  <div class="nav-item">
+    <a href="about.html">About</a>
+    <span class="dropdown-arrow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <div class="dropdown">
+      <a href="#">About BlazerBits</a>
+      <a href="#">FAQ</a>
+      
+    <!-- "About Me" dropdown item with submenu BELOW it -->
+  <div class="dropdown-item-submenu">
+    <a href="#">
+      About Me
+      <span class="submenu-svg">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </a>
+    <div class="dropdown-submenu">
+      <a href="portfolio.html">Portfolio</a>
+      
+      <!-- Projects as another submenu item -->
+      <div class="dropdown-item-submenu">
+        <a href="#">
+          Projects
+          <span class="submenu-svg">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </a>
+        <div class="dropdown-submenu">
+          <a href="portfolio.html">Project1</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+      <a href="#">FAQ2</a>
+
+
+    </div>
+  </div>
+
+  <!-- Projects -->
+  <!-- <div class="nav-item">
+    <a href="projects.html">Projects</a>
+    <span class="dropdown-arrow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <div class="dropdown">
+      <a href="#">Project 1</a>
+      <a href="#">Project 2</a>
+      <a href="#">Project 3</a>
+      <a href="#">Project 4</a>
+    </div>
+  </div> -->
+
+  <!-- Login (no dropdown) -->
+  <a href="login.html">Login</a>
+</div>
+
+</nav>
+
+<!-- HAMBURGER (mobile) -->
+<div class="hamburger" id="hamburger">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<!-- FULLSCREEN MENU (mobile overlay) -->
+<div class="mobile-menu-overlay" id="menu">
+  <div class="mobile-menu-content">
     <a href="explore.html">Explore</a>
     <a href="about.html">About</a>
     <a href="portfolio.html">Portfolio</a>
     <a href="projects.html">Projects</a>
     <a href="login.html">Login</a>
   </div>
- 
-</nav>
- 
+</div>
 
-  <!-- HAMBURGER -->
-  <div class="hamburger" id="hamburger">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-
-  <!-- FULLSCREEN MENU -->
-  <div class="menu-overlay" id="menu">
-    <div class="menu-content">
-      <a href="#">Explore</a>
-      <a href="#">About</a>
-      <a href="#">Portfolio</a>
-      <a href="#">Projects</a>
-      <a href="#">Login</a>
-
-      <!-- <div class="mobile-lang">
-        <span>Language</span>
-        <div class="mobile-lang-options">
-         <a href="#">English</a>
-         <a href="#">French</a>
-         <a href="#">German</a>
-         <a href="#">Hungarian</a>
-         <a href="#">Italian</a>
-         <a href="#">Spanish</a>
-        </div>
-      </div> -->
-    </div>
-  </div>
-
-  <!-- LANDING -->
+<!-- MAIN CONTENT (landing section + future content) -->
+<main id="mainContent">
   <section class="landing">
     <div class="content">
       <h1>Welcome to BlazerBits.</h1>
@@ -87,8 +145,9 @@
       </div>
     </div>
   </section>
+</main>
 
-  <script src="script.js"></script>
-  <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
+<script src="script.js"></script>
+<script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
 </body>
 </html>

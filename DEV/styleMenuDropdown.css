@@ -1,0 +1,161 @@
+/* DROPDOWN CONTAINER */
+.dropdown {
+  position: absolute;
+  top: 100%;   /* 🔥 exact bottom of nav item */
+  margin-top: 15px; /* 👈 creates space visually */
+  left: -1px;
+  transform: translateX(-10%);
+  min-width: 180px;
+  padding: 8px 0;
+  background: rgba(0, 0, 0, 0.0); /* transparent background */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 81, 255, 0.136);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  border-radius: 0 0 8px 8px;
+  opacity: 0; /* ------------------ Temporarily!!!---------------*/
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  z-index: 100;
+}
+
+/* DROPDOWN LINKS */
+.dropdown a {
+  display: block;
+  padding: 10px 18px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+  opacity: 0.75;
+  transition: 0.2s ease;
+}
+
+.dropdown a:hover {
+  opacity: 1;
+  background: transparent;
+}
+
+/* SHOW ON HOVER */
+.nav-item:hover .dropdown {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ========== SUBMENU (NESTED DROPDOWN) STYLES ========== */
+/* Container for menu items that have submenus */
+.dropdown-item-submenu {
+  position: relative;
+}
+
+/* Submenu container - opens BELOW "About Me" (not to the right) */
+.dropdown .dropdown-submenu {
+  display: flex;
+  flex-direction: column;
+  position:relative;
+  top: 0;
+  left: 0;
+  margin-top: 0;
+  margin-left: 0;
+  transform: none;
+  /* min-width: 100%; */
+  /* padding: 0; */
+  /* padding-left: -80px; */
+  background: transparent;
+  backdrop-filter: none;
+  border: none;
+  border-left: 2px solid rgba(0, 81, 255, 0.2);
+  border-radius: 0;
+  box-shadow: none;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, max-height 0.3s ease;
+  }
+
+/* Submenu links - indented */
+.dropdown > .dropdown-submenu > a {
+  top: 0;
+  left: 0;
+  margin-top: 0;
+  margin-left: -10px;
+  border: blue solid 1px;
+  /* padding: 8px 18px 8px 20px;    */
+  /*8px 18px 8px 35px*/
+  font-size: 0.82rem;
+  
+}
+
+/* Show submenu BELOW on hover - closed by default, opens on hover */
+.dropdown-item-submenu:hover > .dropdown-submenu {
+  opacity: 1;
+  max-height: 200px;
+  pointer-events: auto;
+  margin-top: 0;
+}
+
+
+
+/* ========== SUBMENU ARROW STYLES (matching main menu) ========== */
+/* The link inside the submenu item */
+.dropdown-item-submenu{
+  /* position:relative; */
+  /* border: solid lightcoral 1px; */
+   padding-right: 20px;
+   left: 5px;
+}
+
+.dropdown-item-submenu > a {
+   display: inline-flex;
+
+align-items: center;
+  justify-content: space-between;
+  width: 100%;/*100%*/
+  padding-right: 50px; /*move 'About Me' arrow to the left */
+  cursor: pointer;
+  /* border: solid lightgreen 1px; */
+  /* NEXT STEP move submenu to the LEFT!! */
+}
+
+
+/* SVG arrow wrapper - matches main menu dropdown-arrow */
+.dropdown-item-submenu .submenu-svg {
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.4s ease, opacity 0.2s ease;
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+.dropdown-item-submenu .submenu-svg svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* Rotate arrow on hover - matches main menu behavior */
+.dropdown-item-submenu:hover .submenu-svg {
+  transform: rotate(-0.5turn);
+  opacity: 1;
+}
+
+.nav-item > .dropdown > .dropdown-item-submenu > a{
+  /* border: solid lightseagreen 1px; */
+  padding-left: 13px;
+}
+.dropdown-submenu > .dropdown-item-submenu > .dropdown-submenu a {
+   /* display: inline-flex;
+
+align-items: center;
+  justify-content: space-between;
+  width: 100%;  */
+  /*padding-right: 50px; move 'About Me' arrow to the left*/
+  cursor: pointer;
+  /* border: solid lightgreen 1px; */
+  padding-left: 20px;
+  /* NEXT STEP move submenu to the LEFT!! */
+}
