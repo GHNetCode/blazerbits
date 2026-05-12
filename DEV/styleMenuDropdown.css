@@ -35,12 +35,14 @@
 .dropdown a:hover {
   opacity: 1;
   background: transparent;
+  transition: 0.2s ease;
   cursor: pointer;
 }
 
 /* SHOW ON HOVER */
 .nav-item:hover .dropdown {
   opacity: 1;
+  transition: 0.2s ease;
   pointer-events: auto;
 }
 
@@ -52,19 +54,7 @@
   left: 5px;
 }
 
-.dropdown-item-submenu::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -12px;
-
-  width: 100%;
-  height: 12px;
-
-  background: transparent;
-}
-
-/* Submenu container - opens BELOW "About Me" (not to the right) */
+/* Submenu container - opens BELOW "About Me" */
 .dropdown .dropdown-submenu {
   display: flex;
   flex-direction: column;
@@ -104,48 +94,38 @@
   border: blue solid 1px;
   /* padding: 8px 18px 8px 20px;    */
   /*8px 18px 8px 35px*/
-  font-size: 0.82rem;
-  
+  font-size: 0.82rem;  
 }
-
 /* Show submenu on hover - closed by default, opens on hover */
- .nav-item > .dropdown > .dropdown-item-submenu:hover > .dropdown-submenu,/*for submenu*/
- .dropdown-submenu > .dropdown-item-submenu:hover > .dropdown-submenu /*for nested submenu*/
+ .nav-item > .dropdown > 
+ .dropdown-item-submenu:hover > 
+ .dropdown-submenu
  {
 opacity: 1;
 visibility: visible;
 max-height: 200px;
 pointer-events: auto;
 margin-top: 0;
-
+transition-delay: 0.25s;
 }
 
 
 
 /* ========== SUBMENU ARROW STYLES (matching main menu) ========== */
 /* The link inside the submenu item */
-/* .dropdown-item-submenu{
+.dropdown-item-submenu{
   position:relative;
-  border: solid lightcoral 1px;
+  /* border: solid lightcoral 1px; */
    padding-right: 20px;
-   left: 5px;} */
+   left: 5px;}
 
-.dropdown-item-submenu > a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;/*100%*/
-  padding-right: 50px; /*move 'About Me' arrow to the left */
-  cursor: pointer;
-  /* border: solid lightgreen 1px; */
-}
 
 
 /* SVG arrow wrapper - matches main menu dropdown-arrow */
 .dropdown-item-submenu .submenu-svg {
   display: inline-flex;
   align-items: center;
-  transition: transform 0.4s ease, opacity 0.2s ease;
+  transition: transform 0.6s ease, opacity 0.2s ease;
   margin-left: auto;
   opacity: 0.6;
 }
@@ -161,8 +141,7 @@ margin-top: 0;
 }
 
 /* Rotate arrow on hover for submenu & subSubmenu menus- matches main menu behavior */
- .nav-item .dropdown .dropdown-item-submenu:hover .submenu-svg,
- .dropdown-submenu .dropdown-item-submenu:hover .subSubmenu-svg {
+ .nav-item .dropdown .dropdown-item-submenu:hover .submenu-svg{
   transform: rotate(-0.5turn);
   opacity: 1;
 } 
@@ -171,15 +150,4 @@ margin-top: 0;
   /* border: solid lightseagreen 1px; */
   padding-left: 13px;
 }
-.dropdown-submenu > .dropdown-item-submenu > .dropdown-submenu a {
-   /* display: inline-flex;
-
-align-items: center;
-  justify-content: space-between;
-  width: 100%;  */
-  /*padding-right: 50px; move 'About Me' arrow to the left*/
-  cursor: pointer;
-  /* border: solid lightgreen 1px; */
-  padding-left: 20px;
-  /* NEXT STEP move submenu to the LEFT!! */
-}
+ 
