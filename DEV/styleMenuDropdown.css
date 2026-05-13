@@ -2,14 +2,16 @@
 .dropdown {
   position: absolute;
   top: 100%;   /* 🔥 exact bottom of nav item */
-  margin-top: 15px; /* 👈 creates space visually */
+  margin-top: 17px; /* 👈 creates space visually */
   left: -1px;
   transform: translateX(-10%);
   min-width: 180px;
   padding: 8px 0;
-  background: rgba(0, 0, 0, 0.0); /* transparent background */
+  /* background: rgba(0, 0, 0, 0.0);  */
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 81, 255, 0.136);
+  border-top: none;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   border-radius: 0 0 8px 8px;
   opacity: 0; /* ------------------ Temporarily!!!---------------*/
@@ -54,7 +56,19 @@
   left: 5px;
 }
 
-/* Submenu container - opens BELOW "About Me" */
+/* .dropdown-item-submenu::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -12px;
+
+  width: 100%;
+  height: 12px;
+
+  background: transparent;
+} */
+
+/* Submenu container - opens BELOW "About Me" (not to the right) */
 .dropdown .dropdown-submenu {
   display: flex;
   flex-direction: column;
@@ -96,10 +110,10 @@
   /*8px 18px 8px 35px*/
   font-size: 0.82rem;  
 }
+
 /* Show submenu on hover - closed by default, opens on hover */
- .nav-item > .dropdown > 
- .dropdown-item-submenu:hover > 
- .dropdown-submenu
+ .nav-item > .dropdown > .dropdown-item-submenu:hover > .dropdown-submenu,/*for submenu*/
+ .dropdown-submenu > .dropdown-item-submenu:hover > .dropdown-submenu /*for nested submenu*/
  {
 opacity: 1;
 visibility: visible;
@@ -113,19 +127,28 @@ transition-delay: 0.25s;
 
 /* ========== SUBMENU ARROW STYLES (matching main menu) ========== */
 /* The link inside the submenu item */
-.dropdown-item-submenu{
+/* .dropdown-item-submenu{
   position:relative;
-  /* border: solid lightcoral 1px; */
+  border: solid lightcoral 1px;
    padding-right: 20px;
-   left: 5px;}
+   left: 5px;} */
 
+.dropdown-item-submenu > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;/*100%*/
+  padding-right: 50px; /*move 'About Me' arrow to the left */
+  cursor: pointer;
+  /* border: solid lightgreen 1px; */
+}
 
 
 /* SVG arrow wrapper - matches main menu dropdown-arrow */
 .dropdown-item-submenu .submenu-svg {
   display: inline-flex;
   align-items: center;
-  transition: transform 0.6s ease, opacity 0.2s ease;
+  transition: transform 0.4s ease, opacity 0.2s ease;
   margin-left: auto;
   opacity: 0.6;
 }
@@ -141,7 +164,8 @@ transition-delay: 0.25s;
 }
 
 /* Rotate arrow on hover for submenu & subSubmenu menus- matches main menu behavior */
- .nav-item .dropdown .dropdown-item-submenu:hover .submenu-svg{
+ .nav-item .dropdown .dropdown-item-submenu:hover .submenu-svg,
+ .dropdown-submenu .dropdown-item-submenu:hover .subSubmenu-svg {
   transform: rotate(-0.5turn);
   opacity: 1;
 } 
@@ -150,4 +174,15 @@ transition-delay: 0.25s;
   /* border: solid lightseagreen 1px; */
   padding-left: 13px;
 }
- 
+.dropdown-submenu > .dropdown-item-submenu > .dropdown-submenu a {
+   /* display: inline-flex;
+
+align-items: center;
+  justify-content: space-between;
+  width: 100%;  */
+  /*padding-right: 50px; move 'About Me' arrow to the left*/
+  cursor: pointer;
+  /* border: solid lightgreen 1px; */
+  padding-left: 20px;
+  /* NEXT STEP move submenu to the LEFT!! */
+}

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Mark Sheard · Curiosity-driven support engineer</title>
+  <!-- Google Fonts & simple reset -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);/* #f6f9fc*/
+
+      color: var(--text);/*#1a2c3e*/
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Typography */
+    h1, h2, h3 {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: 3.2rem;
+      background: linear-gradient(135deg, #1A4D5F, #2C7A5E);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.9rem;
+      margin-bottom: 1.5rem;
+      border-left: 5px solid #2C7A5E;
+      padding-left: 1rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 1rem 0 0.5rem;
+      color: #1e5a6b;
+    }
+
+    .section {
+      padding: 3rem 0;
+      border-bottom: 1px solid #e0edf2;
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    /* Buttons & links */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--overlay3g2); /*#1A4D5F*/
+      color: var(--text2);;
+      padding: 10px 20px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid #1A4D5F;
+      color: #1A4D5F;
+    }
+
+    .btn-outline:hover {
+      background: #1A4D5F;
+      color: white;
+    }
+
+    .btn:hover {
+      background: #0f3b48;
+      transform: translateY(-2px);
+    }
+
+    /* Header / hero */
+    .hero {
+      padding: 4rem 0 2rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .hero-content {
+      flex: 2;
+    }
+
+    .hero-tagline {
+      font-size: 1.3rem;
+      color: #2c6e5c;
+      font-weight: 500;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin: 1.2rem 0;
+      color: rgb(58, 107, 120);
+    }
+
+    .hero-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-avatar {
+      /* background: linear-gradient(135deg, #cbe5e0, #b7cfd0); */
+      background: linear-gradient(135deg, var(--overlay2g), var(--overlay1g));
+
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      box-shadow: 0 20px 30px -15px rgba(0,0,0,0.1);
+    }
+
+    /* cards & timeline */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0;
+    }
+
+    .skill-card {
+      background: white;
+      padding: 1.4rem;
+      border-radius: 24px;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.03);
+      border: 1px solid #e2edf2;
+      transition: all 0.2s;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-4px);
+      border-color: #9bc9bf;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .timeline-item {
+      background: white;
+      border-radius: 20px;
+      padding: 1.2rem 1.5rem;
+      border-left: 5px solid #2C7A5E;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .timeline-date {
+      font-weight: 700;
+      color: #2C7A5E;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .timeline-title {
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin: 0.25rem 0 0.3rem;
+    }
+
+    .interests-badge {
+      display: inline-block;
+      background: #e0f0ec;
+      padding: 6px 14px;
+      border-radius: 40px;
+      margin: 0.25rem 0.5rem 0.25rem 0;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #155f4b;
+    }
+
+    /* projects & tools */
+    .project {
+      background: white;
+      border-radius: 20px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #dee9ed;
+    }
+
+    .footer {
+      background: #e4f0ec;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 2rem;
+      border-radius: 40px 40px 0 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 700px) {
+      h1 { font-size: 2.3rem; }
+      .hero { flex-direction: column; text-align: center; }
+      .hero-content { text-align: center; }
+      .hero-meta { justify-content: center; }
+      h2 { border-left: none; border-bottom: 3px solid #2C7A5E; padding-bottom: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dynamically loaded via navbar.html -->
+<div id="navbar"></div>
+
+
+<div class="container">
+  <!-- HERO SECTION: past, present, human -->
+  <div class="hero">
+    <div class="hero-content">
+      <h1>Mark Sheard</h1>
+      <div class="hero-tagline">🔧 Curious by nature · Helpful by choice</div>
+      <p style="max-width: 550px; margin: 1rem 0;">After 26 years in IT, I still get excited by solving real people’s problems — whether it’s debugging a database, automating a boring task, or walking a colleague through a fix. I blend deep technical roots (Windows/Linux, SQL, scripting) with genuine care for the person behind the ticket.</p>
+      <div class="hero-meta">
+        <span>📍 UK / Zimbabwe roots</span>
+        <span>🚴‍♂️ Cycling & nature</span>
+        <span>🎣 Fishing & excursions</span>
+        <span>🫱🏽‍🫲🏼 Support engineer</span>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 1rem;">
+        <a href="#timeline" class="btn">📅 Explore career journey</a>
+        <a href="#projects" class="btn btn-outline">🛠️ Side tools & projects</a>
+      </div>
+    </div>
+    <div class="hero-avatar">
+      <span>🌿🚲</span>
+    </div>
+  </div>
+
+  <!-- PHILOSOPHY / CORE -->
+  <div class="section">
+    <h2>⚙️ What drives me</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;">
+      <p style="max-width: 600px; font-size: 1.1rem;">I’m not the type to sit behind a wall of tickets. I thrive on <strong>curiosity and service</strong> — understanding how systems break, then empowering others with fixes. My years across Zimbabwe → UK → Hungary shaped my adaptability, and my love for nature keeps me grounded. Support isn’t just a job; it’s my way of helping people win.</p>
+      <div style="background:var(--overlay3g1); padding: 1rem 1.5rem; border-radius: 28px;">
+        <p style="font-weight: 700;">💡 “Help first, technology second.”</p>
+        <p style="font-size: 0.9rem;">— Mark’s daily mantra</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORE SKILLS (technical + human) -->
+  <div class="section">
+    <h2>🧰 Core expertise</h2>
+    <div class="card-grid">
+      <div class="skill-card"><strong>🖥️ Windows ecosystem</strong><br>Server 2003–2022, Client 3.11→11, IIS, Terminal Services</div>
+      <div class="skill-card"><strong>🐧 Unix/Linux & scripting</strong><br>Bash, PowerShell, VBS, SQL, automation & cross-platform support</div>
+      <div class="skill-card"><strong>🗄️ Databases</strong><br>MS SQL Server, Oracle 10g–12c, PostgreSQL V15, administration & tuning</div>
+      <div class="skill-card"><strong>🌐 Web & modern tools</strong><br>HTML/CSS/JS, Node.js, Docker, Express, AWS cloud practitioner</div>
+      <div class="skill-card"><strong>📡 Networks & infrastructure</strong><br>LAN/WAN, Cisco basics, VMware, VirtualBox, remote tools (TeamViewer, Webex)</div>
+      <div class="skill-card"><strong>🤝 Human layer</strong><br>Mentoring junior engineers, translating tech for non‑techies, knowledge base creation, ITIL processes</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE: career + life (past → present, Zimbabwe roots highlighted) -->
+  <div class="section" id="timeline">
+    <h2>📌 Timeline · Life & career (past → present)</h2>
+    <div class="timeline">
+      <div class="timeline-item"><div class="timeline-date">📍 Zimbabwe · 1977–1990s</div><div class="timeline-title">🌿 Roots: nature, cycling, fishing & O’Levels</div><div>Growing up in Zimbabwe shaped resilience, love for the wild, and a curiosity that never faded. Cambridge O’Levels (English, Maths, Science, Art).</div></div>
+      <div class="timeline-item"><div class="timeline-date">1995 – 2005 · UK</div><div class="timeline-title">📡 Early IT years: Computacenter & Deloitte training</div><div>Service desk, 2nd line support, dealer systems (Jaguar EPC). Network essentials, NT4 administration — first taste of solving real user problems.</div></div>
+      <div class="timeline-item"><div class="timeline-date">2005 – 2015 · Hungary</div><div class="timeline-title">🌍 Transcom: Global Systems Senior Support</div><div>Longest chapter — Nagios monitoring setup, custom Java app for Oracle data, VBS/SQL automation. Supported 90+ call centres globally.</div></div>
+      <div class="timeline-item"><div class="timeline-date">2015 – 2020 · Hungary</div><div class="timeline-title">🔧 Epicor: Technical Support Consultant</div><div>Oracle, MS SQL Server, Unix AIX, IIS web apps. Deep customer support and performance reviews for Tropos ERP.</div></div>
+      <div class="timeline-item"><div class="timeline-date">2020 – 2021 · UK</div><div class="timeline-title">📊 Interserve: Application Support Analyst</div><div>ERP support, HP-UX backups, SSIS packages, Informix + SQL Server reporting.</div></div>
+      <div class="timeline-item"><div class="timeline-date">2022 · UK</div><div class="timeline-title">☁️ BeyondTrust: Technical Support Engineer</div><div>Azure cloud, ServiceNow, SQL for Password Safe, ITIL, documentation & knowledge sharing.</div></div>
+      <div class="timeline-item"><div class="timeline-date">2023 – 2024 · Self-development intensive</div><div class="timeline-title">📚 Curiosity deep dive: Web dev, Docker, AWS, Kubernetes</div><div>After relocation challenge, doubled down on learning: HTML/CSS/JS, Node.js, Docker, AWS Cloud Practitioner, GitHub Actions & CI/CD workflows.</div></div>
+      <div class="timeline-item"><div class="timeline-date">2024 – 2026 · Milestone Systems (UK)</div><div class="timeline-title">🤝 Support Engineer (2nd/3rd line)</div><div>Built internal tools (PowerShell backup scripts, CSV2HTML + chart.js enhancements), knowledge articles, cross-team collaboration. Helping partners and customers daily.</div></div>
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENTS & PERSONAL PROJECTS (showing "helping" spirit) -->
+  <div class="section" id="projects">
+    <h2>🛠️ Projects & tools built to help others</h2>
+    <div class="project"><strong>📊 CSV2HTML + chart.js reporting</strong> (Milestone Systems) — Enhanced report visual design, added interactive charts, making data clear for support colleagues and stakeholders.<br><span style="font-size:0.8rem; color:#2e7d64;">#PowerShell #chartjs #UXforSupport</span></div>
+    <div class="project"><strong>💾 pg_basebackup progress script</strong> — PowerShell wrapper that shows backup/restore progress, simplifying Postgres operations for the whole support team.<br><span style="font-size:0.8rem; color:#2e7d64;">#PostgreSQL #automation #teamtools</span></div>
+    <div class="project"><strong>🧩 Nagios monitoring solution</strong> (Transcom 2009–2010) — Planned & deployed Ubuntu-based monitoring for eWFM servers, proactive alerts, reduced downtime.<br><span style="font-size:0.8rem; color:#2e7d64;">#Linux #Nagios #proactive</span></div>
+    <div class="project"><strong>📱 Java SE applet (Oracle DB integration)</strong> — Built for eWFM users to insert/validate data into Oracle DB, automating manual entry.<br><span style="font-size:0.8rem; color:#2e7d64;">#Java #JDBC #SQL</span></div>
+    <div class="project"><strong>🌐 Self-study Web Dev & frontendmentor.io</strong> — <a href="https://www.frontendmentor.io/profile/GHNetCode" target="_blank" style="color:#1A4D5F;">Frontend Mentor profile</a> — HTML/CSS/JS, responsive challenges, Node.js backend experiments.<br><span style="font-size:0.8rem; color:#2e7d64;">#webdev #alwayslearning</span></div>
+    <div class="project"><strong>☁️ AWS Cloud Practitioner (2024)</strong> — self-driven certification, learning CI/CD workflows with Docker, GitHub Actions, EC2.</div>
+  </div>
+
+  <!-- LIFE & NATURE (balancing the portfolio) -->
+  <div class="section">
+    <h2>🌄 Beyond the terminal · Nature & curiosity</h2>
+    <p>When I’m not debugging or scripting, you’ll find me cycling through backroads, fly fishing on quiet rivers, or planning the next walking excursion. Growing up in Zimbabwe gave me a deep appreciation for the outdoors — it’s where I recharge and stay curious. I bring that same patient observation to troubleshooting complex systems.</p>
+    <div style="margin-top: 1rem;">
+      <span class="interests-badge">🚴‍♂️ Road & trail cycling</span>
+      <span class="interests-badge">🎣 Fly fishing & coarse fishing</span>
+      <span class="interests-badge">🥾 Long-distance walking / hiking</span>
+      <span class="interests-badge">📚 Learning new languages (tech & human)</span>
+      <span class="interests-badge">🛠️ Building internal tools to ease team workload</span>
+    </div>
+  </div>
+
+  <!-- CERTIFICATIONS & CONTINUOUS LEARNING -->
+  <div class="section">
+    <h2>📖 Lifelong learning · Courses & self-study</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+      <div style="flex:1; min-width: 180px; background:white; border-radius: 18px; padding: 1rem;">
+        <strong>🎓 Certifications</strong><br>
+        NT4.0 Server / Networking Essentials / A+<br>
+        Azure Service Fabric (2019)<br>
+        Oracle Training (2019)<br>
+        AWS Cloud Practitioner (2024)
+      </div>
+      <div style="flex:2; min-width: 200px; background:white; border-radius: 18px; padding: 1rem;">
+        <strong>🧠 Self-study deep dives</strong><br>
+        CCNA (77% attempt, 2005) · Java, JDBC, SQL · Python for data science · C++ / WIN32API · Web development (Full stack: Node.js, Express, Docker, Kubernetes, Helm) · GitHub Actions & CI/CD
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT Mark IS LOOKING FOR (next role) -->
+  <div class="section">
+    <h2>🎯 The next chapter I’m looking for</h2>
+    <div style="background:#eef4f2; padding: 1.6rem; border-radius: 28px;">
+      <p style="font-size: 1.05rem;">✨ A support engineer / technical support consultant role where I can:</p>
+      <ul style="margin: 1rem 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <li>✅ Solve complex technical issues with empathy and clarity</li>
+        <li>✅ Build small internal tools (scripts, web helpers) that empower teammates</li>
+        <li>✅ Keep learning — cloud, containers, automation — and share knowledge</li>
+        <li>✅ Work with experienced teams that value honest communication, loyalty, and work-life balance (so I can still ride my bike and fish on weekends)</li>
+      </ul>
+      <p style="margin-top: 1.2rem;"><strong>🌍 Open to hybrid/remote roles in UK, or EU-friendly contracts.</strong></p>
+    </div>
+  </div>
+
+  <!-- downloadable CV / contact (symbolic) -->
+  <div class="section" style="text-align: center; border-bottom: none;">
+    <h2>📄 Complete CV & connect</h2>
+    <p style="margin-bottom: 1.5rem;">Want to see the full timeline or talk about support engineering, automation, or the best fishing spots in the UK? Let’s connect.</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+      <!-- dummy download simulation (since file is provided contextually) -->
+      <a href="#" class="btn" id="downloadCvBtn" style="background:#2C7A5E;">📄 Download CV (PDF / DOC)</a>
+      <a href="https://www.frontendmentor.io/profile/GHNetCode" class="btn btn-outline" target="_blank">🌐 Frontend Mentor Profile</a>
+    </div>
+    <p style="font-size: 0.8rem; margin-top: 1.5rem; color:#4f7b6e;">* Curious by nature, helpful by choice — Mark Sheards, 2026</p>
+  </div>
+</div>
+
+<div class="footer">
+  <span>🇿🇼 Zimbabwe roots · 🇬🇧 UK based · 🌍 Global support mindset · 🚲 Nature fuels the code</span>
+</div>
+
+<script>
+  // Simple interactive download simulation – CV is embedded in conversation, but we simulate a friendly message
+  const downloadBtn = document.getElementById('downloadCvBtn');
+  if(downloadBtn) {
+    downloadBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Since this is a personal portfolio from the CV data, we create a downloadable .txt or .html version of the CV formatted summary
+      const cvContent = `Mark Sheards - Full CV Summary\n\nBirth: 1st October 1977\nDriving Licence: B\n\n26+ years IT industry: Microsoft, Unix/Linux, IP routed networks, databases, scripting, support.\n\nCareer highlights:\n- Milestone Systems (2024-2026): Support Engineer, internal tools, CSV2HTML, PowerShell\n- BeyondTrust (2022): Azure, ServiceNow, SQL\n- Epicor (2015-2020): Oracle, MSSQL, AIX\n- Transcom (2005-2015): Nagios, Java app, global network support\n- Interserve, Computacenter earlier\n\nSkills: Windows Server, Linux, SQL, PowerShell, Bash, Docker, AWS, Web Dev, ITIL.\n\nEducation: Cambridge O'Levels, City & Guilds, ongoing self-study (AWS, Kubernetes, web).\n\nPersonal: Cycling, fishing, walking, nature lover. Strong helper mentality.\n\nFull details available upon request.`;
+      const blob = new Blob([cvContent], {type: 'text/plain'});
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'Mark_Sheards_CV_summary.txt';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    });
+  }
+</script>
+<script src="script.js"></script>
+</body>
+</html>
