@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="style.css"/>
     <style>
         :root {
-            --bg: #0b0f17;
-            --bg-alt: #121826;
+            --bgpf: #000000;
+            --bg-alt: #0d121b;
             --card: rgba(255,255,255,0.04);
             --text: #f5f7fb;
             --muted: #a7b1c2;
@@ -53,8 +53,8 @@
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(circle at top left, rgba(87,181,255,0.08), transparent 30%),
-                radial-gradient(circle at bottom right, rgba(140,92,255,0.10), transparent 30%);
+                radial-gradient(circle at top left, rgba(110, 191, 253, 0.084), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(121, 121, 121, 0.1), transparent 30%);
             pointer-events: none;
             z-index: -1;
         }
@@ -73,9 +73,9 @@
             max-width: 1200px;
         }
 
-        .hero {
-            /* text-align: center; */
-        }
+        /* .hero {
+             text-align: center;
+        } */
 
  
 
@@ -99,15 +99,18 @@
 
         .scroll-indicator {
             position: absolute;
-            bottom: 40px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             color: var(--muted);
             font-size: 0.95rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            animation: float 2.5s infinite ease-in-out;
+            /* animation: float 5.5s infinite ease-in-out; */
+            animation: float 2.5s  ease-in-out;
+
         }
+        
         .scroll-indicator.hidden {
             opacity: 0;
             transform: translate(-50%, 20px);
@@ -137,10 +140,10 @@
             gap: 2rem;
         }
 
-        .intro-grid {
-            /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            align-items: center; */
-        }
+         /* .intro-grid {
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            align-items: center; 
+        }*/
 
         .intro-grid p,
         .timeline p,
@@ -150,6 +153,7 @@
         }
         .intro-grid h2{
           /* text-align: center; */
+          font-size: clamp(2rem, 8vw, 1rem);
           margin-top: 1rem;
           margin-bottom: 4.5rem;
         }
@@ -316,11 +320,13 @@
             <h1>Mark's Portfolio</h1>
             <p>
                 Hello there 👋,  <br><br>
-                I’m Mark — a <span class="highlight">Support Engineer</span> and web developer passionate about creating helpful experiences, solving problems, and building communities through technology.
-                Whether it’s troubleshooting issues, improving workflows with automation, or developing web applications,
-                I enjoy turning challenges into meaningful solutions.
+                I’m Mark — a <span class="highlight">Support Engineer</span> and developer passionate 
+                about solving problems, collaborating and empowering others. 
+                Whether it’s troubleshooting issues, improving 
+                workflows with automation, or developing web applications,
+                I overall enjoy working with others providing fixes and turning the challenges into meaningful solutions.
                 <br><br>
-                Thanks for visiting, and I hope you enjoy being part of the journey ahead.
+                Thank you for visiting and have a pleasant day!
             </p>
         </div>
 
@@ -335,26 +341,26 @@
             <div>
                 <h2 class="section-title">About Mark</h2>
                 <p>
-                    With more than <span class="highlight">26 years of IT experience</span> across technical support,
-                    systems troubleshooting, and front-end development, Mark focuses on building technology that feels approachable,
-                    reliable, and human.
-                    His work combines technical thinking with creative problem solving.
+                    With more than <span class="highlight">26 years of IT experience</span> in the IT industry across 
+                    technical support, systems troubleshooting, and recently front-end development, I focus on building 
+                    technology that feels approachable and reliable. My work combines technical thinking 
+                    with creative problem solving.
                 </p>
 
                 <p style="margin-top: 1.5rem;">
-                    Originally raised in <span class="highlight">Zimbabwe</span> on a 2000 acre farm,
-                    Mark spent his early years surrounded by hands-on problem solving, independence, and creativity before moving to the
-                    <span class="highlight">United Kingdom in the Summer of 1999</span>.
-                    Those experiences continue to shape the grounded and practical approach he brings into technology today.
+                    Raised in <span class="highlight">Zimbabwe</span> on a 2000 acre farm, where I spent my former 
+                    schooling and college years surrounded by hands-on problem solving, independence, and creativity 
+                    i then moved to the <span class="highlight">United Kingdom</span> in the Spring of 1999.
+                    Those experiences continue to shape the grounded and practical approach I bring into technology today.
                 </p>
             </div>
 
             <div>
                 <p>
-                    From automation scripts and responsive websites to user support workflows,
-                    each project is built with attention to performance, accessibility, and user experience.
-                    The goal is always the same:
-                    <span class="highlight">make technology simpler and more meaningful.</span>
+                    From automation and responsive websites to user support workflows, each project is built with attention 
+                    to detail, performance and accessibility for the best user experience.
+                    <!-- The goal is always the same:
+                    <span class="highlight">make technology simpler and more meaningful.</span> -->
                 </p>
             </div>
         </div>
@@ -376,7 +382,7 @@
                 <div class="skill-box">
                     <h3>Web Development</h3>
                     <p>
-                        Building responsive interfaces using modern HTML, CSS, JavaScript, and dynamic UI concepts.
+                        Building responsive interfaces using modern HTML, CSS, JavaScript, NodeJS and dynamic UI concepts.
                     </p>
                 </div>
 
@@ -482,18 +488,18 @@
         // ThemeSlider compatibility
         // Works with existing theme toggles by checking body class changes.
 
-        const observerTheme = new MutationObserver(() => {
-            if(document.body.classList.contains('light-theme')) {
-                console.log('Light Theme Enabled');
-            } else {
-                console.log('Dark Theme Enabled');
-            }
-        });
+        // const observerTheme = new MutationObserver(() => {
+        //     if(document.body.classList.contains('light-theme')) {
+        //         console.log('Light Theme Enabled');
+        //     } else {
+        //         console.log('Dark Theme Enabled');
+        //     }
+        // });
 
-        observerTheme.observe(document.body, {
-            attributes: true,
-            attributeFilter: ['class']
-        });
+        // observerTheme.observe(document.body, {
+        //     attributes: true,
+        //     attributeFilter: ['class']
+        // });
     </script>
     
 
