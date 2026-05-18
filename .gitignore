@@ -148,3 +148,5 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 DEV/indexDevUnderConstruction.html
 DEV/gpt/indexgpt.html
+DEV/styleAll.css
+DEV/portfolioOLD.html
