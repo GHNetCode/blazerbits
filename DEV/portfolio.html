@@ -48,16 +48,15 @@
             transition: background 0.4s ease, color 0.4s ease;
         }
 
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background:
-                radial-gradient(circle at top left, rgba(110, 191, 253, 0.084), transparent 30%),
-                radial-gradient(circle at bottom right, rgba(121, 121, 121, 0.1), transparent 30%);
-            pointer-events: none;
-            z-index: -1;
-        }
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:radial-gradient(circle at top left,  rgba(2, 113, 197, 0.03),  rgba(87,181,255,0)  150%);
+    pointer-events: none;
+    z-index: -1;
+    will-change: transform;
+}
 
         section {
             min-height: 100vh;
@@ -89,7 +88,7 @@
         }
 
         .hero p {
-            max-width: 850px;
+            max-width: 880px;
             margin: 0 auto;
             color: var(--muted);
             font-size: 1.15rem;
@@ -320,13 +319,16 @@
             <h1>Mark's Portfolio</h1>
             <p>
                 Hello there 👋,  <br><br>
-                I’m Mark — a <span class="highlight">Support Engineer</span> and developer passionate 
-                about solving problems, collaborating and empowering others. 
-                Whether it’s troubleshooting issues, improving 
-                workflows with automation, or developing web applications,
-                I overall enjoy working with others providing fixes and turning the challenges into meaningful solutions.
-                <br><br>
-                Thank you for visiting and have a pleasant day!
+                I’m Mark, a <span class="highlight">Support Engineer</span> and developer who sees 
+                technology a bit like a puzzle. Always curious about how pieces fit, why 
+                things break, and how they can be put back together in a better way.
+            </p>
+            <p style="margin-top: 1.0rem;">
+                From troubleshooting and automation to building web apps I enjoy the full process,
+                especially with those who are part of it. Collaboration isn't just 
+                how I work, it's what makes the work all worth while.
+                <!-- <br><br>
+                Thank you for visiting and have a pleasant day! -->
             </p>
         </div>
 
@@ -341,24 +343,26 @@
             <div>
                 <h2 class="section-title">About Mark</h2>
                 <p>
+                    
+                    Raised in <span class="highlight">Zimbabwe</span> on a 2000 acre farm, where my schooling, early career, 
+                    and formative years were built around hands-on problem solving, independence, and creativity 
+                    i then moved to the <span class="highlight">United Kingdom</span> in Spring of 1999.
+                    Those experiences continue to shape the grounded and practical approach I bring into technology today.
+
                     With more than <span class="highlight">26 years of IT experience</span> in the IT industry across 
-                    technical support, systems troubleshooting, and recently front-end development, I focus on building 
-                    technology that feels approachable and reliable. My work combines technical thinking 
+                    Technical Support, Systems Troubleshooting, and recently Front-end Development, my work combines technical thinking 
                     with creative problem solving.
                 </p>
 
-                <p style="margin-top: 1.5rem;">
-                    Raised in <span class="highlight">Zimbabwe</span> on a 2000 acre farm, where I spent my former 
-                    schooling and college years surrounded by hands-on problem solving, independence, and creativity 
-                    i then moved to the <span class="highlight">United Kingdom</span> in the Spring of 1999.
-                    Those experiences continue to shape the grounded and practical approach I bring into technology today.
+                <p style="margin-top: 1.0rem;">
+From automation and responsive websites to user support workflows, each project is built with attention 
+                    to detail, performance and accessibility for the best user experience.
                 </p>
             </div>
 
             <div>
                 <p>
-                    From automation and responsive websites to user support workflows, each project is built with attention 
-                    to detail, performance and accessibility for the best user experience.
+                    
                 </p>
             </div>
         </div>
@@ -504,20 +508,3 @@
 </body>
 </html>
 
-<!-- 
-## Notes
-
-* The page is designed with a cinematic slow-scroll portfolio experience.
-* Scroll reveals gradually introduce sections as the user moves down the page.
-* Compatible with dark/light ThemeSlider systems using the `light-theme` body class.
-* Fully responsive for desktop, tablet, and mobile.
-* CV download is already connected to:
-
-  * [https://blazerbits.uk/DEV/temp/CVAIMay2026.pdf](https://blazerbits.uk/DEV/temp/CVAIMay2026.pdf)
-* Back button links to:
-
-  * [https://blazerbits.uk/DEV/index.html](https://blazerbits.uk/DEV/index.html)
-* Save this as:
-
-  * `portfolio.html`
-* Upload beside your existing website files. -->
