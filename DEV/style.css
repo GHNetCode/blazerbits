@@ -174,11 +174,16 @@ body {
   position: relative;
   overflow: hidden;
 
-  /* Base dark gradient */
-  background: radial-gradient(circle at 50% 40%, rgba(60, 80, 120, 0.25), transparent 60%),
-              radial-gradient(circle at 80% 70%, rgba(120, 60, 160, 0.15), transparent 70%),
-              linear-gradient(180deg, #050505 0%, #000000 100%);
-}
+  /* Base dark gradient  -- Fix background to work with themeSlider, then check pf..*/
+  background: 
+  radial-gradient(circle at 50% 40%, rgba(60, 80, 120, 0.25), transparent 60%),
+  radial-gradient(circle at 80% 70%, rgba(120, 60, 160, 0.15), transparent 70%)
+              ,
+              linear-gradient(180deg, #050505 0%, #000000 100%)
+              
+              ;
+
+            }
 .landing::before {
   pointer-events: none;   /* 👈 THIS FIXES YOUR INTERACTIONS */ 
   content: "";
