@@ -246,6 +246,16 @@ body {
     opacity: 0.8;
   }
 
+  
+#attribution { 
+  display: flexbox;
+  position: relative;
+  margin-top:-20px/*move onto Landing Page*/;
+  font-size: 14px; 
+  text-align: center;
+  color: rgba(74, 92, 130, 0.466);
+}
+
 
 /* Mobile */
  /* @media (max-width: 768px) { */
