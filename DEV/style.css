@@ -248,11 +248,13 @@ body {
 
   
 #attribution { 
-  display: flexbox;
+  /* display: flexbox; */
   position: relative;
+  text-align: center;
   margin-top:-20px/*move onto Landing Page*/;
   font-size: 14px; 
-  text-align: center;
+  
+
   color: rgba(74, 92, 130, 0.466);
 }
 
