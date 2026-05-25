@@ -94,9 +94,11 @@ function applyTheme(value) {
   const bg = interpolateColor([0,0,0], [245,245,245], lightness);
   const text = interpolateColor([255,255,255], [20,20,20], lightness);
   const accent = interpolateColor([181, 210, 254 ], [38, 42, 44], lightness);
+  const accentBtn = interpolateColor([63, 73, 87 ], [27, 33, 42], lightness);
   root.style.setProperty("--bg", `rgb(${bg})`);
   root.style.setProperty("--text", `rgb(${text})`);
   root.style.setProperty("--accent", `rgb(${accent})`);
+  root.style.setProperty("--accentBtn", `rgb(${accentBtn})`);
     // Set theme attribute on body
   if (lightness > 0.5) {
     document.body.setAttribute('data-theme', 'dark');

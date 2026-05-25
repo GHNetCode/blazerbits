@@ -14,7 +14,8 @@
             --muted: #a7b1c2;
             
             /* --accent: rgb(181, 210, 254); */
-            --accent-glow: rgba(87, 182, 255, 0.132);
+            --accentBtn: rgb(63, 73, 87);
+            --accent-glow: rgba(87, 182, 255, 0.05);
             --border: rgba(255,255,255,0.08);
             --shadow: 0 20px 50px rgba(0,0,0,0.45);
         }
@@ -28,7 +29,7 @@
             
             /* --accent: rgb(38, 42, 44); */
 
-            --accent-glow: rgba(0,102,255,0.18);
+            --accent-glow: rgba(0,102,255,0.0);
             --border: rgba(0,0,0,0.08);
             --shadow: 0 20px 50px rgba(0,0,0,0.08);
         }
@@ -245,13 +246,14 @@ body::before {
         }
 
         .btn-primary {
-            background: var(--accent);
-            color: #a6b5b9;
+            background: var(--accentBtn);
+            color: var(--text);
             box-shadow: 0 12px 30px var(--accent-glow);
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover, .btn-secondary:hover {
             transform: translateY(-4px);
+            color: var(--accent);
         }
 
         .btn-secondary {
@@ -259,11 +261,7 @@ body::before {
             color: var(--text);
             background: transparent;
         }
-
-        .btn-secondary:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
+ 
 
         .fade-section {
             opacity: 0;
