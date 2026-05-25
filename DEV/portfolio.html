@@ -12,7 +12,8 @@
             --card: rgba(255,255,255,0.04);
             --text: #f5f7fb;
             --muted: #a7b1c2;
-            --accent: #216192;
+            
+            /* --accent: rgb(181, 210, 254); */
             --accent-glow: rgba(87, 182, 255, 0.132);
             --border: rgba(255,255,255,0.08);
             --shadow: 0 20px 50px rgba(0,0,0,0.45);
@@ -24,7 +25,9 @@
             --card: rgba(255,255,255,0.75);
             --text: #121826;
             --muted: #586174;
-            --accent: #0066ff;
+            
+            /* --accent: rgb(38, 42, 44); */
+
             --accent-glow: rgba(0,102,255,0.18);
             --border: rgba(0,0,0,0.08);
             --shadow: 0 20px 50px rgba(0,0,0,0.08);
@@ -42,7 +45,7 @@
 
         body {
             font-family: Inter, Segoe UI, sans-serif;
-            background: var(--bg);
+            background: var(--bg);/*    #12131E*/
             color: var(--text);
             overflow-x: hidden;
             transition: background 0.4s ease, color 0.4s ease;
@@ -52,7 +55,10 @@ body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background:radial-gradient(circle at top left,  rgba(2, 113, 197, 0.03),  rgba(87,181,255,0)  150%);
+    background:radial-gradient(circle at top left,  rgba(35, 35, 37, 0.99),  rgba(5, 7, 25, 0.99)  150%);
+    /* background:radial-gradient(circle at top left,  rgba(2, 113, 197, 0.03),  rgba(87,181,255,0)  150%); */
+      /* background: rgb(18, 19, 30,0.99); */
+      /* var(--bg)   #12131E*/
     pointer-events: none;
     z-index: -1;
     will-change: transform;
@@ -90,7 +96,7 @@ body::before {
         .hero p {
             max-width: 880px;
             margin: 0 auto;
-            color: var(--muted);
+            /* color: var(--muted); */ /*Disabled to allow theme to work for P tags..*/
             font-size: 1.15rem;
             line-height: 1.9;
             animation: fadeUp 1.8s ease forwards;
@@ -101,7 +107,7 @@ body::before {
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            color: var(--muted);
+            /* color: var(--muted); */
             font-size: 0.95rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
@@ -122,7 +128,7 @@ body::before {
             line-height: 1.1;
         }
 
-        .glass-card {
+        .glass-card p {
             background: var(--card);
             border: 1px solid var(--border);
             backdrop-filter: blur(14px);
@@ -146,7 +152,8 @@ body::before {
         .intro-grid p,
         .timeline p,
         .skills-grid p {
-            color: var(--muted);
+            color: var(--text);
+            /* color: var(--muted); */
                         font-size: 1.15rem;
             line-height: 1.9;
         }
@@ -364,11 +371,6 @@ body::before {
                 </p>
             </div>
 
-            <div>
-                <p>
-                    
-                </p>
-            </div>
         </div>
     </section>
 
@@ -480,7 +482,7 @@ body::before {
             observer.observe(section);
         });
 
-                // Hide scroll indicator after scrolling
+        // Hide "Scroll to Explore ↓" indicator after scrolling
         const scrollIndicator = document.querySelector('.scroll-indicator');
 
         window.addEventListener('scroll', () => {
@@ -494,18 +496,17 @@ body::before {
         // ThemeSlider compatibility
         // Works with existing theme toggles by checking body class changes.
 
-        // const observerTheme = new MutationObserver(() => {
-        //     if(document.body.classList.contains('light-theme')) {
-        //         console.log('Light Theme Enabled');
-        //     } else {
-        //         console.log('Dark Theme Enabled');
-        //     }
-        // });
-
-        // observerTheme.observe(document.body, {
-        //     attributes: true,
-        //     attributeFilter: ['class']
-        // });
+         const observerTheme = new MutationObserver(() => {
+             if(document.body.classList.contains('light-theme')) {
+                 console.log('Light Theme Enabled');
+             } else {
+                 console.log('Dark Theme Enabled');
+             }
+         })
+         observerTheme.observe(document.body, {
+             attributes: true,
+             attributeFilter: ['class']
+         });
     </script>
     
 
