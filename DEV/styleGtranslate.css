@@ -18,7 +18,7 @@
   box-shadow: none !important;
 }
 
-/* Hover effect - only opacity changes, no background */
+/* Hover effect - only opacity changes, no background  */
 .gtranslate_wrapper:hover {
   opacity: 0.95;
 }

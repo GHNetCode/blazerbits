@@ -1,7 +1,7 @@
 /* DROPDOWN CONTAINER */
 .dropdown {
   position: absolute;
-  top: 100%;   /* 🔥 exact bottom of nav item */
+  top: 100%;   /* 🔥 exact bottom of nav item  */
   margin-top: 17px; /* 👈 creates space visually */
   left: -1px;
   transform: translateX(-10%);

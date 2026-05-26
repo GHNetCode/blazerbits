@@ -87,7 +87,7 @@ const root = document.documentElement;
 
 
 
-//---------------------------------------
+//--------------------------------------- 
 /* APPLY THEME Start*/
 function applyTheme(value) {
   const lightness = value / 100;
