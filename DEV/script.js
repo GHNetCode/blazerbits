@@ -91,7 +91,7 @@ const root = document.documentElement;
 /* APPLY THEME Start*/
 function applyTheme(value) {
   const lightness = value / 100;
-  const bg = interpolateColor([0,0,0], [245,245,245], lightness);
+  const bg = interpolateColor([255, 10, 10], [255, 10, 10], lightness);//0,0,0 - 245,245,245 
   const text = interpolateColor([255,255,255], [20,20,20], lightness);
   const accent = interpolateColor([181, 210, 254 ], [38, 42, 44], lightness);
   const accentBtn = interpolateColor([63, 73, 87 ], [27, 33, 42], lightness);
