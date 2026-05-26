@@ -21,7 +21,9 @@
         }
 
         body.light-theme {
-            --bg: #f3f6fb;
+            --bg: #ff0a0a;
+            /* --bg: #f3f6fb; */
+
             --bg-alt: #ffffff;
             --card: rgba(255,255,255,0.75);
             --text: #121826;
@@ -467,21 +469,23 @@ body::before {
     <script>
       
         // Smooth reveal animations while scrolling
-//       const sections = document.querySelectorAll('.fade-section');
-//
-//       const observer = new IntersectionObserver((entries) => {
-//           entries.forEach(entry => {
-//               if (entry.isIntersecting) {
-//                   entry.target.classList.add('visible');
-//               }
-//           });
-//       }, {
-//           threshold: 0.2
-//       });
-//
-//       sections.forEach(section => {
-//           observer.observe(section);
-//       });
+       const sections = document.querySelectorAll('.fade-section');
+
+       const observer = new IntersectionObserver((entries) => {
+           entries.forEach(entry => {
+               if (entry.isIntersecting) {
+                   entry.target.classList.add('visible');
+               }
+           });
+       }, {
+        //    threshold: 0.2
+        threshold: 0,        // trigger as soon as 1px enters view
+        rootMargin: '0px 0px -50px 0px'  // but not until 50px inside viewport
+       });
+
+       sections.forEach(section => {
+           observer.observe(section);
+       });
 
         // Hide "Scroll to Explore ↓" indicator after scrolling
         const scrollIndicator = document.querySelector('.scroll-indicator');
