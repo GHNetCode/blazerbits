@@ -467,21 +467,21 @@ body::before {
     <script>
       
         // Smooth reveal animations while scrolling
-        const sections = document.querySelectorAll('.fade-section');
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, {
-            threshold: 0.2
-        });
-
-        sections.forEach(section => {
-            observer.observe(section);
-        });
+//       const sections = document.querySelectorAll('.fade-section');
+//
+//       const observer = new IntersectionObserver((entries) => {
+//           entries.forEach(entry => {
+//               if (entry.isIntersecting) {
+//                   entry.target.classList.add('visible');
+//               }
+//           });
+//       }, {
+//           threshold: 0.2
+//       });
+//
+//       sections.forEach(section => {
+//           observer.observe(section);
+//       });
 
         // Hide "Scroll to Explore ↓" indicator after scrolling
         const scrollIndicator = document.querySelector('.scroll-indicator');
