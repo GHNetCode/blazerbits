@@ -21,12 +21,12 @@
         }
 
         body.light-theme {
-            --bg: #dd00ff;
-            /* --bg: #f3f6fb; */ 
+            /* --bg: #f3f6fb; */
+            /* --bg: rgb(255, 255, 0); */
 
             
-            --bg-alt: #00ff08;/*#ffffff */
-            --card: rgba(255,255,255, 0.75);/*red 255, 0, 0, 0.75 -- rgba(255,255,255,0.75)*/
+            --bg-alt: #ffffff;/*#ffffff */
+            --card: rgba(255,255,255, 0.75);/*rgba(255,255,255,0.75)*/
             --text: #121826;
             --muted: #586174;/*#586174*/
             
@@ -47,19 +47,27 @@
             scroll-behavior: smooth;
         }
 
-body {
-    font-family: Inter, Segoe UI, sans-serif;
-    color: var(--text);
-    overflow-x: hidden;
-    overscroll-behavior: none;
-    transition: background 0.4s ease, color 0.4s ease;
-    
-    /* Replace body::before with this */
-    background: radial-gradient(circle at top left, rgba(35, 35, 37, 0.99), rgba(5, 7, 25, 0.99) 150%);
-    background-attachment: fixed;
+        body {
+            font-family: Inter, Segoe UI, sans-serif;
+            background: var(--bg);/*    #12131E*/
+            color: var(--text);
+            overflow-x: hidden;
+            transition: background 0.4s ease, color 0.4s ease;
+            overscroll-behavior: none;
+        }
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:radial-gradient(circle at top left,  rgba(35, 35, 37, 0.99),  rgba(5, 7, 25, 0.99)  150%);
+    /* background:radial-gradient(circle at top left,  rgba(2, 113, 197, 0.03),  rgba(87,181,255,0)  150%); */
+      /* background: rgb(18, 19, 30,0.99); */
+      /* var(--bg)   #12131E*/
+    pointer-events: none;
+    z-index: -1;
+    /* will-change: transform; */
 }
-
-
 
         section {
             min-height: 100vh;/*fallback for older browsers..*/
