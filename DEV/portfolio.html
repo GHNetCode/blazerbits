@@ -49,6 +49,7 @@
         }
 
         body {
+            height: inherit;
             font-family: Inter, Segoe UI, sans-serif;
             background: var(--bg);/*    #12131E*/
             color: var(--text);
@@ -64,10 +65,10 @@ body::before {
     background:radial-gradient(circle at top left,  rgba(35, 35, 37, 0.99),  rgba(5, 7, 25, 0.99)  150%);
     /* background:radial-gradient(circle at top left,  rgba(2, 113, 197, 0.03),  rgba(87,181,255,0)  150%); */
       /* background: rgb(18, 19, 30,0.99); */
-      /* var(--bg)   #12131E*/
+      background:var(--bg)   #12131E;
     pointer-events: none;
     z-index: -1;
-    /* will-change: transform; */
+    will-change: transform;
 }
 
         section {
