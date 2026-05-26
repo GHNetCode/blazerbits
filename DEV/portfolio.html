@@ -50,6 +50,7 @@
             color: var(--text);
             overflow-x: hidden;
             transition: background 0.4s ease, color 0.4s ease;
+            overscroll-behavior: none;
         }
 
 body::before {
@@ -483,15 +484,15 @@ body::before {
         });
 
         // Hide "Scroll to Explore ↓" indicator after scrolling
-        // const scrollIndicator = document.querySelector('.scroll-indicator');
+        const scrollIndicator = document.querySelector('.scroll-indicator');
 
-        // window.addEventListener('scroll', () => {
-        //     if (window.scrollY > 100) {
-        //         scrollIndicator.classList.add('hidden');
-        //     } else {
-        //         scrollIndicator.classList.remove('hidden');
-        //     }
-        // });
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                scrollIndicator.classList.add('hidden');
+            } else {
+                scrollIndicator.classList.remove('hidden');
+            }
+        });
 
         // ThemeSlider compatibility
         // Works with existing theme toggles by checking body class changes.
