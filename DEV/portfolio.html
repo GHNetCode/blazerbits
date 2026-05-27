@@ -75,7 +75,7 @@ body::before {
 
         section {
             min-height: 100vh;/*fallback for older browsers..*/
-            min-height: 100svh;/*From dvh to svh*/
+            min-height: 100svh;/*Switched From dvh to svh to fix "snap back" issue in Mobile browsers..*/
             display: flex;
             align-items: center;
             justify-content: center;
@@ -100,7 +100,7 @@ body::before {
             line-height: 1;
             margin-bottom: 5rem;
             letter-spacing: -0.04em;
-            /* animation: fadeUp 1.2s ease forwards; */
+            animation: fadeUp 1.2s ease forwards;
         }
 
         .hero p {
@@ -109,7 +109,7 @@ body::before {
             /* color: var(--muted); */ /*Disabled to allow theme to work for P tags..*/
             font-size: 1.15rem;
             line-height: 1.9;
-            /* animation: fadeUp 1.8s ease forwards; */
+            animation: fadeUp 1.8s ease forwards;
         }
 
         .scroll-indicator {
@@ -121,8 +121,7 @@ body::before {
             font-size: 0.95rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            /* animation: float 2.5s  ease-in-out; */
-
+            animation: float 2.5s  ease-in-out;
         }
         
         .scroll-indicator.hidden {
