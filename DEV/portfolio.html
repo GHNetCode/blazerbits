@@ -68,7 +68,9 @@ body::before {
                                           a band displayed at the bottom..*/
     pointer-events: none;
     z-index: -1;
-    will-change: transform;
+
+    overscroll-behavior: none;
+    /* will-change: transform; */
 }
 
         section {
@@ -472,34 +474,34 @@ body::before {
     <script>
       
         // Smooth reveal animations while scrolling
-   //   const sections = document.querySelectorAll('.fade-section');
+       const sections = document.querySelectorAll('.fade-section');
 
-   //   const observer = new IntersectionObserver((entries) => {
-   //       entries.forEach(entry => {
-   //           if (entry.isIntersecting) {
-   //               entry.target.classList.add('visible');
-   //           }
-   //       });
-   //   }, {
-   //    //    threshold: 0.2
-   //    threshold: 0,        // trigger as soon as 1px enters view
-   //    rootMargin: '0px 0px -50px 0px'  // but not until 50px inside viewport
-   //   });
+       const observer = new IntersectionObserver((entries) => {
+           entries.forEach(entry => {
+               if (entry.isIntersecting) {
+                   entry.target.classList.add('visible');
+               }
+           });
+       }, {
+        //    threshold: 0.2
+        threshold: 0,        // trigger as soon as 1px enters view
+        rootMargin: '0px 0px -50px 0px'  // but not until 50px inside viewport
+       });
 
-   //   sections.forEach(section => {
-   //       observer.observe(section);
-   //   });
+       sections.forEach(section => {
+           observer.observe(section);
+       });
 
-   //    // Hide "Scroll to Explore ↓" indicator after scrolling
-   //    const scrollIndicator = document.querySelector('.scroll-indicator');
+        // Hide "Scroll to Explore ↓" indicator after scrolling
+        const scrollIndicator = document.querySelector('.scroll-indicator');
 
-   //    window.addEventListener('scroll', () => {
-   //        if (window.scrollY > 100) {
-   //            scrollIndicator.classList.add('hidden');
-   //        } else {
-   //            scrollIndicator.classList.remove('hidden');
-   //        }
-   //    });
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                scrollIndicator.classList.add('hidden');
+            } else {
+                scrollIndicator.classList.remove('hidden');
+            }
+        });
 
         // ThemeSlider compatibility
         // Works with existing theme toggles by checking body class changes.
