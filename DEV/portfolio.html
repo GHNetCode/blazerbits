@@ -54,7 +54,7 @@
             color: var(--text);
             overflow-x: hidden;
             transition: background 0.4s ease, color 0.4s ease;
-            overscroll-behavior: none;
+            /* overscroll-behavior: none; */
         }
 
 body::before {
@@ -69,8 +69,8 @@ body::before {
     pointer-events: none;
     z-index: -1;
 
-    overscroll-behavior: none;
-    /* will-change: transform; */
+    /* overscroll-behavior: none; */
+    will-change: transform;
 }
 
         section {
@@ -85,7 +85,10 @@ body::before {
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            /*100%*/
+            max-width: 1000px;
+            /* border: green 1px solid; */
+            
         }
 
         /* .hero {
@@ -137,13 +140,18 @@ body::before {
             line-height: 1.1;
         }
 
- 
+   /* .glass-card{border: red 1px solid;} */
+
+           
         .glass-card p {
             background: var(--card);
             border: 1px solid var(--border);
             /* backdrop-filter: blur(14px); */
             border-radius: 28px;
+
+
             padding: 3rem;
+            
             box-shadow: var(--shadow);
         }
 
@@ -152,12 +160,21 @@ body::before {
         .timeline {
             display: grid;
             gap: 2rem;
+            /* border: red 1px solid; */
         }
 
-         /* .intro-grid {
-           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+         .intro-grid {
+           grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             align-items: center; 
-        }*/
+            
+        }
+
+
+        .intro-grid p{
+            /* width: 110% ; */
+            min-width: 250px; 
+            /* border: blue 1px solid; */
+        }
 
         .intro-grid p,
         .timeline p,
@@ -166,7 +183,12 @@ body::before {
             /* color: var(--muted); */
                         font-size: 1.15rem;
             line-height: 1.9;
+            
         }
+
+        
+
+
         .intro-grid h2{
           /* text-align: center; */
           font-size: clamp(2rem, 8vw, 1rem);
@@ -184,7 +206,6 @@ body::before {
         }
 
         .skill-box {
-            padding: 2rem;
             border-radius: 22px;
             background: var(--bg-alt);
             border: 1px solid var(--border);
@@ -323,7 +344,7 @@ body::before {
             }
 
             .glass-card {
-                padding: 2rem;
+                padding: 0rem;
             }
 
             .hero p {
@@ -348,8 +369,6 @@ body::before {
                 From troubleshooting and automation to building web apps I enjoy the full process,
                 especially with those who are part of it. Collaboration isn't just 
                 how I work, it's what makes the work all worth while.
-                <!-- <br><br>
-                Thank you for visiting and have a pleasant day! -->
             </p>
         </div>
 
@@ -383,7 +402,7 @@ body::before {
     </section>
 
     <!-- SKILLS -->
-    <section class="fade-section">
+    <!-- <section class="fade-section">
         <div class="container">
             <h2 class="section-title">Skills & Expertise</h2>
 
@@ -411,10 +430,10 @@ body::before {
 
                 </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- EXPERIENCE -->
-    <section class="fade-section">
+    <!-- <section class="fade-section">
         <div class="container glass-card">
             <h2 class="section-title">Experience Journey</h2>
 
@@ -441,7 +460,7 @@ body::before {
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- CV DOWNLOAD -->
     <section class="fade-section">
