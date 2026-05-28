@@ -70,7 +70,7 @@ body::before {
     z-index: -1;
 
     /* overscroll-behavior: none; */
-    will-change: transform;
+    /* will-change: transform; */
 }
 
         section {
@@ -297,15 +297,24 @@ body::before {
         .fade-section {
             opacity: 0;
             transform: translateY(60px);
-            /* transition: all 1s ease; */
+            transition: all 1s ease;
             transition: opacity 1s ease, transform 1s ease
         }
 
+
+        .fade-section.cta{
+            top:-200px;
+            /* max-height: 600px;  */
+
+        }
+             
         .fade-section.visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(-20%) ;
+            transition: all 3s ease;
         }
 
+        
         footer {
             /* display: flex; */
            display: flexbox;
@@ -351,6 +360,18 @@ body::before {
             .hero p {
                 font-size: 1rem;
             }
+
+            .fade-section.cta{
+             top:0px;
+             /* max-height: 600px;  */
+
+            }
+             
+            .fade-section.visible {
+            opacity: 1;
+            transform: translateY(0%) ;
+            transition: all 3s ease;
+             }
         }
     </style>
 </head>
@@ -394,7 +415,7 @@ body::before {
                     with creative problem solving.
                 </p>
                 <p style="margin-top: 1.0rem;">
-                    From automation and responsive websites to user support workflows, each case is carefully handled ensuring
+                    From automation and responsive websites to user support, each case is carefully handled ensuring
                     the customer gets the best user experience.
                 </p>
             </div>
@@ -464,7 +485,7 @@ body::before {
     </section> -->
 
     <!-- CV DOWNLOAD -->
-    <section class="fade-section">
+    <section class="fade-section cta">
         <div class="container glass-card cta">
             <h2 class="section-title">Explore More</h2>
             <p style="max-width: 760px; margin: auto; line-height: 1.8;">
