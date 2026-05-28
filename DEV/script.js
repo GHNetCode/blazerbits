@@ -22,6 +22,8 @@ const root = document.documentElement;
         if (saved) {
           slider.value = saved;
           applyTheme(saved);
+        } else {
+          applyTheme(slider.value); // 👈 use the HTML default (30) on first visit
         }
         slider.addEventListener("input", (e) => {
           const value = e.target.value;

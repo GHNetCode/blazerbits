@@ -13,7 +13,7 @@
             --text: #f5f7fb;
             --muted: #a7b1c2;
             
-            /* --accent: rgb(181, 210, 254); */
+            
             --accentBtn: rgb(63, 73, 87);
             --accent-glow: rgba(87, 182, 255, 0.05);
             --border: rgba(255,255,255,0.08);
@@ -23,7 +23,7 @@
         body.light-theme {
             /* --bg: #f3f6fb; */
             /* --bg: rgb(255, 255, 0); */
-
+             /* --accent: rgb(181, 210, 254); */
             
             --bg-alt: #ffffff;/*#ffffff */
             --card: rgba(255,255,255, 0.75);/*rgba(255,255,255,0.75)*/
@@ -95,7 +95,9 @@ body::before {
              text-align: center;
         } */
 
- 
+         .highlight {
+            color: var(--accent);
+        }
 
         .hero h1 {
             text-align: center;
@@ -196,9 +198,7 @@ body::before {
           margin-bottom: 4.5rem;
         }
 
-        .highlight {
-            color: var(--accent);
-        }
+
 
         .skills-grid {
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -314,7 +314,7 @@ body::before {
             transition: all 3s ease;
         }
 
-        
+
         footer {
             /* display: flex; */
            display: flexbox;
