@@ -3,6 +3,8 @@
 @import url('styleGtranslate.css');
 @import url('styleMenuHam.css');
 @import url('styleMenuDropdown.css');
+@import url('stylebackGndparticles.css');
+
   
 :root {
   --bg: #000;
@@ -247,6 +249,13 @@ body {
     opacity: 0.8;
   }
 
+      .firefly {
+      position: absolute;
+      border-radius: 50%;
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      contain: strict;
+    }
   
 #attribution { 
   /* display: flexbox; */

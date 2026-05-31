@@ -151,10 +151,133 @@ function applyTheme(value) {
        }
 /* APPLY THEME End*/
 
+   /*
+     * FIREFLY SYSTEM — maximum CPU efficiency build
+     * ═══════════════════════════════════════════════
+     *
+     * Every optimisation explained:
+     *
+     * 1. ONE animation per firefly (was 2)
+     *    Drift + blink merged into a single @keyframes rule.
+     *    Both transform and opacity change in the same keyframe steps.
+     *    Browser schedules one timeline instead of two → half the
+     *    animation overhead immediately.
+     *
+     * 2. 40 fireflies (was 60)
+     *    Fewer compositor layers. Still looks full because glow halos
+     *    are generous. Each layer has a memory + scheduling cost.
+     *
+     * 3. Single box-shadow (was two layered shadows)
+     *    Two shadows = two texture compositing operations per frame.
+     *    One shadow still produces a convincing glow halo.
+     *
+     * 4. animation-timing-function: linear on everything
+     *    ease-in-out requires the browser to evaluate a cubic bezier
+     *    curve every frame. linear is a trivial multiply — near zero cost.
+     *
+     * 5. Long durations: 25–55s drift (was 18–38s)
+     *    Fewer interpolation steps per second across the whole set.
+     *    Fireflies are slow anyway — nobody notices the difference.
+     *
+     * 6. contain: strict on .firefly
+     *    Tells the browser this element will never affect layout outside
+     *    itself. Skips all ancestor reflow checks every frame.
+     *
+     * 7. will-change: transform, opacity — explicit, not just transform
+     *    Browser knows BOTH properties animate → one optimised GPU path.
+     *    Listing only transform would force a separate opacity layer.
+     *
+     * 8. Opacity baked into keyframes (not a separate animation)
+     *    The compositor handles transform + opacity together in one pass
+     *    when they share the same @keyframes. Separate animations get
+     *    separate scheduling slots even on GPU.
+     *
+     * Net result: roughly 40–50 active compositor layers doing linear
+     * interpolation on two cheap properties. CPU involvement after the
+     * first frame is near zero — the GPU compositor runs it autonomously.
+     */
 
+    const FIREFLY_COUNT = 40;
 
+    // Weighted palette — warm amber/gold dominant, rare cool accent
+    const palette = [
+      { r: 255, g: 210, b:  80, w: 5 },  // warm gold
+      { r: 255, g: 190, b:  50, w: 4 },  // deep amber
+      { r: 220, g: 255, b: 130, w: 4 },  // soft lime-green
+      { r: 255, g: 230, b: 140, w: 4 },  // pale gold
+      { r: 180, g: 255, b: 160, w: 3 },  // cool mint
+      { r: 200, g: 220, b: 255, w: 1 },  // icy blue-white accent
+    ];
 
-// To resolve Default language (English) from being displayed
-// when switch between languages adding a small delay.
+    const weighted = [];
+    palette.forEach(c => { for (let w = 0; w < c.w; w++) weighted.push(c); });
 
+    function rand(a, b)  { return Math.floor(Math.random() * (b - a + 1)) + a; }
+    function randF(a, b) { return +(Math.random() * (b - a) + a).toFixed(3); }
+    function pick(arr)   { return arr[rand(0, arr.length - 1)]; }
 
+    const back  = document.getElementById('particles-back');
+    const front = document.getElementById('particles-front');
+    const sheet = document.createElement('style');
+    document.head.appendChild(sheet);
+
+    for (let i = 1; i <= FIREFLY_COUNT; i++) {
+
+      const col     = pick(weighted);
+      const isFront = Math.random() < 0.25;
+
+      // Size — tiny core dot
+      const core = rand(2, 4);
+
+      // Opacity range — back layer noticeably dimmer
+      const dim    = isFront ? randF(0.04, 0.15) : randF(0.02, 0.08);
+      const bright = isFront ? randF(0.60, 0.95) : randF(0.25, 0.55);
+
+      // Single glow shadow — one compositing op per frame
+      const glowSpread = core * rand(4, 7);
+      const glowAlpha  = (isFront ? randF(0.3, 0.6) : randF(0.1, 0.3));
+      const shadow     = `0 0 ${glowSpread}px ${glowSpread / 2}px rgba(${col.r},${col.g},${col.b},${glowAlpha})`;
+
+      // Drift path — gentle wander, slight upward bias
+      const x0   = rand(5, 95);
+      const y0   = rand(15, 90);
+      const xMid = Math.min(95, Math.max(5, x0 + rand(-20, 20)));
+      const yMid = Math.min(90, Math.max(5, y0 + rand(-20,  5)));
+      const x1   = Math.min(95, Math.max(5, x0 + rand(-25, 25)));
+      const y1   = Math.min(85, Math.max(5, y0 + rand(-30, 10)));
+
+      // Durations — long and lazy
+      const duration = rand(25000, 55000);
+      const delay    = rand(0, 40000);
+
+      /*
+       * MERGED keyframe — transform + opacity in one animation.
+       * Blink pattern: dim → bright → dim → bright → dim
+       * mapped across the drift so the two effects feel independent
+       * even though they share one timeline.
+       */
+      const name = `ff${i}`;
+      sheet.sheet.insertRule(`
+        @keyframes ${name} {
+          0%   { transform: translate3d(${x0}vw,   ${y0}vh,  0); opacity: ${dim};    }
+          20%  { transform: translate3d(${xMid}vw, ${yMid}vh,0); opacity: ${bright}; }
+          40%  {                                                   opacity: ${dim};    }
+          60%  { transform: translate3d(${x1}vw,   ${y1}vh,  0); opacity: ${bright}; }
+          80%  {                                                   opacity: ${dim};    }
+          100% { transform: translate3d(${x0}vw,   ${y0}vh,  0); opacity: ${bright}; }
+        }
+      `, sheet.sheet.cssRules.length);
+
+      const el = document.createElement('div');
+      el.className = 'firefly';
+      el.style.cssText = `
+        width:              ${core}px;
+        height:             ${core}px;
+        background:         rgba(${col.r},${col.g},${col.b},1);
+        box-shadow:         ${shadow};
+        animation:          ${name} ${duration}ms -${delay}ms infinite linear;
+      `;
+
+      (isFront ? front : back).appendChild(el);
+    }
+ 
