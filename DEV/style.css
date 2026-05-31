@@ -210,6 +210,8 @@ body {
 
 /* .content class\Div of .landing class\section */
   .content {
+    display:initial;
+ 
     position: relative;
     z-index: 2;
   }

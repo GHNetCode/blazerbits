@@ -13,6 +13,8 @@ const root = document.documentElement;
         initializeGTranslate();
         initializeThemeSlider();
         initializeMobileMenu();
+         initializeJustFireF();
+
     });  
       /* LOAD SAVED THEME */
       function initializeThemeSlider() {
@@ -149,6 +151,7 @@ function applyTheme(value) {
           return hex.length === 1 ? '0' + hex : hex;
         }).join('');
        }
+
 /* APPLY THEME End*/
 
    /*
@@ -230,8 +233,11 @@ function applyTheme(value) {
       const core = rand(2, 4);
 
       // Opacity range — back layer noticeably dimmer
-      const dim    = isFront ? randF(0.04, 0.15) : randF(0.02, 0.08);
-      const bright = isFront ? randF(0.60, 0.95) : randF(0.25, 0.55);
+    //  const dim    = isFront ? randF(0.04, 0.15) : randF(0.02, 0.08);
+    //  const bright = isFront ? randF(0.60, 0.95) : randF(0.25, 0.55);
+      const dim    = isFront ? randF(0.08, 0.30) : randF(0.04, 0.16);
+      const bright = isFront ? randF(0.75, 0.99) : randF(0.55, 0.99);
+
 
       // Single glow shadow — one compositing op per frame
       const glowSpread = core * rand(4, 7);
@@ -281,3 +287,136 @@ function applyTheme(value) {
       (isFront ? front : back).appendChild(el);
     }
  
+
+
+
+// fix below error null when trying to read the 
+//script.js:290 Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')
+//  at script.js:290:20
+//fixed by putting it into an initialize function..
+function initializeJustFireF() {
+  const navbar    = document.getElementById("navbar");
+  const content   = document.getElementById("content");
+  const JustFireF = document.getElementById("JustFireF");
+ 
+  /* ── Create the dismissible toast message ── */
+  const toast = document.createElement("div");
+  toast.id = "justFireF-toast";
+  toast.innerHTML = `
+    <span>Press <kbd>Space</kbd> or <kbd>Esc</kbd> to return</span>
+    <button id="justFireF-ok">OK</button>
+  `;
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(10, 10, 26, 0.75);
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(8px);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.78rem;
+    font-family: system-ui, sans-serif;
+    letter-spacing: 0.05em;
+    padding: 0.55rem 1rem 0.55rem 1.2rem;
+    border-radius: 999px;
+    pointer-events: auto;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 9999;
+    white-space: nowrap;
+  `;
+ 
+  /* Style the kbd tags */
+  toast.querySelectorAll("kbd").forEach(k => {
+    k.style.cssText = `
+      background: rgba(255,255,255,0.12);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: inherit;
+      font-size: 0.75rem;
+    `;
+  });
+ 
+  /* Style the OK button */
+  const okBtn = toast.querySelector("#justFireF-ok");
+  okBtn.style.cssText = `
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.8);
+    font-size: 0.72rem;
+    font-family: system-ui, sans-serif;
+    padding: 3px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  `;
+  okBtn.addEventListener("mouseenter", () => okBtn.style.background = "rgba(255,255,255,0.22)");
+  okBtn.addEventListener("mouseleave", () => okBtn.style.background = "rgba(255,255,255,0.12)");
+ 
+  document.body.appendChild(toast);
+ 
+  /* ── Hide everything: enter firefly mode ── */
+  function hide() {
+    navbar.style.transition  = "opacity 0.5s ease";
+    content.style.transition = "opacity 0.5s ease";
+    navbar.style.opacity  = "0";
+    content.style.opacity = "0";
+ 
+    setTimeout(() => {
+      navbar.style.display  = "none";
+      content.style.display = "none";
+      toast.style.opacity   = "1";
+    }, 500);
+ 
+    /* 
+     * FIX: delay adding the click listener by one event-loop tick.
+     * Without this the button's own click bubbles up and triggers
+     * onClickRevert immediately — before the user can do anything.
+     */
+    setTimeout(() => {
+      document.addEventListener("keydown", onKey);
+    }, 0);
+ 
+    /* OK button dismisses the toast only (does NOT revert) */
+    okBtn.addEventListener("click", dismissToast, { once: true });
+ 
+    console.log("JustFireF — firefly mode ON");
+  }
+ 
+  /* ── Dismiss just the toast, keep firefly mode ── */
+  function dismissToast() {
+    toast.style.opacity = "0";
+  }
+ 
+  /* ── Revert: bring everything back ── */
+  function revert() {
+    toast.style.opacity = "0";
+ 
+    navbar.style.display  = "";
+    content.style.display = "";
+ 
+    requestAnimationFrame(() => {
+      navbar.style.opacity  = "1";
+      content.style.opacity = "1";
+    });
+ 
+    document.removeEventListener("keydown", onKey);
+ 
+    console.log("JustFireF — firefly mode OFF");
+  }
+ 
+  /* ── Key handler: Space or Escape ── */
+  function onKey(e) {
+    if (e.code === "Space" || e.code === "Escape") {
+      e.preventDefault();
+      revert();
+    }
+  }
+ 
+  JustFireF.addEventListener("click", hide);
+}
+
