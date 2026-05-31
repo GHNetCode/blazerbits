@@ -1,0 +1,27 @@
+/* FIREFLY PARTICLE CONTAINERS
+   Both sit inside .landing (position:relative, overflow:hidden).
+   position:absolute so they fill the section — not the whole viewport.
+   z-index set via JS so they sandwich .content (z-index:2).
+   overflow:visible lets box-shadow glows bleed past the dot boundary. */
+
+#particles-back,
+#particles-front {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+#particles-back  { z-index: 0; }
+#particles-front { z-index: 3; }
+
+/* FIREFLY DOT
+   contain:strict intentionally omitted — it clips box-shadow and
+   restricts abs-positioned elements to their own bounding box,
+   causing fireflies to cluster in a corner at wide viewports. */
+.firefly {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
