@@ -298,12 +298,12 @@ function initializeJustFireF() {
   const navbar    = document.getElementById("navbar");
   const content   = document.getElementById("content");
   const JustFireF = document.getElementById("JustFireF");
- 
+
   /* ── Create the dismissible toast message ── */
   const toast = document.createElement("div");
   toast.id = "justFireF-toast";
   toast.innerHTML = `
-    <span>Press <kbd>Space</kbd> or <kbd>Esc</kbd> to return</span>
+    <span>Click, <kbd>Space</kbd> or <kbd>Esc</kbd> to return</span>
     <button id="justFireF-ok">OK</button>
   `;
   toast.style.cssText = `
@@ -329,7 +329,7 @@ function initializeJustFireF() {
     z-index: 9999;
     white-space: nowrap;
   `;
- 
+
   /* Style the kbd tags */
   toast.querySelectorAll("kbd").forEach(k => {
     k.style.cssText = `
@@ -340,7 +340,7 @@ function initializeJustFireF() {
       font-size: 0.75rem;
     `;
   });
- 
+
   /* Style the OK button */
   const okBtn = toast.querySelector("#justFireF-ok");
   okBtn.style.cssText = `
@@ -356,59 +356,71 @@ function initializeJustFireF() {
   `;
   okBtn.addEventListener("mouseenter", () => okBtn.style.background = "rgba(255,255,255,0.22)");
   okBtn.addEventListener("mouseleave", () => okBtn.style.background = "rgba(255,255,255,0.12)");
- 
+
   document.body.appendChild(toast);
- 
+
   /* ── Hide everything: enter firefly mode ── */
   function hide() {
     navbar.style.transition  = "opacity 0.5s ease";
     content.style.transition = "opacity 0.5s ease";
     navbar.style.opacity  = "0";
     content.style.opacity = "0";
- 
+
     setTimeout(() => {
       navbar.style.display  = "none";
       content.style.display = "none";
       toast.style.opacity   = "1";
     }, 500);
- 
-    /* 
-     * FIX: delay adding the click listener by one event-loop tick.
-     * Without this the button's own click bubbles up and triggers
-     * onClickRevert immediately — before the user can do anything.
+
+    /*
+     * Delay adding revert listeners by one event-loop tick so the
+     * triggering click/tap doesn't immediately bubble into onPointer
+     * and revert before the user has done anything.
      */
     setTimeout(() => {
-      document.addEventListener("keydown", onKey);
+      document.addEventListener("keydown",     onKey);
+      document.addEventListener("click",       onPointer); /* mouse left-click */
+      document.addEventListener("touchend",    onPointer); /* mobile tap        */
     }, 0);
- 
-    /* OK button dismisses the toast only (does NOT revert) */
+
+    /* OK button dismisses the toast only — keeps firefly mode active */
     okBtn.addEventListener("click", dismissToast, { once: true });
- 
+
     console.log("JustFireF — firefly mode ON");
   }
- 
-  /* ── Dismiss just the toast, keep firefly mode ── */
-  function dismissToast() {
+
+  /* ── Dismiss just the toast, stay in firefly mode ── */
+  function dismissToast(e) {
+    e.stopPropagation(); /* prevent the OK click bubbling into onPointer */
     toast.style.opacity = "0";
   }
- 
+
   /* ── Revert: bring everything back ── */
   function revert() {
     toast.style.opacity = "0";
- 
+
     navbar.style.display  = "";
     content.style.display = "";
- 
+
     requestAnimationFrame(() => {
       navbar.style.opacity  = "1";
       content.style.opacity = "1";
     });
- 
-    document.removeEventListener("keydown", onKey);
- 
+
+    document.removeEventListener("keydown",  onKey);
+    document.removeEventListener("click",    onPointer);
+    document.removeEventListener("touchend", onPointer);
+
     console.log("JustFireF — firefly mode OFF");
   }
- 
+
+  /* ── Pointer handler: mouse left-click OR mobile tap ── */
+  function onPointer(e) {
+    /* Ignore clicks on the toast itself so OK doesn't double-trigger */
+    if (toast.contains(e.target)) return;
+    revert();
+  }
+
   /* ── Key handler: Space or Escape ── */
   function onKey(e) {
     if (e.code === "Space" || e.code === "Escape") {
@@ -416,7 +428,7 @@ function initializeJustFireF() {
       revert();
     }
   }
- 
+
   JustFireF.addEventListener("click", hide);
 }
 
