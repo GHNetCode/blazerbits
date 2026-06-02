@@ -47,51 +47,64 @@ const root = document.documentElement;
       function initializeMobileMenu() {
         const menu      = document.getElementById("menu");
         const hamburger = document.getElementById("hamburger");
-        const root      = document.getElementById("mob-panel-root");
         if (!menu || !hamburger) return;
 
-        function closeAllSubmenus() {
-          menu.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
-          root.classList.remove("dimmed");
-        }
+        // ── Track active panel ──
+        let currentPanel = document.getElementById("mob-panel-root");
 
-        function openSubmenu(id) {
-          closeAllSubmenus();
-          const sub = document.getElementById(id);
-          if (sub) {
-            sub.classList.add("active");
-            root.classList.add("dimmed");
-          }
+        function showPanel(nextPanel, direction) {
+          // Exit current panel
+          currentPanel.classList.remove("active");
+          if (direction === "forward") currentPanel.classList.add("slide-left");
+
+          // Enter next panel
+          if (direction === "back") nextPanel.classList.remove("slide-left");
+          nextPanel.classList.add("active");
+
+          // Clean up exit class after transition
+          const prev = currentPanel;
+          setTimeout(() => prev.classList.remove("slide-left"), 380);
+
+          currentPanel = nextPanel;
         }
 
         // ── Open / close overlay ──
         hamburger.addEventListener("click", () => {
           const isOpen = menu.classList.toggle("active");
           hamburger.classList.toggle("active");
-          if (!isOpen) closeAllSubmenus();
+
+          if (isOpen) {
+            // Always reset to root panel when reopening
+            document.querySelectorAll(".mob-panel").forEach(p => {
+              p.classList.remove("active", "slide-left");
+            });
+            currentPanel = document.getElementById("mob-panel-root");
+            currentPanel.classList.add("active");
+          }
         });
 
-        // ── Event delegation ──
+        // ── Drill-down & back navigation ──
         menu.addEventListener("click", (e) => {
           const drillBtn = e.target.closest(".mob-drill");
-          const closeBtn = e.target.closest(".mob-close");
+          const backBtn  = e.target.closest(".mob-back");
 
           if (drillBtn) {
             e.preventDefault();
-            openSubmenu(drillBtn.dataset.target);
+            const target = document.getElementById(drillBtn.dataset.target);
+            if (target) showPanel(target, "forward");
             return;
           }
 
-          if (closeBtn) {
-            closeAllSubmenus();
+          if (backBtn) {
+            const target = document.getElementById(backBtn.dataset.target);
+            if (target) showPanel(target, "back");
             return;
           }
 
-          // Tap bare backdrop to close entire menu
-          if (e.target === menu) {
+          // Tap backdrop (outside any panel) to close
+          if (!e.target.closest(".mob-panel")) {
             menu.classList.remove("active");
             hamburger.classList.remove("active");
-            closeAllSubmenus();
           }
         });
       }

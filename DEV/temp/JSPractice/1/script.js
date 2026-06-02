@@ -45,53 +45,18 @@ const root = document.documentElement;
       }
 
       function initializeMobileMenu() {
-        const menu      = document.getElementById("menu");
+        const menu = document.getElementById("menu");
         const hamburger = document.getElementById("hamburger");
-        const root      = document.getElementById("mob-panel-root");
         if (!menu || !hamburger) return;
-
-        function closeAllSubmenus() {
-          menu.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
-          root.classList.remove("dimmed");
-        }
-
-        function openSubmenu(id) {
-          closeAllSubmenus();
-          const sub = document.getElementById(id);
-          if (sub) {
-            sub.classList.add("active");
-            root.classList.add("dimmed");
-          }
-        }
-
-        // ── Open / close overlay ──
         hamburger.addEventListener("click", () => {
-          const isOpen = menu.classList.toggle("active");
-          hamburger.classList.toggle("active");
-          if (!isOpen) closeAllSubmenus();
-        });
-
-        // ── Event delegation ──
+                  menu.classList.toggle("active");
+                  hamburger.classList.toggle("active");
+              });
+            
         menu.addEventListener("click", (e) => {
-          const drillBtn = e.target.closest(".mob-drill");
-          const closeBtn = e.target.closest(".mob-close");
-
-          if (drillBtn) {
-            e.preventDefault();
-            openSubmenu(drillBtn.dataset.target);
-            return;
-          }
-
-          if (closeBtn) {
-            closeAllSubmenus();
-            return;
-          }
-
-          // Tap bare backdrop to close entire menu
-          if (e.target === menu) {
+          if (!e.target.closest(".mobile-menu-content")) {
             menu.classList.remove("active");
             hamburger.classList.remove("active");
-            closeAllSubmenus();
           }
         });
       }

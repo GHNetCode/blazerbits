@@ -1,0 +1,140 @@
+
+
+<!-- top navigation bar (fixed)  -->
+<nav class="top-nav">
+  <div class="nav-left">
+    <a href="index.html" class="logo">BlazerBits</a>
+
+    <div class="theme-control">
+      <input type="range" id="themeSlider" min="0" max="80" value="30">
+    </div>
+
+    <div class="lang-dropdown">
+      <div class="gtranslate_wrapper"></div>
+    </div>
+  </div>
+
+<div class="nav-right">
+  <!-- Explore -->
+  <div class="nav-item">
+    <a href="#">Explore</a>
+        <span class="dropdown-arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+            <div class="dropdown">
+              <a href="#">Blog-Profiles</a>
+              <a href="#">Highlighted Posts</a>
+              <button id="JustFireF">Just Fireflies</button>
+            </div>
+  </div>
+
+   <!-- About (with Submenu: "About Me" containing "Portfolio" BELOW it) -->
+  <div class="nav-item">
+    <a href="#">About</a>
+    <span class="dropdown-arrow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <div class="dropdown">
+      <a href="#">About BlazerBits</a>
+      <a href="#">FAQ</a>
+
+    <!-- "About Me" dropdown item with submenu BELOW it -->
+        <div class="dropdown-item-submenu">
+        <a href="#">
+          About Me
+          <span class="submenu-svg">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </a>
+            <div class="dropdown-submenu">
+              <a href="portfolio.html">Portfolio</a>
+              <a href="Projects.html"> Projects</a>
+            </div>
+            </div>
+        <a href="FAQ2.html">FAQ2</a>
+
+
+    </div>
+  </div>
+  <!-- Login (no dropdown) -->
+  <a href="login.html">Login</a>
+</div>
+</nav>
+
+<!-- HAMBURGER (mobile) -->
+<div class="hamburger" id="hamburger">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+<!-- FULLSCREEN MENU (mobile overlay) -->
+<div class="mobile-menu-overlay" id="menu">
+
+  <!-- PANEL: Root -->
+  <div class="mob-panel active" id="mob-panel-root">
+    <div class="mobile-menu-content">
+      <a href="#" class="mob-drill" data-target="mob-panel-explore">
+        Explore
+        <svg class="mob-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#" class="mob-drill" data-target="mob-panel-about">
+        About
+        <svg class="mob-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="login.html">Login</a>
+    </div>
+  </div>
+
+  <!-- PANEL: Explore -->
+  <div class="mob-panel" id="mob-panel-explore">
+    <div class="mobile-menu-content">
+      <button class="mob-back" data-target="mob-panel-root">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <span class="mob-panel-title">Explore</span>
+      <a href="#">Blog-Profiles</a>
+      <a href="#">Highlighted Posts</a>
+      <button id="JustFireF">Just Fireflies</button>
+    </div>
+  </div>
+
+  <!-- PANEL: About -->
+  <div class="mob-panel" id="mob-panel-about">
+    <div class="mobile-menu-content">
+      <button class="mob-back" data-target="mob-panel-root">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <span class="mob-panel-title">About</span>
+      <a href="#">About BlazerBits</a>
+      <a href="#">FAQ</a>
+      <a href="#" class="mob-drill" data-target="mob-panel-aboutme">
+        About Me
+        <svg class="mob-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="FAQ2.html">FAQ2</a>
+    </div>
+  </div>
+
+  <!-- PANEL: About Me (sub-submenu) -->
+  <div class="mob-panel" id="mob-panel-aboutme">
+    <div class="mobile-menu-content">
+      <button class="mob-back" data-target="mob-panel-about">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <span class="mob-panel-title">About Me</span>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="Projects.html">Projects</a>
+    </div>
+  </div>
+
+</div>
+
