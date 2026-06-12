@@ -325,6 +325,34 @@ function applyTheme(value) {
 
 
 
+// ═══════════════════════════════════════════════════════════
+// PAGE VISIBILITY — pause GPU work when tab/screen is hidden
+// Pauses: all firefly CSS animations + the .landing::before
+//         slowMove animation. Resumes instantly on return.
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('visibilitychange', () => {
+  const state = document.hidden ? 'paused' : 'running';
+
+  // Pause/resume every firefly dot
+  document.querySelectorAll('.firefly').forEach(el => {
+    el.style.animationPlayState = state;
+  });
+
+  // Pause/resume the slow background gradient drift on .landing::before
+  // We inject/update a <style> rule that overrides the CSS animation-play-state
+  const styleId = 'visibility-pause-style';
+  let pauseStyle = document.getElementById(styleId);
+  if (!pauseStyle) {
+    pauseStyle = document.createElement('style');
+    pauseStyle.id = styleId;
+    document.head.appendChild(pauseStyle);
+  }
+  pauseStyle.textContent = document.hidden
+    ? `.landing::before { animation-play-state: paused !important; }`
+    : '';
+});
+
+
 // fix below error null when trying to read the 
 //script.js:290 Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')
 //  at script.js:290:20
@@ -332,18 +360,13 @@ function applyTheme(value) {
 function initializeJustFireF() {
   const navbar    = document.getElementById("navbar");
   const content   = document.getElementById("content");
-  // Support multiple JustFireF buttons (desktop dropdown + mobile menu)
-  const justFireFBtns = document.querySelectorAll("#JustFireF");
-  const menu      = document.getElementById("menu");
-  const hamburger = document.getElementById("hamburger");
-
-  if (!justFireFBtns.length) return;
+  const JustFireF = document.getElementById("JustFireF");
 
   /* ── Create the dismissible toast message ── */
   const toast = document.createElement("div");
   toast.id = "justFireF-toast";
   toast.innerHTML = `
-    <span>Tap or press <kbd>Esc</kbd> to return</span>
+    <span>Click, <kbd>Space</kbd> or <kbd>Esc</kbd> to return</span>
     <button id="justFireF-ok">OK</button>
   `;
   toast.style.cssText = `
@@ -358,9 +381,9 @@ function initializeJustFireF() {
     border: 1px solid rgba(255,255,255,0.12);
     backdrop-filter: blur(8px);
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.75rem;
-    font-family: 'Inter', system-ui, sans-serif;
-    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-family: system-ui, sans-serif;
+    letter-spacing: 0.05em;
     padding: 0.55rem 1rem 0.55rem 1.2rem;
     border-radius: 999px;
     pointer-events: auto;
@@ -377,7 +400,7 @@ function initializeJustFireF() {
       border-radius: 4px;
       padding: 1px 5px;
       font-family: inherit;
-      font-size: 0.72rem;
+      font-size: 0.75rem;
     `;
   });
 
@@ -387,9 +410,8 @@ function initializeJustFireF() {
     background: rgba(255,255,255,0.12);
     border: 1px solid rgba(255,255,255,0.2);
     color: rgba(255,255,255,0.8);
-    font-size: 0.7rem;
-    font-family: 'Inter', system-ui, sans-serif;
-    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    font-family: system-ui, sans-serif;
     padding: 3px 12px;
     border-radius: 999px;
     cursor: pointer;
@@ -402,56 +424,67 @@ function initializeJustFireF() {
 
   /* ── Hide everything: enter firefly mode ── */
   function hide() {
-    // Close mobile menu if open
-    if (menu && menu.classList.contains("active")) {
-      menu.classList.remove("active");
-      if (hamburger) hamburger.classList.remove("active");
-      menu.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
-      const root = document.getElementById("mob-panel-root");
-      if (root) root.classList.remove("dimmed");
-    }
-
-    if (navbar) { navbar.style.transition = "opacity 0.5s ease"; navbar.style.opacity = "0"; }
-    if (content) { content.style.transition = "opacity 0.5s ease"; content.style.opacity = "0"; }
+    navbar.style.transition  = "opacity 0.5s ease";
+    content.style.transition = "opacity 0.5s ease";
+    navbar.style.opacity  = "0";
+    content.style.opacity = "0";
 
     setTimeout(() => {
-      if (navbar)  navbar.style.display  = "none";
-      if (content) content.style.display = "none";
-      toast.style.opacity = "1";
+      navbar.style.display  = "none";
+      content.style.display = "none";
+      toast.style.opacity   = "1";
     }, 500);
 
+    /*
+     * Delay adding revert listeners by one event-loop tick so the
+     * triggering click/tap doesn't immediately bubble into onPointer
+     * and revert before the user has done anything.
+     */
     setTimeout(() => {
-      document.addEventListener("keydown",  onKey);
-      document.addEventListener("click",    onPointer);
-      document.addEventListener("touchend", onPointer);
+      document.addEventListener("keydown",     onKey);
+      document.addEventListener("click",       onPointer); /* mouse left-click */
+      document.addEventListener("touchend",    onPointer); /* mobile tap        */
     }, 0);
 
+    /* OK button dismisses the toast only — keeps firefly mode active */
     okBtn.addEventListener("click", dismissToast, { once: true });
+
+    console.log("JustFireF — firefly mode ON");
   }
 
+  /* ── Dismiss just the toast, stay in firefly mode ── */
   function dismissToast(e) {
-    e.stopPropagation();
+    e.stopPropagation(); /* prevent the OK click bubbling into onPointer */
     toast.style.opacity = "0";
   }
 
+  /* ── Revert: bring everything back ── */
   function revert() {
     toast.style.opacity = "0";
-    if (navbar)  { navbar.style.display  = ""; }
-    if (content) { content.style.display = ""; }
+
+    navbar.style.display  = "";
+    content.style.display = "";
+
     requestAnimationFrame(() => {
-      if (navbar)  navbar.style.opacity  = "1";
-      if (content) content.style.opacity = "1";
+      navbar.style.opacity  = "1";
+      content.style.opacity = "1";
     });
+
     document.removeEventListener("keydown",  onKey);
     document.removeEventListener("click",    onPointer);
     document.removeEventListener("touchend", onPointer);
+
+    console.log("JustFireF — firefly mode OFF");
   }
 
+  /* ── Pointer handler: mouse left-click OR mobile tap ── */
   function onPointer(e) {
+    /* Ignore clicks on the toast itself so OK doesn't double-trigger */
     if (toast.contains(e.target)) return;
     revert();
   }
 
+  /* ── Key handler: Space or Escape ── */
   function onKey(e) {
     if (e.code === "Space" || e.code === "Escape") {
       e.preventDefault();
@@ -459,6 +492,6 @@ function initializeJustFireF() {
     }
   }
 
-  // Attach to ALL JustFireF buttons
-  justFireFBtns.forEach(btn => btn.addEventListener("click", hide));
+  JustFireF.addEventListener("click", hide);
 }
+
