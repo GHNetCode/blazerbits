@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
 @import url('styleMobMenuOverlay.css');
 @import url('styleThemeSlider.css');
 @import url('styleGtranslate.css');
@@ -40,7 +41,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ELEGANT TYPOGRAPHY SCALE */
+h1, h2, h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 300;
+  letter-spacing: 0.02em;
 }
 /* BODY */
 body {
@@ -89,8 +97,10 @@ body {
 }
 
 .logo {
-  font-size: 1rem;
-  letter-spacing: 1px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
   color: var(--text);
   opacity: 0.8;
   transition: 0.3s;
@@ -216,9 +226,11 @@ body {
     z-index: 2;
   }
   .content h1 {
-    font-size: 3rem;
-    font-weight: 500;
-    letter-spacing: 1px;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 4rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
   }
   .content p {
     margin-top: 10px;
@@ -249,6 +261,32 @@ body {
   
   button:hover {
     opacity: 0.8;
+  }
+
+  /* Just Fireflies — elegant ghost button, overrides global button style */
+  button#JustFireF {
+    display: block;
+    width: calc(100% - 36px);
+    margin: 6px 18px 4px;
+    padding: 8px 0;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 2px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    cursor: pointer;
+    transition: opacity 0.25s ease, border-color 0.25s ease;
+  }
+
+  button#JustFireF:hover {
+    opacity: 1;
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.4);
   }
 
       .firefly {
@@ -335,7 +373,7 @@ body {
   
   }
     .mobile-menu-overlay {
-  display: flex;/*flex*/
+  display: flex;
   }
 
   .mobile-menu-content a {
