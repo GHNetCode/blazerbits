@@ -235,7 +235,7 @@ function applyTheme(value) {
      * first frame is near zero — the GPU compositor runs it autonomously.
      */
 
-    const FIREFLY_COUNT = 40;
+    const FIREFLY_COUNT = 20;
 
     // Weighted palette — warm amber/gold dominant, rare cool accent
     const palette = [
@@ -288,9 +288,10 @@ function applyTheme(value) {
       const y1   = Math.min(85, Math.max(5, y0 + rand(-30, 10)));
 
       // Durations — long and lazy
-      const duration = rand(25000, 55000);
-      const delay    = rand(0, 40000);
-
+      // const duration = rand(25000, 55000);
+      // const delay    = rand(0, 40000);
+     const duration = rand(20000, 55000);
+      const delay    = rand(0, 30000);
       /*
        * MERGED keyframe — transform + opacity in one animation.
        * Blink pattern: dim → bright → dim → bright → dim
@@ -462,3 +463,127 @@ function initializeJustFireF() {
   // Attach to ALL JustFireF buttons
   justFireFBtns.forEach(btn => btn.addEventListener("click", hide));
 }
+
+
+
+
+// ============================================================
+// LOGIN NOTICE MODAL
+// ============================================================
+function initializeLoginModal() {
+  const modal = document.getElementById('loginModal');
+  const closeBtn = document.getElementById('loginModalClose');
+  const gotItBtn = document.getElementById('loginModalGotIt');
+  const notifyBtn = document.getElementById('loginModalNotify');
+  
+  if (!modal) return;
+  
+  // ── Open modal ──
+  function openModal(e) {
+    if (e) e.preventDefault();
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  // ── Close modal ──
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  // ── Attach to Login buttons ──
+  // Desktop login (top-right nav)
+  const loginLinks = document.querySelectorAll('.nav-right a[href="login.html"]');
+  loginLinks.forEach(link => {
+    link.addEventListener('click', openModal);
+    // Keep the href for fallback, but prevent navigation
+    link.addEventListener('click', (e) => e.preventDefault());
+  });
+  
+  // Main "Login" button in centre of landing page
+  const mainLoginBtn = document.querySelector('.buttons .secondary');
+  if (mainLoginBtn) {
+    mainLoginBtn.addEventListener('click', openModal);
+  }
+  
+  // Also catch any other login buttons by text content
+document.querySelectorAll('a, button').forEach(el => {
+  const text = el.textContent.trim();
+  
+  // Check if this element should trigger the modal
+  const shouldShowModal = 
+    (text === 'Login' && !el.closest('.nav-left') && !el.closest('.logo')) ||
+    ((text === 'BlazerBits' || 
+      text === 'FAQ' || 
+      text === 'Blog Profiles' ||
+      text === 'Highlighted Posts') && 
+     (el.closest('.dropdown') || el.closest('.mob-submenu')));/* ||
+    (text === 'Just Fireflies' && (el.closest('.dropdown') || el.closest('.mob-submenu')));
+     */
+  if (shouldShowModal) {
+    el.removeEventListener('click', openModal);
+    el.addEventListener('click', openModal);
+    el.removeEventListener('click', (e) => e.preventDefault());
+    el.addEventListener('click', (e) => e.preventDefault());
+  }
+});
+
+  
+  // ── Close handlers ──
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (gotItBtn) gotItBtn.addEventListener('click', closeModal);
+  
+  if (notifyBtn) {
+    notifyBtn.addEventListener('click', () => {
+      alert('We\'ll notify you as soon as login is ready! 🚀');
+      closeModal();
+    });
+  }
+  
+  // Close on backdrop click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+  
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+}
+
+// ── Call initialiser after navbar loads ──
+// Wrap in a small delay to ensure DOM is ready
+if (document.readyState === 'complete') {
+  initializeLoginModal();
+} else {
+  document.addEventListener('DOMContentLoaded', initializeLoginModal);
+}
+
+// Also re-initialise after navbar fetch (in case login links are injected)
+const origFetch = window.fetch;
+// We'll hook into the existing navbar fetch
+const navbarObserver = new MutationObserver(() => {
+  if (document.querySelector('.nav-right a[href="login.html"]')) {
+    initializeLoginModal();
+    navbarObserver.disconnect();
+  }
+});
+navbarObserver.observe(document.body, { childList: true, subtree: true });
+
+// Fallback: re-run after 2 seconds
+setTimeout(initializeLoginModal, 2000);
+
+// Load the login modal
+fetch('modal.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('loginModalContainer').innerHTML = data;
+    // Initialize after modal is loaded
+    setTimeout(initializeLoginModal, 100);
+  })
+  .catch(() => {
+    // Fallback: if modal.html doesn't exist, check if modal is already in page
+    setTimeout(initializeLoginModal, 100);
+  });

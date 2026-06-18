@@ -2,7 +2,10 @@
     .theme-control {
       position: relative;
       top: 0;
-      left: 0;}  
+      /* left: 0; */
+      left: 18%;
+    
+    }  
     input[type="range"] {
       width: 120px;
       color: rgba(239, 214, 214, 0.5);}

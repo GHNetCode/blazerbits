@@ -149,15 +149,12 @@ vite.config.ts.timestamp-*
 
 
 
+DEV/temp
+
 DEV/indexDevUnderConstruction.html
 DEV/gpt/indexgpt.html
 DEV/styleAll.css
 DEV/portfolioOLD.html
-DEV/temp/styleOld-css
 DEV/indexFireflies.html
 DEV/indexOld copy.html
-DEV/temp/JSPractice/jsrevamp.js
-DEV/temp/JSPractice/2/styleMobMenuOverlay.css
-DEV/temp/JSPractice/3/styleMobMenuOverlay.css
-DEV/temp/JSPractice/1/styleMobMenuOverlay.css
-DEV/temp/index_UnderConstruction.html
+

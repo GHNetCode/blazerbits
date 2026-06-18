@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.ico">
     <title>Joe | Portfolio</title>
     <link rel="stylesheet" href="style.css"/>
     <style>
@@ -117,7 +118,7 @@ body::before {
 
         .hero h1 {
             text-align: center;
-            font-size: clamp(3rem, 8vw, 3rem);
+            font-size: clamp(2.8rem, 8vw, 3rem);
             line-height: 1;
             margin-bottom: 5rem;
             letter-spacing: -0.04em;
@@ -128,10 +129,11 @@ body::before {
             max-width: 880px;
             margin: 0 auto;
             /* color: var(--muted); */ /*Disabled to allow theme to work for P tags..*/
-            font-size: 1.15rem;
+            font-size: 1.10rem;
             line-height: 1.9;
             animation: fadeUp 1.8s ease forwards;
         }
+        /* Introduction p font size matches About Joe section */
 
         .scroll-indicator {
             position: absolute;
@@ -199,7 +201,7 @@ body::before {
         .skills-grid p {
             color: var(--text);
             /* color: var(--muted); */
-                        font-size: 1.15rem;
+                        font-size: 1.10rem;
             line-height: 1.9;
             
         }
@@ -287,8 +289,8 @@ body::before {
             padding: 1rem 2rem;
             border-radius: 999px;
             text-decoration: none;
-            font-weight: 600;
-            transition: all 0.35s ease;
+            font-weight: 500;
+            transition: all 0.2s ease;
             border: 1px solid transparent;
         }
 
@@ -306,7 +308,7 @@ body::before {
         .btn-secondary {
             border: 1px solid var(--border);
             color: var(--text);
-            background: transparent;
+            /* background: transparent; */
         }
  
 
@@ -364,7 +366,51 @@ body::before {
             }
         }
 
+
+     .nav-left{
+            /* left: 500px; */
+            margin-left:10% ;
+            /* border: solid rebeccapurple 1px; */
+        
+        }
+     .nav-right, .hamburger {
+            display: none;}
+    
+         .logo {  
+         left: 1%; } 
+
+     .theme-control {  
+        display:flex;
+        position: absolute;
+        top: 25px;
+        left: 48vw; 
+        
+        } 
+
+
+              .gtranslate_wrapper {
+    /* display: none; */
+    /* top: 45px;
+    left: 22px; */
+  top: 17px;
+  /* left: 45%; */
+  left: 75%;
+
+    } 
+      @media (max-width: 420px) {
+        .gtranslate_wrapper { left: 65%;}
+       }
+          
+       @media (max-width: 875px) {
+         .theme-control {
+            top: 40px;
+            left: 13%; } 
+         }
+
         @media (max-width: 768px) {
+            
+            .hamburger {display: none;}
+
             section {
                 padding: 5rem 1.5rem;
             }
@@ -374,7 +420,7 @@ body::before {
             }
 
             .hero p {
-                font-size: 1rem;
+                font-size: 1.15rem; /* Matches About Joe section */
             }
 
             .fade-section.cta{
@@ -389,10 +435,16 @@ body::before {
             transition: all 3s ease;
              }
         }
+
     </style>
 </head>
 <body>
+
 <div id="navbar"></div>
+
+<!-- LOGIN MODAL (loaded dynamically) -->
+<div id="loginModalContainer"></div>
+
     <!-- HERO -->
     <section class="hero">
         <div class="container">
@@ -504,7 +556,7 @@ body::before {
     <section class="fade-section cta">
         <div class="container glass-card cta">
             <h2 class="section-title">Explore More</h2>
-            <p style="max-width: 760px; margin: auto; line-height: 1.8;">
+            <p style="max-width: 760px; margin: auto; font-size: 1.1rem; line-height: 1.8;">
                 Interested in learning more about Joe’s background, technical experience, and projects?
                 You can view or download the latest CV below.
             </p>
@@ -518,7 +570,7 @@ body::before {
 
                 <a class="btn btn-secondary"
                    href="index.html">
-                    Back to Homepage
+                     Homepage
                 </a>
             </div>
         </div>

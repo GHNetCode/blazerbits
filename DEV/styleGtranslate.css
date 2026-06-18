@@ -2,11 +2,13 @@
 .gtranslate_wrapper {
   display: flex;
   position: absolute;
-  left: 270px;
+  /* left: 270px; */
+  left: 45%;
   top: 20.4px;
   width: 100px;
   opacity: 0.89;
   transition: opacity 0.3s ease;
+  /* border: solid red 1px; */
 }
 
 /* Make the entire GTranslate wrapper have no background */
