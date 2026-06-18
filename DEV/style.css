@@ -5,6 +5,8 @@
 @import url('styleMenuHam.css');
 @import url('styleMenuDropdown.css');
 @import url('stylebackGndparticles.css');
+@import url('styleModalLoginUnderConst.css');
+
 
   
 :root {
@@ -311,6 +313,10 @@ body {
 
 /* Mobile */
  /* @media (max-width: 768px) { */
+
+  
+
+
     @media (max-width: 875px) {
 /* Show hamburger menu only on mobile */
   .hamburger {
@@ -364,7 +370,8 @@ body {
   /* top: 35px;
   left: 45%; */
     top: 48px;
-    left: 22px;
+    /* left: 22px; */
+    left: 3.5vw;
 
     /* position: absolute; */
     /* bottom: 40px; */
@@ -380,6 +387,12 @@ body {
     font-size: 1.5rem;
     margin: 20px 0;
   } 
-
-
 }
+  @media (max-width: 760px) { 
+   .theme-control { 
+    left: 4.5vw; }
+     }
+       @media (max-width: 760px) { 
+   .theme-control { 
+    left: 5.5vw; }
+     }

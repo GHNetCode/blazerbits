@@ -22,16 +22,17 @@
   pointer-events: all;
 }
 
-/* ── Root panel — perfectly centred column ── */
+/* ── Root panel Items — perfectly centred column ── */
 .mob-panel-root {
   display: flex;
   position: relative;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: normal;/*normal is "left" -- center*/
+  /*text-align: center;*/ 
   width: 260px;
   padding: 0;
   transition: opacity 0.25s ease, transform 0.25s ease;
+
 }
 
 .mob-panel-root.dimmed {
@@ -41,15 +42,14 @@
 }
 
 .mob-panel-root a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-flex;/*inline-flex*/
+  justify-content: flex-start;
   gap: 8px;
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 2rem;
   font-weight: 300;
   letter-spacing: 0.08em;
-  margin: 10px 0;
+  margin: 12px 0 0 30%;
   color: var(--text);
   text-decoration: none;
   opacity: 0.7;
@@ -82,9 +82,9 @@
   display: flex;
   position: absolute;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  width: 260px;
+  align-items:normal;/*center*/
+  text-align: left;
+  width: 280px;
   padding: 0;
   opacity: 0;
   pointer-events: none;
@@ -101,33 +101,34 @@
 /* ── Panel title ── */
 .mob-panel-title {
   display: block;
+  /* text-align: center; */
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.95rem; /*0.65rem*/
   font-weight: 500;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--text);
   opacity: 0.3;
-  margin-bottom: 20px;
-  padding-bottom: 14px;
+  margin: 0 0 20px 30%;/*margin: 0 0 20px 30%;*/
+  /* padding-bottom: 14px; */
   border-bottom: 1px solid rgba(255,255,255,0.08);
   width: 100%;
-  text-align: center;
+  
 }
 
 /* ── Links inside submenu ── */
 .mob-submenu a {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  align-items: normal;
+  /* justify-content: flex-start; */
+  /* gap: 81px; */
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 1.6rem;
   font-weight: 300;
   letter-spacing: 0.06em;
   color: var(--text);
   opacity: 0.7;
-  margin: 8px 0;
+  margin: 8px 0 4px 30%; /*8px 0 --  8px 0 0 30%*/
   text-decoration: none;
   transition: opacity 0.2s ease;
 }
