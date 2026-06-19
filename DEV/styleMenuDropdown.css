@@ -1,22 +1,28 @@
 /* DROPDOWN CONTAINER */
 .dropdown {
   position: absolute;
-  top: 100%;   /* 🔥 exact bottom of nav item  */
-  margin-top: 17px; /* 👈 creates space visually */
+  top: 100%;
+  margin-top: 17px;
   left: -1px;
   transform: translateX(-10%);
   min-width: 180px;
   padding: 8px 0;
-  /* background: rgba(0, 0, 0, 0.0);  */
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 81, 255, 0.136);
+  
+  /* OPTIMIZED: More opaque = less blending */
+  background: rgba(0, 0, 0, 0.85);
+  
+  /* OPTIMIZED: Reduce or remove blur */
+  /* backdrop-filter: blur(10px); */ /* DISABLED */
+  /* -webkit-backdrop-filter: blur(10px); */ /* DISABLED */
+  
+  /* OPTIMIZED: Less transparent border */
+  border: 1px solid rgba(0, 81, 255, 0.08);
   border-top: none;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   border-radius: 0 0 8px 8px;
-  opacity: 0; /* ------------------ Temporarily!!!---------------*/
+  opacity: 0;
   pointer-events: none;
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.3s ease;
   z-index: 100;
   cursor: pointer;
 }

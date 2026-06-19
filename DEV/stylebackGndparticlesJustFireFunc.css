@@ -1,0 +1,70 @@
+/* ============================================================
+   JUST FIREFLIES TOAST MESSAGE
+   ============================================================ */
+
+#justFireF-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(10, 10, 26, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  padding: 0.55rem 1rem 0.55rem 1.2rem;
+  border-radius: 999px;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 9999;
+  white-space: nowrap;
+}
+
+/* ── KBD tags inside toast ── */
+#justFireF-toast kbd {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 0.72rem;
+}
+
+/* ── OK button inside toast ── */
+#justFireF-ok {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.7rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  padding: 3px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#justFireF-ok:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Responsive adjustments ── */
+@media (max-width: 640px) {
+  #justFireF-toast {
+    font-size: 0.65rem;
+    padding: 0.45rem 0.8rem 0.45rem 1rem;
+    white-space: normal;
+    max-width: 90vw;
+  }
+  
+  #justFireF-ok {
+    font-size: 0.65rem;
+    padding: 2px 10px;
+  }
+}

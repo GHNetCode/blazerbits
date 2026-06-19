@@ -24,4 +24,21 @@
   border-radius: 50%;
   will-change: transform, opacity;
   transform: translateZ(0);
+  /* These will be set per-firefly via inline styles */
 }
+
+/* ── FIREFLY ANIMATIONS ──
+   All fireflies share the same drift pattern, but with different
+   durations, delays, and translation values set via inline styles.
+   This keeps the CSS static and minimal. */
+
+@keyframes firefly-drift {
+  0%   { transform: translate3d(var(--x0), var(--y0), 0); opacity: var(--dim);    }
+  20%  { transform: translate3d(var(--xMid), var(--yMid), 0); opacity: var(--bright); }
+  40%  {                                                   opacity: var(--dim);    }
+  60%  { transform: translate3d(var(--x1), var(--y1), 0); opacity: var(--bright); }
+  80%  {                                                   opacity: var(--dim);    }
+  100% { transform: translate3d(var(--x0), var(--y0), 0); opacity: var(--bright); }
+}
+
+/* Fallback for older browsers — individual fireflies will use inline animations */
