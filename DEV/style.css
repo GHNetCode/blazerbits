@@ -5,7 +5,9 @@
 @import url('styleMenuHam.css');
 @import url('styleMenuDropdown.css');
 @import url('stylebackGndparticles.css');
+@import url('stylebackGndparticlesJustFireFunc.css');
 @import url('styleModalLoginUnderConst.css');
+
 
 
   
@@ -60,7 +62,7 @@ body {
   overflow-x: hidden;
 }
 
-.top-nav {
+/* .top-nav {
   display: flex;
   position: fixed;
   top: 0;
@@ -72,7 +74,31 @@ body {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(10px);
   border-bottom:1px solid rgba(0, 81, 255, 0.136);
+} */
+.top-nav {
+  display: flex;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 15px 30px;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  
+  /* OPTIMIZED: Solid background instead of semi-transparent + blur */
+  background: rgba(0, 0, 0, 0.55); /* More opaque = less blending work */
+  
+  /* OPTIMIZED: Remove or reduce blur - most expensive operation */
+  /* backdrop-filter: blur(10px); */ /* DISABLED - MAIN CULPRIT */
+  /* -webkit-backdrop-filter: blur(10px); */ /* DISABLED */
+  
+  /* OPTIMIZED: Less transparent border = less compositing */
+  border-bottom: 1px solid rgba(0, 81, 255, 0.08); /* Reduced alpha from 0.136 */
+  
+  /* OPTIMIZED: Only use will-change if absolutely needed */
+  /* will-change: transform; */ /* REMOVED - not animating */
 }
+
 .nav-left {
   display: flex;
   align-items: center;
@@ -325,6 +351,8 @@ body {
     top: 20px;
     right: 20px;
     z-index: 1100;
+    /* Hardware acceleration for smoother animation */
+    will-change: transform;
   }
 
   /* Disable nav-right */
@@ -344,6 +372,8 @@ body {
 
   background: none;
   backdrop-filter: blur(10px);
+  /* Reduce backdrop filter on mobile for performance */
+  -webkit-backdrop-filter: blur(10px);
 
 }
 
@@ -353,6 +383,8 @@ body {
     left: 22px; */
   top: 17px;
   left: 45%;
+  /* Prevent unnecessary repaints */
+ will-change: opacity;
 
     }
 
@@ -382,6 +414,15 @@ body {
     .mobile-menu-overlay {
   display: flex;
   }
+
+    /* Prevent scroll issues when menu is open */
+  body.menu-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
 
   .mobile-menu-content a {
     font-size: 1.5rem;
