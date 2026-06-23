@@ -148,7 +148,11 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 
-
+# Keep backups local..
+.Backups/
+# Keep temp local...
+temp/
+# Keep DEV/temp local...
 DEV/temp
 
 DEV/indexDevUnderConstruction.html
@@ -157,4 +161,3 @@ DEV/styleAll.css
 DEV/portfolioOLD.html
 DEV/indexFireflies.html
 DEV/indexOld copy.html
-

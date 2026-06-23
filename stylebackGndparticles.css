@@ -1,0 +1,44 @@
+/* FIREFLY PARTICLE CONTAINERS
+   Both sit inside .landing (position:relative, overflow:hidden).
+   position:absolute so they fill the section — not the whole viewport.
+   z-index set via JS so they sandwich .content (z-index:2).
+   overflow:visible lets box-shadow glows bleed past the dot boundary. */
+
+#particles-back,
+#particles-front {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+#particles-back  { z-index: 0; }
+#particles-front { z-index: 3; }
+
+/* FIREFLY DOT
+   contain:strict intentionally omitted — it clips box-shadow and
+   restricts abs-positioned elements to their own bounding box,
+   causing fireflies to cluster in a corner at wide viewports. */
+.firefly {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  /* These will be set per-firefly via inline styles */
+}
+
+/* ── FIREFLY ANIMATIONS ──
+   All fireflies share the same drift pattern, but with different
+   durations, delays, and translation values set via inline styles.
+   This keeps the CSS static and minimal. */
+
+@keyframes firefly-drift {
+  0%   { transform: translate3d(var(--x0), var(--y0), 0); opacity: var(--dim);    }
+  20%  { transform: translate3d(var(--xMid), var(--yMid), 0); opacity: var(--bright); }
+  40%  {                                                   opacity: var(--dim);    }
+  60%  { transform: translate3d(var(--x1), var(--y1), 0); opacity: var(--bright); }
+  80%  {                                                   opacity: var(--dim);    }
+  100% { transform: translate3d(var(--x0), var(--y0), 0); opacity: var(--bright); }
+}
+
+/* Fallback for older browsers — individual fireflies will use inline animations */

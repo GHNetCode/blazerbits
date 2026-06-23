@@ -1,0 +1,228 @@
+/* ============================================================
+   MOBILE MENU OVERLAY — PERFORMANCE OPTIMIZED
+   ============================================================ */
+
+.mobile-menu-overlay {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 4, 12, 0.92); /* Reduced transparency for less compositing */
+  /* backdrop-filter: blur(18px);  DISABLED - EXPENSIVE ON MOBILE */
+  /* -webkit-backdrop-filter: blur(18px); DISABLED */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease; /* Faster, cheaper transition */
+  z-index: 999;
+  /* Prevent repaints during animation */
+  will-change: opacity;
+}
+
+.mobile-menu-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── Root panel Items — perfectly centred column ── */
+.mob-panel-root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: normal;
+  width: 260px;
+  padding: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  /* Prevent layout thrashing */
+  will-change: opacity, transform;
+}
+
+.mob-panel-root.dimmed {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.97);
+}
+
+.mob-panel-root a {
+  display: inline-flex;
+  justify-content: flex-start;
+  gap: 8px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  margin: 12px 0 0 30%;
+  color: var(--text);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.15s ease; /* Faster */
+  /* Prevent text repaints */
+  -webkit-font-smoothing: antialiased;
+}
+
+.mob-panel-root a:hover {
+  opacity: 1;
+}
+
+/* Small chevron */
+.mob-drill-arrow {
+  opacity: 0.4;
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 0.15s ease;
+}
+
+.mob-panel-root a:hover .mob-drill-arrow {
+  opacity: 0.8;
+}
+
+/* ── Submenu card — centred fade-in ── */
+.mob-submenu {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  align-items: normal;
+  text-align: left;
+  width: 280px;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  /* Prevent layout thrashing */
+  will-change: opacity, transform;
+}
+
+.mob-submenu.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+/* ── Panel title ── */
+.mob-panel-title {
+  display: block;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0.3;
+  margin: 0 0 20px 30%;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  width: 100%;
+  /* Prevent text repaints */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Links inside submenu ── */
+.mob-submenu a {
+  display: inline-flex;
+  align-items: normal;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  opacity: 0.7;
+  margin: 8px 0 4px 30%;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+  /* Prevent text repaints */
+  -webkit-font-smoothing: antialiased;
+}
+
+.mob-submenu a:hover {
+  opacity: 1;
+}
+
+.mob-submenu .mob-drill {
+  font-size: 1.6rem;
+}
+
+/* ── Close button — top-right ── */
+.mob-close {
+  position: absolute;
+  top: -36px;
+  right: -4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: var(--text);
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+  padding: 0;
+  /* Prevent repaints */
+  will-change: opacity;
+}
+
+.mob-close:hover {
+  opacity: 0.9;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Just Fireflies button — elegant ghost style ── */
+.mob-submenu button#JustFireF,
+.mob-submenu .just-fireflies-btn {
+  margin-top: 14px;
+  padding: 9px 28px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+  /* Prevent repaints */
+  will-change: opacity;
+}
+
+.mob-submenu button#JustFireF:hover,
+.mob-submenu .just-fireflies-btn:hover {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* ============================================================
+   MOBILE PERFORMANCE OVERRIDES
+   ============================================================ */
+
+/* On mobile, reduce animations and visual effects */
+@media (max-width: 875px) {
+  .mobile-menu-overlay {
+    /* Faster transition on mobile */
+    transition: opacity 0.2s ease;
+    /* Ensure background is solid enough without blur */
+    background: rgba(4, 4, 12, 0.95);
+  }
+  
+  .mob-panel-root a,
+  .mob-submenu a {
+    /* Slightly faster transitions on mobile */
+    transition: opacity 0.1s ease;
+  }
+  
+  .mob-panel-root {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  
+  .mob-submenu {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  
+  .mob-close {
+    transition: opacity 0.1s ease, border-color 0.1s ease;
+  }
+}
