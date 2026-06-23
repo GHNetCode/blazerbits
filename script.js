@@ -62,11 +62,6 @@ fetch(basePath + 'modal.html')
 
 
 
-
-
-
-
-
 /* LOAD SAVED THEME */
 function initializeThemeSlider() {
     const slider = document.getElementById("themeSlider");
@@ -546,16 +541,3 @@ navbarObserver.observe(document.body, { childList: true, subtree: true });
 
 // Fallback: re-run after 2 seconds
 setTimeout(initializeLoginModal, 2000);
-
-// Load the login modal
-//  fetch('modal.html')
-//    .then(response => response.text())
-//    .then(data => {
-//      document.getElementById('loginModalContainer').innerHTML = data;
-//      // Initialize after modal is loaded
-//      setTimeout(initializeLoginModal, 100);
-//    })
-//    .catch(() => {
-//      // Fallback: if modal.html doesn't exist, check if modal is already in page
-//      setTimeout(initializeLoginModal, 100);
-//    });
