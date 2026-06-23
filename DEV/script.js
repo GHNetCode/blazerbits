@@ -1,19 +1,72 @@
 const root = document.documentElement;
 
-//lightweight component system for the Navbar.
-// - use <div id="navbar"></div> and 
-//       <script src="script.js"></script> in all html files..
-fetch('navbar.html')
-    .then(response => response.text())
+// Determine base path for assets
+function getBasePath() {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes('/projects/')) {
+        return '../';
+    }
+    return '';
+}
+
+// Get the base path once
+const basePath = getBasePath();
+console.log('Base path:', basePath);
+
+// FIXED: Use basePath in fetch calls
+fetch(basePath + 'navbar.html')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Navbar not found at: ' + basePath + 'navbar.html');
+        }
+        return response.text();
+    })
     .then(data => {
         document.getElementById('navbar').innerHTML = data;
-        //Initialize components
+        // Initialize components
         initializeGTranslate();
         initializeThemeSlider();
         initializeMobileMenu();
         initializeJustFireF();
-
+        // NO NEED for initializeNavbar() - using root-relative paths!
+    })
+    .catch(error => {
+        console.warn('Could not load navbar:', error);
+        const navbar = document.getElementById('navbar');
+        if (navbar) {
+            navbar.innerHTML = '<div style="padding: 1rem; text-align: center; opacity: 0.5;">Navigation unavailable</div>';
+        }
     });
+
+// REMOVE updateNavbarLinks() and initializeNavbar() entirely
+
+// FIXED: Use basePath in modal fetch
+fetch(basePath + 'modal.html')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Modal not found at: ' + basePath + 'modal.html');
+        }
+        return response.text();
+    })
+    .then(data => {
+        const container = document.getElementById('loginModalContainer');
+        if (container) {
+            container.innerHTML = data;
+            setTimeout(initializeLoginModal, 100);
+        }
+    })
+    .catch(error => {
+        console.warn('Could not load modal:', error);
+    });
+
+
+
+
+
+
+
+
+
 /* LOAD SAVED THEME */
 function initializeThemeSlider() {
     const slider = document.getElementById("themeSlider");
@@ -495,14 +548,14 @@ navbarObserver.observe(document.body, { childList: true, subtree: true });
 setTimeout(initializeLoginModal, 2000);
 
 // Load the login modal
-fetch('modal.html')
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById('loginModalContainer').innerHTML = data;
-    // Initialize after modal is loaded
-    setTimeout(initializeLoginModal, 100);
-  })
-  .catch(() => {
-    // Fallback: if modal.html doesn't exist, check if modal is already in page
-    setTimeout(initializeLoginModal, 100);
-  });
+//  fetch('modal.html')
+//    .then(response => response.text())
+//    .then(data => {
+//      document.getElementById('loginModalContainer').innerHTML = data;
+//      // Initialize after modal is loaded
+//      setTimeout(initializeLoginModal, 100);
+//    })
+//    .catch(() => {
+//      // Fallback: if modal.html doesn't exist, check if modal is already in page
+//      setTimeout(initializeLoginModal, 100);
+//    });

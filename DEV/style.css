@@ -291,31 +291,128 @@ body {
     opacity: 0.8;
   }
 
-  /* Just Fireflies — elegant ghost button, overrides global button style */
-  button#JustFireF {
-    display: block;
-    width: calc(100% - 36px);
-    margin: 6px 18px 4px;
-    padding: 8px 0;
-    background: transparent;
-    color: var(--text);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 2px;
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 0.72rem;
-    font-weight: 400;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    opacity: 0.55;
-    cursor: pointer;
-    transition: opacity 0.25s ease, border-color 0.25s ease;
-  }
+   
+/* Just Fireflies — elegant 3D neumorphic button with dark background */
+button#JustFireF {
+  display: block;
+  width: calc(100% - 36px);
+  margin: 6px 18px 4px;
+  padding: 8px 0;
+  
+  /* Dark background — stays dark regardless of theme */
+  background: linear-gradient(to top, rgba(10, 12, 18, 0.95), rgba(18, 20, 28, 0.90) 80%, rgba(25, 28, 36, 0.85));
+  
+  /* Text color uses CSS variable for theme support */
+  color: var(--text, rgba(200, 210, 230, 0.7));
+  
+  /* Subtle border — slightly visible, uses variable for theme */
+  border: 1px solid rgba(180, 190, 210, 0.12);
+  border-radius: 30px;
+  
+  /* 3D neumorphic shadows — subtle and dark */
+  box-shadow: 
+    0 4px 3px 1px rgba(0, 0, 0, 0.35),
+    0 6px 8px rgba(0, 0, 0, 0.45),
+    0 -4px 4px rgba(40, 45, 60, 0.06),
+    0 -6px 4px rgba(20, 22, 30, 0.04),
+    inset 0 0 3px 0 rgba(60, 70, 90, 0.06);
+  
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  
+  cursor: pointer;
+  transition: all 0.25s ease;
+  
+  /* Prevent text selection */
+  -webkit-user-select: none;
+  user-select: none;
+}
 
-  button#JustFireF:hover {
-    opacity: 1;
-    background: transparent;
-    border-color: rgba(255, 255, 255, 0.4);
-  }
+/* ── Hover state ── */
+button#JustFireF:hover {
+  /* Text becomes brighter on hover */
+  color: var(--text, rgba(235, 240, 248, 0.95));
+  border-color: rgba(180, 190, 210, 0.2);
+  
+  box-shadow: 
+    0 4px 3px 1px rgba(0, 0, 0, 0.35),
+    0 6px 8px rgba(0, 0, 0, 0.45),
+    0 -4px 4px rgba(40, 45, 60, 0.06),
+    0 -6px 4px rgba(20, 22, 30, 0.04),
+    inset 0 0 3px 3px rgba(60, 70, 90, 0.05);
+  
+  background: linear-gradient(to top, rgba(14, 16, 24, 0.95), rgba(22, 25, 34, 0.90) 80%, rgba(30, 34, 44, 0.85));
+}
+
+/* ── Active (pressed) state ── */
+button#JustFireF:active {
+  transform: scale(0.96);
+  
+  box-shadow: 
+    0 2px 2px 0px rgba(0, 0, 0, 0.45),
+    0 3px 4px rgba(0, 0, 0, 0.55),
+    0 -2px 2px rgba(40, 45, 60, 0.03),
+    0 -3px 2px rgba(20, 22, 30, 0.03),
+    inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.3);
+  
+  transition: all 0.08s ease;
+}
+
+/* ── Focus state (keyboard navigation) ── */
+button#JustFireF:focus-visible {
+  outline: 2px solid rgba(140, 180, 255, 0.25);
+  outline-offset: 3px;
+}
+
+/* ── Light theme — only text and border adjust ── */
+body[data-theme="light"] button#JustFireF {
+  /* Background stays dark — unchanged */
+  background: linear-gradient(to top, rgba(10, 12, 18, 0.95), rgba(18, 20, 28, 0.90) 80%, rgba(25, 28, 36, 0.85));
+  
+  /* Text becomes darker for light theme readability */
+  color: rgba(180, 190, 210, 0.6);
+  
+  /* Border slightly more visible on light background */
+  border-color: rgba(180, 190, 210, 0.18);
+  
+  /* Shadows adjust slightly for light background context */
+  box-shadow: 
+    0 4px 3px 1px rgba(0, 0, 0, 0.3),
+    0 6px 8px rgba(0, 0, 0, 0.4),
+    0 -4px 4px rgba(40, 45, 60, 0.04),
+    0 -6px 4px rgba(20, 22, 30, 0.03),
+    inset 0 0 3px 0 rgba(60, 70, 90, 0.04);
+}
+
+body[data-theme="light"] button#JustFireF:hover {
+  color: rgba(200, 210, 230, 0.85);
+  border-color: rgba(180, 190, 210, 0.25);
+  
+  box-shadow: 
+    0 4px 3px 1px rgba(0, 0, 0, 0.3),
+    0 6px 8px rgba(0, 0, 0, 0.4),
+    0 -4px 4px rgba(40, 45, 60, 0.04),
+    0 -6px 4px rgba(20, 22, 30, 0.03),
+    inset 0 0 3px 3px rgba(60, 70, 90, 0.04);
+  
+  background: linear-gradient(to top, rgba(14, 16, 24, 0.95), rgba(22, 25, 34, 0.90) 80%, rgba(30, 34, 44, 0.85));
+}
+
+body[data-theme="light"] button#JustFireF:active {
+  box-shadow: 
+    0 2px 2px 0px rgba(0, 0, 0, 0.4),
+    0 3px 4px rgba(0, 0, 0, 0.5),
+    0 -2px 2px rgba(40, 45, 60, 0.02),
+    0 -3px 2px rgba(20, 22, 30, 0.02),
+    inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+
 
       .firefly {
       position: absolute;
@@ -429,6 +526,18 @@ body {
     margin: 20px 0;
   } 
 }
+
+/* ── Responsive adjustments ── */
+@media (max-width: 768px) {
+  button#JustFireF {
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    padding: 10px 0;
+    width: calc(100% - 28px);
+    margin: 4px 14px 4px;
+  }
+}
+
   @media (max-width: 760px) { 
    .theme-control { 
     left: 4.5vw; }
