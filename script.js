@@ -11,7 +11,7 @@ function getBasePath() {
 
 // Get the base path once
 const basePath = getBasePath();
-console.log('Base path:', basePath);
+//console.log('Base path:', basePath);
 
 // FIXED: Use basePath in fetch calls
 fetch(basePath + 'navbar.html')
