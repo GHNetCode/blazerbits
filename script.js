@@ -251,10 +251,9 @@ function checkAndHideFireflyButton() {
     const back = document.getElementById('particles-back');
     const front = document.getElementById('particles-front');
     const landing = document.querySelector('.landing');
-    const projectsPage = document.querySelector('.projects-page');
 
     // If firefly containers don't exist, hide the button
-    if (!back || !front || !landing || !projectsPage) {
+    if (!back || !front || !landing) {
         console.log('Fireflies: containers not found — hiding button');
         const justFireFBtns = document.querySelectorAll('#JustFireF');
         justFireFBtns.forEach(btn => {
