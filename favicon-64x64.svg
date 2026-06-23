@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#08121a"/>
+  <!-- Outer flame body — deep teal -->
+  <path d="M32 52 C20 44 18 34 24 27 C24 33 28 35 28 35 C26 28 30 20 36 14 C36 22 40 24 40 30 C42 27 42 23 40 19 C46 25 48 34 44 42 C42 46 38 50 32 52Z" fill="#1e6e7a" opacity="0.95"/>
+  <!-- Inner flame highlight — light aqua -->
+  <path d="M32 52 C24 46 22 38 27 32 C27 37 30 38 30 38 C29 33 32 27 36 23 C36 29 38 31 38 35 C39 33 39 30 38 27 C42 31 42 38 40 43 C38 47 35 50 32 52Z" fill="#a8e6ef"/>
+  <!-- Subtle water shimmer at base -->
+  <path d="M28 44 Q32 40 36 44 Q32 48 28 44Z" fill="white" opacity="0.12"/>
+</svg>

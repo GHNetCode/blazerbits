@@ -1,0 +1,582 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
+@import url('styleMobMenuOverlay.css');
+@import url('styleThemeSlider.css');
+@import url('styleGtranslate.css');
+@import url('styleMenuHam.css');
+@import url('styleMenuDropdown.css');
+@import url('stylebackGndparticles.css');
+@import url('stylebackGndparticlesJustFireFunc.css');
+@import url('styleModalLoginUnderConst.css');
+
+
+
+  
+:root {
+  --bg: #000;
+  --bgPortf: #000;
+  --text: #eaeaea;
+  --text2: #c4c5c6;
+  
+  --accent: #888;
+  --overlay1: rgba(0,0,0,0.1);
+  --overlay2: rgba(0,0,0,0.2);
+  --overlay3: rgba(0,0,0,0.3);
+  --overlay4: rgba(0,0,0,0.4);
+  --overlay5: rgba(0,0,0,0.5);
+  --overlay6: rgba(0,0,0,0.6);
+  --overlay7: rgba(0,0,0,0.7);
+  --overlay8: rgba(0,0,0,0.8);
+  --overlay9: rgba(0,0,0,0.9);
+
+  --overlay2b: rgba(1, 177, 253, 0.2);
+
+  --overlay1g: rgba(72, 224, 235, 0.058);
+  --overlay2g: rgba(1, 253, 236, 0.2);
+  --overlay6g: rgba(1, 253, 232, 0.6);
+
+  --overlay3g1: rgba(47, 134, 158, 0.3);
+  --overlay3g2: rgba(40, 73, 84, 0.969);
+
+  /*color: rgb(58, 107, 120); */
+}
+
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ELEGANT TYPOGRAPHY SCALE */
+h1, h2, h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+/* BODY */
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.4s ease, color 0.4s ease;
+  overflow-x: hidden;
+}
+
+/* .top-nav {
+  display: flex;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 15px 30px;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(0, 81, 255, 0.136);
+} */
+.top-nav {
+  display: flex;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 15px 30px;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  
+  /* OPTIMIZED: Solid background instead of semi-transparent + blur */
+  background: rgba(0, 0, 0, 0.55); /* More opaque = less blending work */
+  
+  /* OPTIMIZED: Remove or reduce blur - most expensive operation */
+  /* backdrop-filter: blur(10px); */ /* DISABLED - MAIN CULPRIT */
+  /* -webkit-backdrop-filter: blur(10px); */ /* DISABLED */
+  
+  /* OPTIMIZED: Less transparent border = less compositing */
+  border-bottom: 1px solid rgba(0, 81, 255, 0.08); /* Reduced alpha from 0.136 */
+  
+  /* OPTIMIZED: Only use will-change if absolutely needed */
+  /* will-change: transform; */ /* REMOVED - not animating */
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.nav-right {
+  display: flex;
+  /* align-items: stretch; */
+  position: relative;
+  /* border: dotted red 1px; */
+  right: 3%;
+
+}
+.nav-right a{
+  margin-left: 25px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  opacity: 0.8;
+  transition: 0.3s;
+}
+.nav-right a:hover{
+  opacity: 1;
+}
+
+.logo {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--text);
+  opacity: 0.8;
+  transition: 0.3s;
+  text-decoration: none;
+  }
+
+.logo:hover{
+   opacity: 1;
+}
+
+
+/* Hovering Bridge between main menu and Dropdown submenu */
+.nav-item::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;   
+  width: 100%;
+  height: 20px;
+}
+
+.dropdown-arrow {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  transition: transform 0.4s ease, opacity 0.2s ease;
+  margin-left: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Rotate arrow when hovering over nav item */
+.nav-item:hover .dropdown-arrow {
+  transform: rotate(-0.5turn);
+  opacity: 1;
+}
+
+/* Adjust nav-item to properly align items */
+.nav-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 0px;
+}
+
+
+/* Stop When hovering stop 'flashing' of underline */
+.nav-item a{
+  text-decoration:none;
+  text-decoration-color: transparent;
+
+}
+.nav-item > a {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  /* padding: 0 5px; */
+  padding: 0;  /*  0 2px 0 5px Adjusted padding - right padding reduced */
+  color: var(--text);
+  font-size: 0.9rem;
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
+/* Disable underline for now.. TBD! */
+/* .nav-item:hover,.nav-item a:hover {  
+  text-decoration: underline;
+  text-decoration-color: rgb(30, 73, 141);
+  text-decoration-thickness: 2px;
+  opacity: 1;
+} */
+
+
+
+
+/* LANDING */
+.landing {
+  height: 100vh; /*fallback for older browsers..*/
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  /* Base dark gradient  -- Fix background to work with themeSlider, then check pf..*/
+  background: 
+  radial-gradient(circle at 50% 40%, rgba(60, 80, 120, 0.25), transparent 60%),
+  radial-gradient(circle at 80% 70%, rgba(120, 60, 160, 0.15), transparent 70%)
+              ,
+              linear-gradient(180deg, #050505 0%, #000000 100%)
+              
+              ;
+
+            }
+.landing::before {
+  pointer-events: none;   /* 👈 THIS FIXES YOUR INTERACTIONS */ 
+  content: "";
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(39, 39, 48, 0.08), transparent 70%);
+  animation: slowMove 20s ease-in-out infinite alternate;
+  z-index: 0;
+}
+@keyframes slowMove {
+  0% {
+    transform: translate(-100%, -100%);
+  }
+  100% {
+    transform: translate(100%, 100%);
+  }
+}
+
+/* .content class\Div of .landing class\section */
+  .content {
+    display:initial;
+ 
+    position: relative;
+    z-index: 2;
+  }
+  .content h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 4rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+  }
+  .content p {
+    margin-top: 10px;
+    /* color: var(--accent); */
+  }
+
+/* BUTTONS */
+  .buttons {
+    margin-top: 30px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    background: var(--text);
+    color: var(--bg);
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 3px;
+  }
+  
+  button.secondary {
+    background: transparent;
+    border: 1px solid var(--text);
+    color: var(--text);
+  }
+  
+  button:hover {
+    opacity: 0.8;
+  }
+
+   
+/* Just Fireflies — elegant 3D neumorphic button with dark background */
+button#JustFireF {
+  display: block;
+  width: calc(100% - 36px);
+  margin: 6px 18px 4px;
+  padding: 8px 0;
+  
+  /* Dark background — stays dark regardless of theme */
+  background: linear-gradient(to top, rgba(10, 12, 18, 0.95), rgba(18, 20, 28, 0.90) 80%, rgba(25, 28, 36, 0.85));
+  
+  /* Text color uses CSS variable for theme support */
+  color: var(--text, rgba(200, 210, 230, 0.7));
+  
+  /* Subtle border — slightly visible, uses variable for theme */
+  border: 1px solid rgba(180, 190, 210, 0.12);
+  border-radius: 30px;
+  
+  /* 3D neumorphic shadows — subtle and dark */
+  box-shadow: 
+    0 4px 3px 1px rgba(0, 0, 0, 0.35),
+    0 6px 8px rgba(0, 0, 0, 0.45),
+    0 -4px 4px rgba(40, 45, 60, 0.06),
+    0 -6px 4px rgba(20, 22, 30, 0.04),
+    inset 0 0 3px 0 rgba(60, 70, 90, 0.06);
+  
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  
+  cursor: pointer;
+  transition: all 0.25s ease;
+  
+  /* Prevent text selection */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ── Hover state ── */
+button#JustFireF:hover {
+  /* Text becomes brighter on hover */
+  color: var(--text, rgba(235, 240, 248, 0.95));
+  border-color: rgba(180, 190, 210, 0.2);
+  
+  box-shadow: 
+    0 4px 3px 1px rgba(0, 0, 0, 0.35),
+    0 6px 8px rgba(0, 0, 0, 0.45),
+    0 -4px 4px rgba(40, 45, 60, 0.06),
+    0 -6px 4px rgba(20, 22, 30, 0.04),
+    inset 0 0 3px 3px rgba(60, 70, 90, 0.05);
+  
+  background: linear-gradient(to top, rgba(14, 16, 24, 0.95), rgba(22, 25, 34, 0.90) 80%, rgba(30, 34, 44, 0.85));
+}
+
+/* ── Active (pressed) state ── */
+button#JustFireF:active {
+  transform: scale(0.96);
+  
+  box-shadow: 
+    0 2px 2px 0px rgba(0, 0, 0, 0.45),
+    0 3px 4px rgba(0, 0, 0, 0.55),
+    0 -2px 2px rgba(40, 45, 60, 0.03),
+    0 -3px 2px rgba(20, 22, 30, 0.03),
+    inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.3);
+  
+  transition: all 0.08s ease;
+}
+
+/* ── Focus state (keyboard navigation) ── */
+button#JustFireF:focus-visible {
+  outline: 2px solid rgba(140, 180, 255, 0.25);
+  outline-offset: 3px;
+}
+
+/* ── Light theme — only text and border adjust ── */
+body[data-theme="light"] button#JustFireF {
+  /* Background stays dark — unchanged */
+  background: linear-gradient(to top, rgba(10, 12, 18, 0.95), rgba(18, 20, 28, 0.90) 80%, rgba(25, 28, 36, 0.85));
+  
+  /* Text becomes darker for light theme readability */
+  color: rgba(180, 190, 210, 0.6);
+  
+  /* Border slightly more visible on light background */
+  border-color: rgba(180, 190, 210, 0.18);
+  
+  /* Shadows adjust slightly for light background context */
+  box-shadow: 
+    0 4px 3px 1px rgba(0, 0, 0, 0.3),
+    0 6px 8px rgba(0, 0, 0, 0.4),
+    0 -4px 4px rgba(40, 45, 60, 0.04),
+    0 -6px 4px rgba(20, 22, 30, 0.03),
+    inset 0 0 3px 0 rgba(60, 70, 90, 0.04);
+}
+
+body[data-theme="light"] button#JustFireF:hover {
+  color: rgba(200, 210, 230, 0.85);
+  border-color: rgba(180, 190, 210, 0.25);
+  
+  box-shadow: 
+    0 4px 3px 1px rgba(0, 0, 0, 0.3),
+    0 6px 8px rgba(0, 0, 0, 0.4),
+    0 -4px 4px rgba(40, 45, 60, 0.04),
+    0 -6px 4px rgba(20, 22, 30, 0.03),
+    inset 0 0 3px 3px rgba(60, 70, 90, 0.04);
+  
+  background: linear-gradient(to top, rgba(14, 16, 24, 0.95), rgba(22, 25, 34, 0.90) 80%, rgba(30, 34, 44, 0.85));
+}
+
+body[data-theme="light"] button#JustFireF:active {
+  box-shadow: 
+    0 2px 2px 0px rgba(0, 0, 0, 0.4),
+    0 3px 4px rgba(0, 0, 0, 0.5),
+    0 -2px 2px rgba(40, 45, 60, 0.02),
+    0 -3px 2px rgba(20, 22, 30, 0.02),
+    inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+
+
+      .firefly {
+      position: absolute;
+      border-radius: 50%;
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      contain: strict;
+    }
+  
+
+/* Remove mobile tap highlight (blue overlay) */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Alternative: More specific targeting if you want to be selective */
+button,
+a,
+[role="button"],
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* For WebKit browsers (Safari, Chrome on iOS) */
+button:focus,
+a:focus,
+[role="button"]:focus {
+  outline: none;
+}
+
+/* Keep focus visible for keyboard navigation (accessibility) */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid rgba(140, 180, 255, 0.3);
+  outline-offset: 2px;
+}
+
+
+
+#attribution { 
+  /* display: flexbox; */
+  position: relative;
+  text-align: center;
+  margin-top: -4vh/*move onto Landing Page*/;
+  font-size: 14px; 
+  
+
+  color: rgba(74, 92, 130, 0.466);
+}
+
+
+/* Mobile */
+ /* @media (max-width: 768px) { */
+
+  
+
+
+    @media (max-width: 875px) {
+/* Show hamburger menu only on mobile */
+  .hamburger {
+    display: flex;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+    /* Hardware acceleration for smoother animation */
+    will-change: transform;
+  }
+
+  /* Disable nav-right */
+    .nav-right {
+    display: none;
+    }
+
+  .top-nav {
+  display:flex ;
+  position:fixed;
+  /* width: 100%; */
+  padding: 12px 28px; /* padding: 15px 30px; */
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  /* z-index: 1000; */
+  ;
+
+  background: none;
+  backdrop-filter: blur(10px);
+  /* Reduce backdrop filter on mobile for performance */
+  -webkit-backdrop-filter: blur(10px);
+
+}
+
+  .gtranslate_wrapper {
+    /* display: none; */
+    /* top: 45px;
+    left: 22px; */
+  top: 17px;
+  left: 45%;
+  /* Prevent unnecessary repaints */
+ will-change: opacity;
+
+    }
+
+ /* .logo {
+  left:0 ;
+  font-size: 1rem;
+  letter-spacing: 1px; 
+}  */
+
+
+  .theme-control {
+  display: flex;
+  position: absolute;
+  /* border: solid 1px red; */
+  /* top: 35px;
+  left: 45%; */
+    top: 48px;
+    /* left: 22px; */
+    left: 3.5vw;
+
+    /* position: absolute; */
+    /* bottom: 40px; */
+    /* left: 10vw;  */
+    /* transform: translateX(-50%); */
+  
+  }
+    .mobile-menu-overlay {
+  display: flex;
+  }
+
+    /* Prevent scroll issues when menu is open */
+  body.menu-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+
+  .mobile-menu-content a {
+    font-size: 1.5rem;
+    margin: 20px 0;
+  } 
+}
+
+/* ── Responsive adjustments ── */
+@media (max-width: 768px) {
+  button#JustFireF {
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    padding: 10px 0;
+    width: calc(100% - 28px);
+    margin: 4px 14px 4px;
+  }
+}
+
+  @media (max-width: 760px) { 
+   .theme-control { 
+    left: 4.5vw; }
+     }
+       @media (max-width: 760px) { 
+   .theme-control { 
+    left: 5.5vw; }
+     }

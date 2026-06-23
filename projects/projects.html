@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | BlazerBits</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+
+  <style>
+    /* --- Projects Hero --- */
+    .projects-hero {
+      min-height: 40vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      background: radial-gradient(circle at 50% 40%, rgba(60, 80, 120, 0.15), transparent 60%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .projects-hero h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(3rem, 8vw, 4.5rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .projects-hero p {
+      font-size: 1.1rem;
+      color: var(--muted, #a7b1c2);
+      max-width: 600px;
+      opacity: 0.7;
+    }
+
+    /* --- Project Grid --- */
+    .projects-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    /* --- Project Tile --- */
+    .project-tile {
+      background: var(--card, rgba(255, 255, 255, 0.04));
+      border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+      border-radius: 24px;
+      padding: 2rem 1.5rem 1.8rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: var(--text);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-tile:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Tile Header */
+    .project-tile-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .project-tile-header .project-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .project-tile-header h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      margin: 0;
+    }
+
+    /* "Coming Soon" Badge */
+    .project-status {
+      align-self: flex-start;
+      background: rgba(255, 210, 80, 0.12);
+      color: #ffd200;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 210, 80, 0.15);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Description */
+    .project-tile p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--muted, #a7b1c2);
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+
+    /* Tech Tags */
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: auto;
+    }
+
+    .project-tags span {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Subtle Arrow on Hover */
+    .project-tile::after {
+      content: "→";
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(-8px);
+    }
+
+    .project-tile:hover::after {
+      opacity: 0.6;
+      transform: translateX(0);
+    }
+
+    /* --- Light Theme Overrides --- */
+    body.light-theme .project-tile {
+      background: rgba(255, 255, 255, 0.6);
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .project-tile:hover {
+      border-color: rgba(0, 0, 0, 0.15);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .project-tags span {
+      background: rgba(0, 0, 0, 0.04);
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .project-status {
+      background: rgba(247, 151, 30, 0.1);
+      border-color: rgba(247, 151, 30, 0.2);
+      color: #b8730e;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 640px) {
+      .projects-grid {
+        grid-template-columns: 1fr;
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .project-tile {
+        padding: 1.5rem;
+      }
+
+      .project-tile-header h2 {
+        font-size: 1.4rem;
+      }
+    }
+
+    /* --- Navbar Overrides for this page --- */
+    .nav-left {
+      margin-left: 0;
+    }
+
+    .theme-control {
+      left: 18%;
+    }
+
+    @media (max-width: 875px) {
+      .theme-control {
+        left: 3.5vw;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <div id="navbar"></div>
+
+  <!-- ===== LOGIN MODAL (optional) ===== -->
+  <div id="loginModalContainer"></div>
+
+  <!-- ===== PROJECTS HERO ===== -->
+  <section class="projects-hero">
+    <h1>Projects</h1>
+    <p>A collection of experiments, tools, and creative builds.</p>
+  </section>
+
+  <!-- ===== PROJECT GRID ===== -->
+  <section class="projects-grid">
+
+    <!-- PROJECT 1 -->
+    <a href="project-1/" class="project-tile">
+      <div class="project-tile-header">
+        <span class="project-icon">🌐</span>
+        <h2>Weather Dashboard</h2>
+      </div>
+      <span class="project-status">Live</span>
+      <p>Live weather data with a clean, responsive interface. Built with vanilla JS and a public API.</p>
+      <div class="project-tags">
+        <span>JavaScript</span>
+        <span>API</span>
+        <span>CSS</span>
+      </div>
+    </a>
+
+    <!-- PROJECT 2 -->
+    <a href="project-2/" class="project-tile">
+      <div class="project-tile-header">
+        <span class="project-icon">📝</span>
+        <h2>Note-Taking App</h2>
+      </div>
+      <span class="project-status">In Progress</span>
+      <p>Minimalist note-taking with local storage. Create, edit, and delete notes with a smooth UI.</p>
+      <div class="project-tags">
+        <span>React</span>
+        <span>LocalStorage</span>
+        <span>CSS</span>
+      </div>
+    </a>
+
+    <!-- PROJECT 3 -->
+    <a href="project-3/" class="project-tile">
+      <div class="project-tile-header">
+        <span class="project-icon">🎨</span>
+        <h2>Color Palette Generator</h2>
+      </div>
+      <span class="project-status">Coming Soon</span>
+      <p>Generate harmonious color palettes with a single click. Copy hex codes and preview combinations.</p>
+      <div class="project-tags">
+        <span>JavaScript</span>
+        <span>CSS</span>
+        <span>Design</span>
+      </div>
+    </a>
+
+    <!-- You can add more tiles following the same pattern -->
+
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="attribution">
+    © BlazerBits Website • Designed by Mark Sheard
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="../script.js"></script>
+
+  <script>
+    // Fade-in animation for tiles on scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      const tiles = document.querySelectorAll('.project-tile');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+
+      tiles.forEach((tile, i) => {
+        tile.style.opacity = '0';
+        tile.style.transform = 'translateY(20px)';
+        tile.style.transition = `opacity 0.6s ease ${i * 0.08}s, transform 0.6s ease ${i * 0.08}s`;
+        observer.observe(tile);
+      });
+    });
+  </script>
+
+</body>
+</html>
