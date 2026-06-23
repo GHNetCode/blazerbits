@@ -62,19 +62,7 @@ body {
   overflow-x: hidden;
 }
 
-/* .top-nav {
-  display: flex;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  padding: 15px 30px;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  border-bottom:1px solid rgba(0, 81, 255, 0.136);
-} */
+
 .top-nav {
   display: flex;
   position: fixed;
@@ -192,16 +180,6 @@ body {
   opacity: 0.8;
   transition: 0.3s;
 }
-
-/* Disable underline for now.. TBD! */
-/* .nav-item:hover,.nav-item a:hover {  
-  text-decoration: underline;
-  text-decoration-color: rgb(30, 73, 141);
-  text-decoration-thickness: 2px;
-  opacity: 1;
-} */
-
-
 
 
 /* LANDING */
@@ -519,28 +497,12 @@ a:focus-visible,
 
     }
 
- /* .logo {
-  left:0 ;
-  font-size: 1rem;
-  letter-spacing: 1px; 
-}  */
-
 
   .theme-control {
   display: flex;
   position: absolute;
-  /* border: solid 1px red; */
-  /* top: 35px;
-  left: 45%; */
     top: 48px;
-    /* left: 22px; */
     left: 3.5vw;
-
-    /* position: absolute; */
-    /* bottom: 40px; */
-    /* left: 10vw;  */
-    /* transform: translateX(-50%); */
-  
   }
     .mobile-menu-overlay {
   display: flex;

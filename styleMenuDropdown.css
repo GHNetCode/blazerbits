@@ -62,17 +62,6 @@
   left: 5px;
 }
 
-/* .dropdown-item-submenu::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -12px;
-
-  width: 100%;
-  height: 12px;
-
-  background: transparent;
-} */
 
 /* Submenu container - opens BELOW "About Me" (not to the right) */
 .dropdown .dropdown-submenu {
