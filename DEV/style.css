@@ -422,6 +422,40 @@ body[data-theme="light"] button#JustFireF:active {
       contain: strict;
     }
   
+
+/* Remove mobile tap highlight (blue overlay) */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Alternative: More specific targeting if you want to be selective */
+button,
+a,
+[role="button"],
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* For WebKit browsers (Safari, Chrome on iOS) */
+button:focus,
+a:focus,
+[role="button"]:focus {
+  outline: none;
+}
+
+/* Keep focus visible for keyboard navigation (accessibility) */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid rgba(140, 180, 255, 0.3);
+  outline-offset: 2px;
+}
+
+
+
 #attribution { 
   /* display: flexbox; */
   position: relative;
