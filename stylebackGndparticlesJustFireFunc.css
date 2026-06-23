@@ -97,6 +97,8 @@ body[data-theme="light"] #justFireF-ok:hover {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+
+
 /* ── Responsive adjustments ── */
 @media (max-width: 640px) {
   #justFireF-toast {

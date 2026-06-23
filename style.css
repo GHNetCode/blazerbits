@@ -9,7 +9,10 @@
 @import url('styleModalLoginUnderConst.css');
 
 
-
+/* Remove mobile tap highlight (blue overlay) */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
   
 :root {
   --bg: #000;
@@ -400,11 +403,13 @@ body[data-theme="light"] button#JustFireF:active {
       contain: strict;
     }
   
-
-/* Remove mobile tap highlight (blue overlay) */
-* {
-  -webkit-tap-highlight-color: transparent;
+/* Hide Just Fireflies button with visibility hidden (preserves space)  */
+#JustFireF.hidden {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
 }
+
 
 /* Alternative: More specific targeting if you want to be selective */
 button,

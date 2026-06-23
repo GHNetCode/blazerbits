@@ -28,7 +28,11 @@ fetch(basePath + 'navbar.html')
         initializeThemeSlider();
         initializeMobileMenu();
         initializeJustFireF();
-        // NO NEED for initializeNavbar() - using root-relative paths!
+        
+        // ── CHECK FIREFLIES AFTER NAVBAR IS LOADED ──
+        // This ensures the #JustFireF buttons exist in the DOM
+        checkAndHideFireflyButton();
+        
     })
     .catch(error => {
         console.warn('Could not load navbar:', error);
@@ -38,8 +42,7 @@ fetch(basePath + 'navbar.html')
         }
     });
 
-// REMOVE updateNavbarLinks() and initializeNavbar() entirely
-
+ 
 // FIXED: Use basePath in modal fetch
 fetch(basePath + 'modal.html')
     .then(response => {
@@ -240,6 +243,27 @@ function rgbToHex(rgb) {
 
 
 /*
+ * CHECK AND HIDE FIREFLY BUTTON
+ * ═══════════════════════════════════════════════
+ * This function runs after navbar loads to check if fireflies should be shown
+ */
+function checkAndHideFireflyButton() {
+    const back = document.getElementById('particles-back');
+    const front = document.getElementById('particles-front');
+    const landing = document.querySelector('.landing');
+    const projectsPage = document.querySelector('.projects-page');
+
+    // If firefly containers don't exist, hide the button
+    if (!back || !front || !landing || !projectsPage) {
+        console.log('Fireflies: containers not found — hiding button');
+        const justFireFBtns = document.querySelectorAll('#JustFireF');
+        justFireFBtns.forEach(btn => {
+            btn.classList.add('hidden');
+        });
+    }
+}
+
+/*
  * FIREFLY SYSTEM — maximum CPU efficiency build
  * ═══════════════════════════════════════════════
  * Now wrapped in a function that only runs on pages with the required containers
@@ -254,12 +278,18 @@ function initFireflies() {
     const back = document.getElementById('particles-back');
     const front = document.getElementById('particles-front');
     const landing = document.querySelector('.landing');
-
     // Guard: only run if both containers exist AND we're on the landing page
     if (!back || !front || !landing) {
         console.log('Fireflies: containers not found or not on landing page — skipping');
+        // The button is already hidden by checkAndHideFireflyButton()
         return;
     }
+
+    // If we get here, fireflies should be shown — make sure button is visible
+    const justFireFBtns = document.querySelectorAll('#JustFireF');
+    justFireFBtns.forEach(btn => {
+        btn.classList.remove('hidden');
+    });
 
     const FIREFLY_COUNT = 20;
 
@@ -337,9 +367,19 @@ function initFireflies() {
 
 // Initialize fireflies when DOM is ready
 if (document.readyState === 'complete') {
-    initFireflies();
+    // Wait a moment for the navbar to load
+    setTimeout(() => {
+        checkAndHideFireflyButton();
+        initFireflies();
+    }, 100);
 } else {
-    document.addEventListener('DOMContentLoaded', initFireflies);
+    document.addEventListener('DOMContentLoaded', () => {
+        // Wait a moment for the navbar to load
+        setTimeout(() => {
+            checkAndHideFireflyButton();
+            initFireflies();
+        }, 100);
+    });
 }
  
 
