@@ -52,15 +52,21 @@
 
     /* --- Project Tile --- */
     .project-tile {
+      display: flex;
+      flex-direction: column;
+      /* flex-flow:column; */
+      /* justify-content:space-evenly; */
+      align-self:flex-start; /*auto, stretch, flex-start, flex-end, center, baseline*/
+      text-decoration: none;
+      
       background: var(--card, rgba(255, 255, 255, 0.04));
       border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
       border-radius: 24px;
       padding: 2rem 1.5rem 1.8rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       backdrop-filter: blur(4px);
-      display: flex;
-      flex-direction: column;
-      text-decoration: none;
+      
+
       color: var(--text);
       cursor: pointer;
       position: relative;
@@ -69,7 +75,7 @@
 
     .project-tile:hover {
       transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 40px rgba(2, 89, 143, 0.10);
       border-color: rgba(255, 255, 255, 0.15);
     }
 
@@ -220,7 +226,7 @@
   <!-- ===== PROJECTS HERO ===== -->
   <section class="projects-hero">
     <h1>Projects</h1>
-    <p>A collection of experiments, tools, and creative builds.</p>
+    <p>A collection of projects for upskilling, experiments and creative builds.</p>
   </section>
 
   <!-- ===== PROJECT GRID ===== -->
@@ -228,13 +234,13 @@
 
 
     <!-- PROJECT 1 -->
-    <a href="project-1/" class="project-tile">
+    <a href="#" class="project-tile">  <!-- href="project-1/" -->
       <div class="project-tile-header">
         <span class="project-icon">🌐</span>
-        <h2>Weather Dashboard</h2>
+        <h2>FrontEnd Mentor Challenges\Projects</h2>
       </div>
       <span class="project-status">Live</span>
-      <p>Live weather data with a clean, responsive interface. Built with vanilla JS and a public API.</p>
+        <P>Completed FrontEnd Mentor projects\challenges with some highlighted.</P>
       <div class="project-tags">
         <span>JavaScript</span>
         <span>API</span>
@@ -243,13 +249,13 @@
     </a>
 
     <!-- PROJECT 2 -->
-    <a href="project-2/" class="project-tile">
+    <a href="#" class="project-tile"> <!-- href="project-2/" -->
       <div class="project-tile-header">
         <span class="project-icon">📝</span>
         <h2>Note-Taking App</h2>
       </div>
       <span class="project-status">In Progress</span>
-      <p>Minimalist note-taking with local storage. Create, edit, and delete notes with a smooth UI.</p>
+        <p>Minimalist note-taking with local storage. Create, edit, and delete notes with a smooth UI.</p>
       <div class="project-tags">
         <span>React</span>
         <span>LocalStorage</span>
@@ -258,7 +264,7 @@
     </a>
 
     <!-- PROJECT 3 -->
-    <a href="project-3/" class="project-tile">
+    <a href="#" class="project-tile"> <!-- href="project-3/" -->
       <div class="project-tile-header">
         <span class="project-icon">🎨</span>
         <h2>Color Palette Generator</h2>
