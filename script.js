@@ -3,10 +3,17 @@ const root = document.documentElement;
 // Determine base path for assets
 function getBasePath() {
     const path = window.location.pathname.toLowerCase();
-    if (path.includes('/projects/')) {
+    
+    if (path.includes('/projects/')&& !path.includes('/projects/projects-1/')) {
+        console.log("found: /projects/")
         return '../';
+    }else if (path.includes('/projects/projects-1/')) {
+        console.log("found: /projects/projects-1/ ")
+        return '../../';
     }
-    return '';
+    else{
+        return ''; 
+    }
 }
 
 // Get the base path once
@@ -515,17 +522,18 @@ function initializeLoginModal() {
   // Also catch any other login buttons by text content
 document.querySelectorAll('a, button').forEach(el => {
   const text = el.textContent.trim();
-  
   // Check if this element should trigger the modal
   const shouldShowModal = 
     (text === 'Login' && !el.closest('.nav-left') && !el.closest('.logo')) ||
     ((text === 'BlazerBits' || 
       text === 'FAQ' || 
       text === 'Blog Profiles' ||
-      text === 'Highlighted Posts') && 
-     (el.closest('.dropdown') || el.closest('.mob-submenu')));/* ||
+      text === 'Highlighted Posts') && (el.closest('.dropdown') || el.closest('.mob-submenu'))
+    );/* ||
     (text === 'Just Fireflies' && (el.closest('.dropdown') || el.closest('.mob-submenu')));
      */
+
+
   if (shouldShowModal) {
     el.removeEventListener('click', openModal);
     el.addEventListener('click', openModal);
@@ -534,6 +542,18 @@ document.querySelectorAll('a, button').forEach(el => {
   }
 });
 
+
+    // Add after login bindings - This function uses Data Attribute "data-modal-trigger" in the a tags for projects.html and index.html..
+    document.querySelectorAll('a.project-tile[data-modal-trigger]')
+      .forEach(tile => {
+    // Check if listener already exists (via dataset flag)
+    if (!tile.hasAttribute('data-modal-bound')) {
+      tile.addEventListener('click', openModal);
+      tile.addEventListener('click', (e) => e.preventDefault());
+      tile.setAttribute('data-modal-bound', 'true'); // Mark as bound
+    }
+
+  });
   
   // ── Close handlers ──
   if (closeBtn) closeBtn.addEventListener('click', closeModal);

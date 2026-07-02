@@ -150,10 +150,15 @@ vite.config.ts.timestamp-*
 
 # Keep backups local..
 .Backups/
+
+# Keep .BackEnd local.. (Used for NodeJS etc..)
+BackEnd/
+
 # Keep temp local...
 temp/
 # Keep DEV/temp local...
 DEV/temp
+
 
 DEV/indexDevUnderConstruction.html
 DEV/gpt/indexgpt.html
