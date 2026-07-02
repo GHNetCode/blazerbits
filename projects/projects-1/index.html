@@ -3,13 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Projects | BlazerBits</title>
+  <title>FrontEnd Mentor | BlazerBits</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../../style.css">
+  
 
   <style>
+
+    
+body{
+        background:  rgba(8, 14, 20, 0.901);
+
+}
     /* --- Projects Hero --- */
     .projects-hero {
       min-height: 40vh;
@@ -19,7 +26,7 @@
       justify-content: center;
       text-align: center;
       padding: 8rem 2rem 4rem;
-      background: radial-gradient(circle at 50% 40%, rgba(60, 80, 120, 0.15), transparent 60%);
+      background: radial-gradient(circle at 50% 40%, rgba(60, 108, 120, 0.45), transparent 60%);
       border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
@@ -74,6 +81,7 @@
       border-color: rgba(255, 255, 255, 0.15);
     }
 
+    /* Tile Header */
     .project-tile-header {
       display: flex;
       align-items: center;
@@ -86,6 +94,12 @@
       line-height: 1;
     }
 
+    .project-tile-header .project-icon-img {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+    }
+
     .project-tile-header h2 {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 1.6rem;
@@ -94,6 +108,7 @@
       margin: 0;
     }
 
+    /* "Coming Soon" Badge */
     .project-status {
       align-self: flex-start;
       background: rgba(255, 210, 80, 0.12);
@@ -108,6 +123,7 @@
       margin-bottom: 0.75rem;
     }
 
+    /* Description */
     .project-tile p {
       font-size: 0.95rem;
       line-height: 1.6;
@@ -116,6 +132,7 @@
       flex: 1;
     }
 
+    /* Tech Tags */
     .project-tags {
       display: flex;
       flex-wrap: wrap;
@@ -135,13 +152,14 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
+    /* Subtle Arrow on Hover */
     .project-tile::after {
       content: "→";
       position: absolute;
       /* bottom: 1.5rem; */
+      /* right: 1.5rem; */
       top:10px;
       right: 0.5rem;
-      /* font-size: 1.2rem; */
       font-size: 1.7rem;
       opacity: 0;
       color: rgb(255, 136, 0);
@@ -154,33 +172,42 @@
       transform: translateX(0);
     }
 
-
-     .back-btn {
+    /* ============================================================
+       SIMPLE & ELEGANT BACK BUTTON - Bottom Right
+       ============================================================ */
+    .back-btn {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
       z-index: 100;
+      
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      
       padding: 0.6rem 1.2rem;
-      background: rgba(10, 10, 26, 0.75);
+      
+      background: rgba(21, 43, 50, 0.75);
          /* background: linear-gradient(0.75turn, rgba(8, 74, 103, 0.347),rgba(216, 138, 54, 0.37));
-         background-repeat: no-repeat; */
-
-      border: 1px solid rgba(251, 202, 128, 0.346);
-      border-radius: 100px;
+      background-repeat: no-repeat; */
+      border: 1px solid rgba(203, 142, 50, 0.444);
+      border-radius: 999px;
+      
       color: var(--text);
       font-family: 'Inter', system-ui, sans-serif;
       font-size: 0.8rem;
       font-weight: 400;
       letter-spacing: 0.04em;
+      
       cursor: pointer;
       transition: all 0.3s ease;
+      
       text-decoration: none;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      
       user-select: none;
       -webkit-user-select: none;
+      
       /* Performance */
       will-change: transform;
       contain: layout style paint;
@@ -188,9 +215,8 @@
 
     .back-btn:hover {
       background: rgba(20, 20, 40, 0.85);
-            /* background: linear-gradient(0.75turn, rgba(8, 75, 103, 0.342),rgba(216, 138, 54, 0.417));
+      /* background: linear-gradient(0.75turn, rgba(8, 75, 103, 0.342),rgba(216, 138, 54, 0.417));
       background-repeat: no-repeat; */
-   
       border: 1px solid rgba(251, 202, 128, 0.346);
       transform: translateY(-2px) scale(1.03);
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
@@ -231,7 +257,7 @@
 
     /* --- Light Theme Overrides for tiles --- */
     body.light-theme .project-tile {
-      background: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.9);
       border-color: rgba(0, 0, 0, 0.06);
     }
 
@@ -283,7 +309,7 @@
       }
     }
 
-    /* --- Navbar Overrides --- */
+    /* --- Navbar Overrides for this page --- */
     .nav-left {
       margin-left: 0;
     }
@@ -309,48 +335,62 @@
 
   <!-- ===== PROJECTS HERO ===== -->
   <section class="projects-hero">
-    <h1>Projects</h1>
-    <p>A collection of projects for upskilling, experiments and creative builds.</p>
+    <h1>FrontEnd Mentor</h1>
+    <p>A collection of Challenges\Projects for upskilling on the Frontend Web User Interface.</p>
   </section>
 
   <!-- ===== PROJECT GRID ===== -->
   <section class="projects-grid">
 
-    <!-- PROJECT 1 -->
-    <a href="projects-1/" class="project-tile">
+    <!-- PROJECTS on FrontEnd Mentor Website -->
+    <a href="https://www.frontendmentor.io/profile/GHNetCode" class="project-tile" target="_blank">
       <div class="project-tile-header">
-        <span class="project-icon">🌐</span>
-        <h2>FrontEnd Mentor Challenges</h2>
+        <img src="https://www.frontendmentor.io/favicon/favicon-32x32.png" alt="FrontEnd Mentor icon" class="project-icon-img">
+        <h2>FrontEnd Mentor Website</h2>
       </div>
       <span class="project-status">Live</span>
-      <p>Challenges on FrontEnd Mentor Website with some favourite ones included here on BlazerBits.</p>
+      <p>Visit FrontEnd Mentor Website for Completed Challenges\Projects.</p>
       <div class="project-tags">
-        <span>CSS</span>
-        <span>JavaScript</span>
-        <span>API</span>
-        <span>NodeJS</span>
       </div>
     </a>
 
-    <!-- PROJECT 2 -->
-    <!-- <a href="#" class="project-tile"> -->
-    <a href="#" class="project-tile" data-modal-trigger>
+    <!-- PROJECT 2 ip-address-tracker-->
+    <!-- <a href="ip-address-tracker/" class="project-tile"> -->
+    <a href="ip-address-tracker/" class="project-tile" data-modal-trigger> 
+
       <div class="project-tile-header">
-        <span class="project-icon">📝</span>
-        <h2>Example Project: Note-Taking App</h2>
+        <span class="project-icon">🌍</span>
+        <h2>Challenge\Project: IP Address Tracker</h2>
       </div>
       <span class="project-status">In Progress</span>
-      <p>Minimalist note-taking with local storage. Create, edit, and delete notes with a smooth UI.</p>
+      <p>Using HTML,CSS,JS and Serverless (Nodejs) to provide a simple API router.</p>
       <div class="project-tags">
-        <span>React</span>
-        <span>LocalStorage</span>
+        <span>HTML</span>
         <span>CSS</span>
+        <span>JS</span>
+        <span>Serverless (Nodejs)</span>
       </div>
     </a>
 
-    <!-- PROJECT 3 -->
+    <!-- PROJECT 3 url-shortener-->
+    <!-- <a href="url-shortener/" class="project-tile"> -->
+    <a href="url-shortener/" class="project-tile" data-modal-trigger> 
+      <div class="project-tile-header">
+        <span class="project-icon">🎨</span>
+        <h2>Challenge\Project: URL Shortener</h2>
+      </div>
+      <span class="project-status">Coming Soon</span>
+      <p>Generate harmonious color palettes with a single click. Copy hex codes and preview combinations.</p>
+      <div class="project-tags">
+        <span>JavaScript</span>
+        <span>CSS</span>
+        <span>Design</span>
+      </div>
+    </a>
+
     <!-- <a href="#" class="project-tile"> -->
     <a href="#" class="project-tile" data-modal-trigger>
+
       <div class="project-tile-header">
         <span class="project-icon">🎨</span>
         <h2>Example Project: Color Palette Generator</h2>
@@ -382,7 +422,7 @@
   </footer>
 
   <!-- ===== SCRIPTS ===== -->
-  <script src="../script.js"></script>
+  <script src="../../script.js"></script>
 
   <script>
     // Fade-in animation for tiles on scroll
