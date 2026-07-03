@@ -281,8 +281,9 @@ button#JustFireF {
   padding: 8px 0;
   
   /* Dark background — stays dark regardless of theme */
-  background: linear-gradient(to top, rgba(10, 12, 18, 0.95), rgba(18, 20, 28, 0.90) 80%, rgba(25, 28, 36, 0.85));
-  
+  /* background: linear-gradient(to top, rgba(10, 12, 18, 0.95), rgba(18, 20, 28, 0.90) 80%, rgba(25, 28, 36, 0.85)); */
+    /* background: linear-gradient(to top, rgba(10, 12, 18, 0.95), rgba(112, 127, 184, 0.9) 80%, rgba(178, 170, 62, 0.85)); */
+
   /* Text color uses CSS variable for theme support */
   color: var(--text, rgba(200, 210, 230, 0.7));
   
@@ -325,7 +326,7 @@ button#JustFireF:hover {
     0 -6px 4px rgba(20, 22, 30, 0.04),
     inset 0 0 3px 3px rgba(60, 70, 90, 0.05);
   
-  background: linear-gradient(to top, rgba(14, 16, 24, 0.95), rgba(22, 25, 34, 0.90) 80%, rgba(30, 34, 44, 0.85));
+  /* background: linear-gradient(to top, rgba(14, 16, 24, 0.95), rgba(22, 25, 34, 0.90) 80%, rgba(30, 34, 44, 0.85)); */
 }
 
 /* ── Active (pressed) state ── */
@@ -352,13 +353,15 @@ button#JustFireF:focus-visible {
 /* ── Light theme — only text and border adjust ── */
 body[data-theme="light"] button#JustFireF {
   /* Background stays dark — unchanged */
-  background: linear-gradient(to top, rgba(10, 12, 18, 0.95), rgba(18, 20, 28, 0.90) 80%, rgba(25, 28, 36, 0.85));
-  
+   background: linear-gradient(0.50turn, rgba(8, 75, 103, 0.21),rgba(15, 135, 179, 0.33), rgba(8, 74, 103, 0.21));
+   background-repeat: no-repeat;
+   border-radius: 30px;
+
   /* Text becomes darker for light theme readability */
   color: rgba(180, 190, 210, 0.6);
   
   /* Border slightly more visible on light background */
-  border-color: rgba(180, 190, 210, 0.18);
+  border-color: rgba(175, 181, 95, 0.415);
   
   /* Shadows adjust slightly for light background context */
   box-shadow: 
@@ -371,7 +374,7 @@ body[data-theme="light"] button#JustFireF {
 
 body[data-theme="light"] button#JustFireF:hover {
   color: rgba(200, 210, 230, 0.85);
-  border-color: rgba(180, 190, 210, 0.25);
+  border-color: rgba(228, 230, 85, 0.629);
   
   box-shadow: 
     0 4px 3px 1px rgba(0, 0, 0, 0.3),
@@ -380,7 +383,10 @@ body[data-theme="light"] button#JustFireF:hover {
     0 -6px 4px rgba(20, 22, 30, 0.03),
     inset 0 0 3px 3px rgba(60, 70, 90, 0.04);
   
-  background: linear-gradient(to top, rgba(14, 16, 24, 0.95), rgba(22, 25, 34, 0.90) 80%, rgba(30, 34, 44, 0.85));
+  /* background: linear-gradient(to top, rgba(14, 16, 24, 0.95), rgba(22, 25, 34, 0.90) 80%, rgba(30, 34, 44, 0.85)); */
+     background: linear-gradient(0.50turn, rgba(8, 74, 103, 0.347),rgba(179, 171, 15, 0.33), rgba(8, 74, 103, 0.347));
+    background-repeat: no-repeat;
+    border-radius: 30px;
 }
 
 body[data-theme="light"] button#JustFireF:active {
