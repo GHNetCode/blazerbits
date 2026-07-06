@@ -425,7 +425,7 @@ function initializeJustFireF() {
 function hide() {
     // ... mobile menu closing code ...
     
-    // ✅ Force CSS animation trigger via reflow
+    //  Force CSS animation trigger via reflow
     document.body.classList.remove('firefly-mode-active');
     void document.body.offsetWidth;
     document.body.classList.add('firefly-mode-active');
@@ -433,46 +433,46 @@ function hide() {
     isFireflyModeActive = true;
     fireflyActivationTime = Date.now();
     
-    console.log("🔥 Force-added body.firefly-mode-active (animation triggered)");
     
-    // ✅ Wait for FULL animation (800ms) before hiding navbar
+    
+    //  Wait for FULL animation (250ms) before hiding navbar
     setTimeout(() => {
-        console.log("+800ms Timer fired — button animation COMPLETE");
         
-        // ✅ INSTANT hide - NO transitions allowed
+        
+        //  INSTANT hide - NO transitions allowed
         if (navbar) {
             navbar.style.transition = "none";  /* Disable ANY fade */
             navbar.style.opacity = "";  /* Clear opacity overrides */
             navbar.style.display = "none";  /* Hide instantly */
-            console.log("  → Navbar removed instantly");
+            
         }
         
         if (content) {
             content.style.transition = "none";  /* Disable ANY fade */
             content.style.opacity = "";  /* Clear opacity overrides */
             content.style.display = "none";  /* Hide instantly */
-            console.log("  → Content removed instantly");
+            
         }
         
         // Show toast
         toast.style.opacity = "1";
-        console.log("  → Toast displayed, fireflies active");
+        
         
         // Remove class after animation done
         document.body.classList.remove('firefly-mode-active');
-        console.log("  → Removed firefly-mode-active class");
-    }, 400);
+        
+    }, 250);
 
     // Attach listeners after fireflies visible
     setTimeout(() => {
-        console.log("+1800ms Timer fired — attaching listeners");
+        
         document.addEventListener("keydown", onKey);
         document.addEventListener("click", onPointer);
-    }, 600);
+    }, 400);
 
     okBtn.addEventListener("click", dismissToast, { once: true });
     
-    console.log("[FIREFLY] ============================================ END\n");
+    
 }
 
 
@@ -482,12 +482,10 @@ function hide() {
     }
 
 function revert() {
-    console.log("[REVERT] Triggered");
     isFireflyModeActive = false;
     
     // Remove CSS class (stops button animation)
     document.body.classList.remove('firefly-mode-active');
-    console.log("Removed body.firefly-mode-active");
     
     toast.style.opacity = "0";
     
@@ -496,53 +494,28 @@ function revert() {
         navbar.style.display = "";
         navbar.style.opacity = "";
         navbar.style.transition = "";
-        console.log("Navbar restored");
     }
     if (content) {
         content.style.display = "";
         content.style.opacity = "";
         content.style.transition = "";
-        console.log("Content restored");
     }
     
     document.removeEventListener("keydown", onKey);
     document.removeEventListener("click", onPointer);
-    console.log("Listeners removed");
 }
 
 function onPointer(e) {
-    const elapsed = Date.now() - fireflyActivationTime;
-    const cooldownRemaining = Math.max(0, 800 - elapsed);
     
-    console.log(`[ONPOINTER] Click detected (${elapsed}ms since activation)`);
-    
-    if (Date.now() - fireflyActivationTime < 800) {
-        console.log(`  ⏳ COOLDOWN: ${cooldownRemaining}ms remaining — IGNORING`);
-        return;
-    }
-    
-    if (toast.contains(e.target)) {
-        console.log("  👆 Clicked toast OK button area — no revert");
-        return;
-    }
-    
-    console.log("  ✅ Outside click — triggering revert");
     revert();
 }
 
 function onKey(e) {
-    const elapsed = Date.now() - fireflyActivationTime;
-    const cooldownRemaining = Math.max(0, 800 - elapsed);
+    
     
     if (e.code === "Space" || e.code === "Escape") {
         e.preventDefault();
-        
-        if (Date.now() - fireflyActivationTime < 800) {
-            console.log(`[ONKEY] ${e.code} pressed during cooldown (${cooldownRemaining}ms left) — IGNORING`);
-            return;
-        }
-        
-        console.log(`[ONKEY] ${e.code} after cooldown — triggering revert`);
+      
         revert();
     }
 }
