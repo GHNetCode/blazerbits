@@ -406,23 +406,8 @@ body[data-theme="light"] button#JustFireF:active {
 body[data-theme="dark"] button#JustFireF {
   /* Background stays dark — unchanged */
    background: linear-gradient(0.50turn, rgba(12, 92, 126, 0.286),rgba(8, 57, 75, 0.33), rgba(12, 92, 126, 0.286));
-   background-repeat: no-repeat;
-   border-radius: 30px;
-
-  /* Text becomes darker for light theme readability */
-  /* color: rgba(180, 190, 210, 0.9); */
-  /* color: var(--text, rgba(235, 240, 248, 0.60)); */
-  /* Border slightly more visible on light background */
-  border-color: rgba(175, 181, 95, 0.415);
-  
-  /* Shadows adjust slightly for light background context */
-  box-shadow: 
-    0 4px 3px 1px rgba(0, 0, 0, 0.3),
-    0 6px 8px rgba(0, 0, 0, 0.4),
-    0 -4px 4px rgba(40, 45, 60, 0.04),
-    0 -6px 4px rgba(20, 22, 30, 0.03),
-    inset 0 0 3px 0 rgba(60, 70, 90, 0.04);
 }
+
 
       .firefly {
       position: absolute;
