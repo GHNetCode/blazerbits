@@ -417,9 +417,6 @@ function initializeJustFireF() {
 
     const okBtn = toast.querySelector("#justFireF-ok");
 
-    /* ── Cooldown timer — SCOPED to this function ── */
-    let fireflyActivationTime = 0;
-    let isFireflyModeActive = false;
 
     /* ── Hide everything: enter firefly mode ── */
 function hide() {
@@ -430,37 +427,26 @@ function hide() {
     void document.body.offsetWidth;
     document.body.classList.add('firefly-mode-active');
     
-    isFireflyModeActive = true;
-    fireflyActivationTime = Date.now();
-    
+   
     
     
     //  Wait for FULL animation (250ms) before hiding navbar
     setTimeout(() => {
-        
-        
         //  INSTANT hide - NO transitions allowed
         if (navbar) {
             navbar.style.transition = "none";  /* Disable ANY fade */
             navbar.style.opacity = "";  /* Clear opacity overrides */
             navbar.style.display = "none";  /* Hide instantly */
-            
         }
-        
         if (content) {
             content.style.transition = "none";  /* Disable ANY fade */
             content.style.opacity = "";  /* Clear opacity overrides */
             content.style.display = "none";  /* Hide instantly */
-            
         }
-        
         // Show toast
         toast.style.opacity = "1";
-        
-        
         // Remove class after animation done
         document.body.classList.remove('firefly-mode-active');
-        
     }, 250);
 
     // Attach listeners after fireflies visible
@@ -472,7 +458,6 @@ function hide() {
 
     okBtn.addEventListener("click", dismissToast, { once: true });
     
-    
 }
 
 
@@ -482,7 +467,6 @@ function hide() {
     }
 
 function revert() {
-    isFireflyModeActive = false;
     
     // Remove CSS class (stops button animation)
     document.body.classList.remove('firefly-mode-active');
