@@ -187,25 +187,32 @@ window.gtranslateSettings = {
 //--------------------------------------- 
 /* APPLY THEME Start*/
 function applyTheme(value) {
-    const lightness = value / 100;
+    const lightness = value / 100;  // 0.0 to 0.8 (since max is 80)
 
-    const bg = interpolateColor([14, 16, 24], [14, 16, 24], lightness);
-
+    // FIX: Background actually changes now (was interpolating same color twice)
+    const bg = interpolateColor([14, 16, 24], [255, 255, 255], lightness);
+ //   const bg = interpolateColor([14, 16, 24], [20, 22, 32], lightness * 0.4); // Very subtle shift
     const text = interpolateColor([255, 255, 255], [20, 20, 20], lightness);
+    const text1 = interpolateColor([220, 220, 220], [20, 20, 20], lightness);
     const accent = interpolateColor([181, 210, 254], [38, 42, 44], lightness);
     const accentBtn = interpolateColor([63, 73, 87], [27, 33, 42], lightness);
+    
     root.style.setProperty("--bg", `rgb(${bg})`);
     root.style.setProperty("--text", `rgb(${text})`);
+    root.style.setProperty("--text1", `rgb(${text1})`);
     root.style.setProperty("--accent", `rgb(${accent})`);
     root.style.setProperty("--accentBtn", `rgb(${accentBtn})`);
-    // Set theme attribute on body
-    if (lightness > 0.5) {
-        document.body.setAttribute('data-theme', 'dark');
-    } else {
+    
+    // CORRECTED: Left (low value) = LIGHT, Right (high value) = DARK
+    if (lightness < 0.5) {
         document.body.setAttribute('data-theme', 'light');
+    } else {
+        document.body.setAttribute('data-theme', 'dark');
     }
+    
     updateGTranslateArrowColor(text);
 }
+
 //----------------------------------
 /* COLOR INTERPOLATION */
 function interpolateColor(start, end, factor) {
@@ -484,99 +491,99 @@ if (document.readyState === 'complete') {
 // LOGIN NOTICE MODAL
 // ============================================================
 function initializeLoginModal() {
-  const modal = document.getElementById('loginModal');
-  const closeBtn = document.getElementById('loginModalClose');
-  const gotItBtn = document.getElementById('loginModalGotIt');
-  const notifyBtn = document.getElementById('loginModalNotify');
-  
-  if (!modal) return;
-  
-  // ── Open modal ──
-  function openModal(e) {
-    if (e) e.preventDefault();
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-  
-  // ── Close modal ──
-  function closeModal() {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-  
-  // ── Attach to Login buttons ──
-  // Desktop login (top-right nav)
-  const loginLinks = document.querySelectorAll('.nav-right a[href="login.html"]');
-  loginLinks.forEach(link => {
-    link.addEventListener('click', openModal);
-    // Keep the href for fallback, but prevent navigation
-    link.addEventListener('click', (e) => e.preventDefault());
-  });
-  
-  // Main "Login" button in centre of landing page
-  const mainLoginBtn = document.querySelector('.buttons .secondary');
-  if (mainLoginBtn) {
-    mainLoginBtn.addEventListener('click', openModal);
-  }
-  
-  // Also catch any other login buttons by text content
-document.querySelectorAll('a, button').forEach(el => {
-  const text = el.textContent.trim();
-  // Check if this element should trigger the modal
-  const shouldShowModal = 
-    (text === 'Login' && !el.closest('.nav-left') && !el.closest('.logo')) ||
-    ((text === 'BlazerBits' || 
-      text === 'FAQ' || 
-      text === 'Blog Profiles' ||
-      text === 'Highlighted Posts') && (el.closest('.dropdown') || el.closest('.mob-submenu'))
-    );/* ||
-    (text === 'Just Fireflies' && (el.closest('.dropdown') || el.closest('.mob-submenu')));
-     */
+      const modal = document.getElementById('loginModal');
+      const closeBtn = document.getElementById('loginModalClose');
+      const gotItBtn = document.getElementById('loginModalGotIt');
+      const notifyBtn = document.getElementById('loginModalNotify');
+    
+      if (!modal) return;
+    
+      // ── Open modal ──
+      function openModal(e) {
+        if (e) e.preventDefault();
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      // ── Close modal ──
+      function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      // ── Attach to Login buttons ──
+      // Desktop login (top-right nav)
+      const loginLinks = document.querySelectorAll('.nav-right a[href="login.html"]');
+      loginLinks.forEach(link => {
+        link.addEventListener('click', openModal);
+        // Keep the href for fallback, but prevent navigation
+        link.addEventListener('click', (e) => e.preventDefault());
+      });
+
+      // Main "Login" button in centre of landing page
+      const mainLoginBtn = document.querySelector('.buttons .secondary');
+      if (mainLoginBtn) {
+        mainLoginBtn.addEventListener('click', openModal);
+      }
+
+      // Also catch any other login buttons by text content
+    document.querySelectorAll('a, button').forEach(el => {
+      const text = el.textContent.trim();
+      // Check if this element should trigger the modal
+      const shouldShowModal = 
+        (text === 'Login' && !el.closest('.nav-left') && !el.closest('.logo')) ||
+        ((text === 'BlazerBits' || 
+          text === 'FAQ' || 
+          text === 'Blog Profiles' ||
+          text === 'Highlighted Posts') && (el.closest('.dropdown') || el.closest('.mob-submenu'))
+        );/* ||
+        (text === 'Just Fireflies' && (el.closest('.dropdown') || el.closest('.mob-submenu')));
+         */
 
 
-  if (shouldShowModal) {
-    el.removeEventListener('click', openModal);
-    el.addEventListener('click', openModal);
-    el.removeEventListener('click', (e) => e.preventDefault());
-    el.addEventListener('click', (e) => e.preventDefault());
-  }
-});
-
-
-    // Add after login bindings - This function uses Data Attribute "data-modal-trigger" in the a tags for projects.html and index.html..
-    document.querySelectorAll('a.project-tile[data-modal-trigger]')
-      .forEach(tile => {
-    // Check if listener already exists (via dataset flag)
-    if (!tile.hasAttribute('data-modal-bound')) {
-      tile.addEventListener('click', openModal);
-      tile.addEventListener('click', (e) => e.preventDefault());
-      tile.setAttribute('data-modal-bound', 'true'); // Mark as bound
-    }
-
-  });
-  
-  // ── Close handlers ──
-  if (closeBtn) closeBtn.addEventListener('click', closeModal);
-  if (gotItBtn) gotItBtn.addEventListener('click', closeModal);
-  
-  if (notifyBtn) {
-    notifyBtn.addEventListener('click', () => {
-      alert('We\'ll notify you as soon as login is ready! 🚀');
-      closeModal();
+      if (shouldShowModal) {
+        el.removeEventListener('click', openModal);
+        el.addEventListener('click', openModal);
+        el.removeEventListener('click', (e) => e.preventDefault());
+        el.addEventListener('click', (e) => e.preventDefault());
+      }
     });
-  }
-  
-  // Close on backdrop click
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
-  
-  // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      closeModal();
-    }
-  });
+
+
+        // Add after login bindings - This function uses Data Attribute "data-modal-trigger" in the a tags for projects.html and index.html..
+        document.querySelectorAll('a.project-tile[data-modal-trigger]')
+          .forEach(tile => {
+        // Check if listener already exists (via dataset flag)
+        if (!tile.hasAttribute('data-modal-bound')) {
+          tile.addEventListener('click', openModal);
+          tile.addEventListener('click', (e) => e.preventDefault());
+          tile.setAttribute('data-modal-bound', 'true'); // Mark as bound
+        }
+
+      });
+
+      // ── Close handlers ──
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      if (gotItBtn) gotItBtn.addEventListener('click', closeModal);
+
+      if (notifyBtn) {
+        notifyBtn.addEventListener('click', () => {
+          alert('We\'ll notify you as soon as login is ready! 🚀');
+          closeModal();
+        });
+      }
+
+      // Close on backdrop click
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          closeModal();
+        }
+      });
 }
 
 // ── Call initialiser after navbar loads ──
