@@ -203,8 +203,8 @@ function applyTheme(value) {
     root.style.setProperty("--accent", `rgb(${accent})`);
     root.style.setProperty("--accentBtn", `rgb(${accentBtn})`);
     
-    // CORRECTED: Left (low value) = LIGHT, Right (high value) = DARK
-    if (lightness < 0.5) {
+    // CORRECTED: Left (low value) = LIGHT, Right (high value) = DARK   -- <0.5
+    if (lightness < 0.3) {
         document.body.setAttribute('data-theme', 'light');
     } else {
         document.body.setAttribute('data-theme', 'dark');
@@ -384,19 +384,19 @@ if (document.readyState === 'complete') {
     setTimeout(() => {
         checkAndHideFireflyButton();
         initFireflies();
-    }, 100);
+    }, 250);
 } else {
     document.addEventListener('DOMContentLoaded', () => {
         // Wait a moment for the navbar to load
         setTimeout(() => {
             checkAndHideFireflyButton();
             initFireflies();
-        }, 100);
+        }, 250);
     });
 }
  
 
- function initializeJustFireF() {
+function initializeJustFireF() {
     const navbar = document.getElementById("navbar");
     const content = document.getElementById("content");
     const justFireFBtns = document.querySelectorAll("#JustFireF");
@@ -417,72 +417,137 @@ if (document.readyState === 'complete') {
 
     const okBtn = toast.querySelector("#justFireF-ok");
 
+    /* ── Cooldown timer — SCOPED to this function ── */
+    let fireflyActivationTime = 0;
+    let isFireflyModeActive = false;
+
     /* ── Hide everything: enter firefly mode ── */
-    function hide() {
-        // Close mobile menu if open
-        if (menu && menu.classList.contains("active")) {
-            menu.classList.remove("active");
-            if (hamburger) hamburger.classList.remove("active");
-            menu.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
-            const root = document.getElementById("mob-panel-root");
-            if (root) root.classList.remove("dimmed");
-        }
-
+function hide() {
+    // ... mobile menu closing code ...
+    
+    // ✅ Force CSS animation trigger via reflow
+    document.body.classList.remove('firefly-mode-active');
+    void document.body.offsetWidth;
+    document.body.classList.add('firefly-mode-active');
+    
+    isFireflyModeActive = true;
+    fireflyActivationTime = Date.now();
+    
+    console.log("🔥 Force-added body.firefly-mode-active (animation triggered)");
+    
+    // ✅ Wait for FULL animation (800ms) before hiding navbar
+    setTimeout(() => {
+        console.log("+800ms Timer fired — button animation COMPLETE");
+        
+        // ✅ INSTANT hide - NO transitions allowed
         if (navbar) {
-            navbar.style.transition = "opacity 0.5s ease";
-            navbar.style.opacity = "0";
+            navbar.style.transition = "none";  /* Disable ANY fade */
+            navbar.style.opacity = "";  /* Clear opacity overrides */
+            navbar.style.display = "none";  /* Hide instantly */
+            console.log("  → Navbar removed instantly");
         }
+        
         if (content) {
-            content.style.transition = "opacity 0.5s ease";
-            content.style.opacity = "0";
+            content.style.transition = "none";  /* Disable ANY fade */
+            content.style.opacity = "";  /* Clear opacity overrides */
+            content.style.display = "none";  /* Hide instantly */
+            console.log("  → Content removed instantly");
         }
+        
+        // Show toast
+        toast.style.opacity = "1";
+        console.log("  → Toast displayed, fireflies active");
+        
+        // Remove class after animation done
+        document.body.classList.remove('firefly-mode-active');
+        console.log("  → Removed firefly-mode-active class");
+    }, 400);
 
-        setTimeout(() => {
-            if (navbar) navbar.style.display = "none";
-            if (content) content.style.display = "none";
-            toast.style.opacity = "1";
-        }, 500);
+    // Attach listeners after fireflies visible
+    setTimeout(() => {
+        console.log("+1800ms Timer fired — attaching listeners");
+        document.addEventListener("keydown", onKey);
+        document.addEventListener("click", onPointer);
+    }, 600);
 
-        setTimeout(() => {
-            document.addEventListener("keydown", onKey);
-            document.addEventListener("click", onPointer);
-            document.addEventListener("touchend", onPointer);
-        }, 0);
+    okBtn.addEventListener("click", dismissToast, { once: true });
+    
+    console.log("[FIREFLY] ============================================ END\n");
+}
 
-        okBtn.addEventListener("click", dismissToast, { once: true });
-    }
 
     function dismissToast(e) {
         e.stopPropagation();
         toast.style.opacity = "0";
     }
 
-    function revert() {
-        toast.style.opacity = "0";
-        if (navbar) { navbar.style.display = ""; }
-        if (content) { content.style.display = ""; }
-        requestAnimationFrame(() => {
-            if (navbar) navbar.style.opacity = "1";
-            if (content) content.style.opacity = "1";
-        });
-        document.removeEventListener("keydown", onKey);
-        document.removeEventListener("click", onPointer);
-        document.removeEventListener("touchend", onPointer);
+function revert() {
+    console.log("[REVERT] Triggered");
+    isFireflyModeActive = false;
+    
+    // Remove CSS class (stops button animation)
+    document.body.classList.remove('firefly-mode-active');
+    console.log("Removed body.firefly-mode-active");
+    
+    toast.style.opacity = "0";
+    
+    // Restore navbar/content with inline styles cleared
+    if (navbar) {
+        navbar.style.display = "";
+        navbar.style.opacity = "";
+        navbar.style.transition = "";
+        console.log("Navbar restored");
     }
+    if (content) {
+        content.style.display = "";
+        content.style.opacity = "";
+        content.style.transition = "";
+        console.log("Content restored");
+    }
+    
+    document.removeEventListener("keydown", onKey);
+    document.removeEventListener("click", onPointer);
+    console.log("Listeners removed");
+}
 
-    function onPointer(e) {
-        if (toast.contains(e.target)) return;
+function onPointer(e) {
+    const elapsed = Date.now() - fireflyActivationTime;
+    const cooldownRemaining = Math.max(0, 800 - elapsed);
+    
+    console.log(`[ONPOINTER] Click detected (${elapsed}ms since activation)`);
+    
+    if (Date.now() - fireflyActivationTime < 800) {
+        console.log(`  ⏳ COOLDOWN: ${cooldownRemaining}ms remaining — IGNORING`);
+        return;
+    }
+    
+    if (toast.contains(e.target)) {
+        console.log("  👆 Clicked toast OK button area — no revert");
+        return;
+    }
+    
+    console.log("  ✅ Outside click — triggering revert");
+    revert();
+}
+
+function onKey(e) {
+    const elapsed = Date.now() - fireflyActivationTime;
+    const cooldownRemaining = Math.max(0, 800 - elapsed);
+    
+    if (e.code === "Space" || e.code === "Escape") {
+        e.preventDefault();
+        
+        if (Date.now() - fireflyActivationTime < 800) {
+            console.log(`[ONKEY] ${e.code} pressed during cooldown (${cooldownRemaining}ms left) — IGNORING`);
+            return;
+        }
+        
+        console.log(`[ONKEY] ${e.code} after cooldown — triggering revert`);
         revert();
     }
+}
 
-    function onKey(e) {
-        if (e.code === "Space" || e.code === "Escape") {
-            e.preventDefault();
-            revert();
-        }
-    }
-
-    // Attach to ALL JustFireF buttons
+    // Attach click listener to button
     justFireFBtns.forEach(btn => btn.addEventListener("click", hide));
 }
 

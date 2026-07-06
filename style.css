@@ -9,10 +9,12 @@
 @import url('styleModalLoginUnderConst.css');
 
 
-/* Remove mobile tap highlight (blue overlay) */
+/* NO tap highlight everywhere by default */
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+
   
 :root {
   --bg: #000;
@@ -274,6 +276,12 @@ body {
     opacity: 0.8;
   }
 
+
+/* tap highlight specifically JustFireF with stronger feedback */
+/* button#JustFireF {
+   -webkit-tap-highlight-color: rgba(255, 255, 255, 0.4); 
+  transition: transform 0.5s ease !important;
+} */
    
 /* Just Fireflies — elegant 3D neumorphic button with dark background */
 button#JustFireF {
@@ -310,8 +318,16 @@ button#JustFireF {
   text-transform: uppercase;
   
   cursor: pointer;
-  transition: all 0.25s ease;
-  
+
+    /* DELETE THIS LINE - conflicts with animation */
+  /* transition: all 0.25s ease; */
+    /* ✅ ADD THIS — GPU acceleration for mobile */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+
+
+
   /* Prevent text selection */
   -webkit-user-select: none;
   user-select: none;
@@ -335,7 +351,8 @@ button#JustFireF:hover {
 
 /* ── Active (pressed) state ── */
 button#JustFireF:active {
-  transform: scale(0.96);
+  transform: scale(0.96) !important;
+  opacity: 0.95 !important;
   
   box-shadow: 
     0 2px 2px 0px rgba(0, 0, 0, 0.45),
@@ -343,15 +360,26 @@ button#JustFireF:active {
     0 -2px 2px rgba(40, 45, 60, 0.03),
     0 -3px 2px rgba(20, 22, 30, 0.03),
     inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
-    inset 0 0 20px rgba(0, 0, 0, 0.3);
+    inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
   
-  transition: all 0.08s ease;
+  background: linear-gradient(to bottom, 
+             rgba(14, 16, 24, 0.98),
+             rgba(20, 22, 32, 0.95)) !important;
+             
+  
+  transition: all 0.1s ease !important;
 }
 
 /* ── Focus state (keyboard navigation) ── */
 button#JustFireF:focus-visible {
   outline: 2px solid rgba(140, 180, 255, 0.25);
   outline-offset: 3px;
+}
+
+/* Prevent text selection on non-button elements */
+.logo, .mob-panel-title, [class*="-icon"] {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* ── Light theme — only text and border adjust ── */
@@ -393,19 +421,26 @@ body[data-theme="light"] button#JustFireF:hover {
     border-radius: 30px;
 }
 
-body[data-theme="light"] button#JustFireF:active {
-  box-shadow: 
-    0 2px 2px 0px rgba(0, 0, 0, 0.4),
-    0 3px 4px rgba(0, 0, 0, 0.5),
-    0 -2px 2px rgba(40, 45, 60, 0.02),
-    0 -3px 2px rgba(20, 22, 30, 0.02),
-    inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
-    inset 0 0 20px rgba(0, 0, 0, 0.3);
-}
-
 body[data-theme="dark"] button#JustFireF {
   /* Background stays dark — unchanged */
    background: linear-gradient(0.50turn, rgba(12, 92, 126, 0.286),rgba(8, 57, 75, 0.33), rgba(12, 92, 126, 0.286));
+}
+/* Unified Active state — applies to both themes */
+
+body[data-theme="light"] button#JustFireF:active,
+body[data-theme="dark"] button#JustFireF:active {
+  transform: scale(0.96) !important;
+  opacity: 0.95 !important;
+  
+  box-shadow: 
+    0 2px 2px 0px rgba(0, 0, 0, 0.45),
+    0 3px 4px rgba(0, 0, 0, 0.55),
+    0 -2px 2px rgba(40, 45, 60, 0.03),
+    0 -3px 2px rgba(20, 22, 30, 0.03),
+    inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
+  
+  transition: all 0.1s ease !important;
 }
 
 
@@ -425,23 +460,49 @@ body[data-theme="dark"] button#JustFireF {
 }
 
 
-/* Alternative: More specific targeting if you want to be selective */
-button,
-a,
-[role="button"],
-input,
-select,
-textarea {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
+
+
+/* ── Firefly Mode Button Press Animation ── */
+@keyframes fireflyPressEffect {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    20% {
+        transform: scale(0.96);
+        opacity: 0.95;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
-/* For WebKit browsers (Safari, Chrome on iOS) */
-button:focus,
-a:focus,
-[role="button"]:focus {
-  outline: none;
+/* ✅ CONSOLIDATED RULE — KEEP !IMPORTANT FOR RELIABILITY */
+body.firefly-mode-active button#JustFireF {
+    -webkit-animation: fireflyPressEffect 0.25s ease forwards;
+    animation: fireflyPressEffect 0.25s ease forwards ;
+    pointer-events: auto ;
+    z-index: 9999 ;
+    position: relative ;
+    will-change: transform, opacity ;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
+
+
+
+/*  SINGLE CONSOLIDATED RULE FOR ALL DEVICES */
+body.firefly-mode-active {
+    pointer-events: none ;
+}
+
+ 
+
+
+
+
+
 
 /* Keep focus visible for keyboard navigation (accessibility) */
 button:focus-visible,
@@ -550,6 +611,39 @@ a:focus-visible,
     padding: 10px 0;
     width: calc(100% - 28px);
     margin: 4px 14px 4px;
+    
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+ 
+  
+  /* Unified :active state */
+  button#JustFireF:active {
+    transform: scale(0.96) !important;
+    box-shadow: 
+      0 2px 2px 0px rgba(0, 0, 0, 0.45),
+      0 3px 4px rgba(0, 0, 0, 0.55),
+      inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
+      inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  body[data-theme="dark"] button#JustFireF:active {
+    transform: scale(0.96) !important;
+    box-shadow: 
+      0 2px 2px 0px rgba(0, 0, 0, 0.45),
+      0 3px 4px rgba(0, 0, 0, 0.55),
+      inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
+      inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  body[data-theme="light"] button#JustFireF:active {
+    box-shadow: 
+      0 2px 2px 0px rgba(0, 0, 0, 0.4),
+      0 3px 4px rgba(0, 0, 0, 0.5),
+      inset 0 0 5px 3px rgba(0, 0, 0, 0.5),
+      inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
   }
 }
 
