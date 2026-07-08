@@ -301,6 +301,21 @@ body{
       color: #b8730e;
     }
 
+    
+    @media (hover: none) {
+  /* On touch devices, show arrow on tap/active state */
+  .project-tile:active::after {
+    opacity: 0.6;
+    transform: translateX(0);
+  }
+  
+  /* Also show on focus for accessibility */
+  .project-tile:focus::after {
+    opacity: 0.6;
+    transform: translateX(0);
+  }
+}
+
     @media (max-width: 640px) {
       .projects-grid {
         grid-template-columns: 1fr;
