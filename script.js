@@ -1,4 +1,4 @@
-const root = document.documentElement;
+//const root = document.documentElement;
 
 // Determine base path for assets
 function getBasePath() {
@@ -30,6 +30,9 @@ fetch(basePath + 'navbar.html')
     })
     .then(data => {
         document.getElementById('navbar').innerHTML = data;
+
+      
+
         // Initialize components
         initializeGTranslate();
         initializeThemeSlider();
@@ -39,6 +42,7 @@ fetch(basePath + 'navbar.html')
         // ── CHECK FIREFLIES AFTER NAVBAR IS LOADED ──
         // This ensures the #JustFireF buttons exist in the DOM
         checkAndHideFireflyButton();
+ 
         
     })
     .catch(error => {
@@ -106,9 +110,13 @@ function initializeMobileMenu() {
     const root = document.getElementById("mob-panel-root");
     if (!menu || !hamburger) return;
 
+    // Track state
+    let isMenuOpen = false;
+    let touchStartTarget = null;
+
     function closeAllSubmenus() {
         menu.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
-        root.classList.remove("dimmed");
+        if (root) root.classList.remove("dimmed");
     }
 
     function openSubmenu(id) {
@@ -116,48 +124,123 @@ function initializeMobileMenu() {
         const sub = document.getElementById(id);
         if (sub) {
             sub.classList.add("active");
-            root.classList.add("dimmed");
+            if (root) root.classList.add("dimmed");
+        }
+    }
+
+    // Clear text selection helper
+    function clearSelection() {
+        if (window.getSelection) {
+            window.getSelection().removeAllRanges();
+        } else if (document.selection) {
+            document.selection.empty();
         }
     }
 
     // ── Open / close overlay ──
-    hamburger.addEventListener("click", () => {
-        const isOpen = menu.classList.toggle("active");
-        hamburger.classList.toggle("active");
+    hamburger.addEventListener("click", (e) => {
+        e.preventDefault();
+        clearSelection();
         
-        // Prevent body scroll when menu is open (improves performance)
-        if (isOpen) {
+        isMenuOpen = !isMenuOpen;
+        menu.classList.toggle("active", isMenuOpen);
+        hamburger.classList.toggle("active", isMenuOpen);
+        
+        if (isMenuOpen) {
             document.body.classList.add("menu-open");
+            document.body.style.overflow = 'hidden';
         } else {
             document.body.classList.remove("menu-open");
+            document.body.style.overflow = '';
             closeAllSubmenus();
         }
     });
 
-    // ── Event delegation ──
+    // ── Touch event handling for better mobile support ──
+    menu.addEventListener('touchstart', (e) => {
+        // Store the target for later use
+        touchStartTarget = e.target;
+        
+        // Prevent default on interactive elements to avoid selection
+        if (e.target.closest('a') || e.target.closest('button') || 
+            e.target.closest('.mob-drill') || e.target.closest('.mob-close')) {
+            // Don't prevent default completely - allow scrolling
+        }
+    }, { passive: true });
+
+    menu.addEventListener('touchend', (e) => {
+        // Clear any text selection that might have occurred
+        clearSelection();
+        
+        // If touch was on an interactive element, handle it
+        const target = e.target.closest('a, button, .mob-drill, .mob-close');
+        if (target) {
+            // Simulate click after touch ends
+            setTimeout(() => {
+                target.click();
+            }, 10);
+        }
+    }, { passive: true });
+
+    // ── Click event delegation ──
     menu.addEventListener("click", (e) => {
+        // Clear selection on any click
+        clearSelection();
+        
         const drillBtn = e.target.closest(".mob-drill");
         const closeBtn = e.target.closest(".mob-close");
 
+        // Handle drill buttons
         if (drillBtn) {
             e.preventDefault();
+            e.stopPropagation();
+            clearSelection();
             openSubmenu(drillBtn.dataset.target);
             return;
         }
 
+        // Handle close buttons
         if (closeBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            clearSelection();
             closeAllSubmenus();
             return;
         }
 
-        // Tap bare backdrop to close entire menu
-        if (e.target === menu) {
+        // Handle backdrop click
+        if (e.target === menu || e.target === menu.querySelector('.mobile-menu-content')) {
+            e.preventDefault();
+            clearSelection();
             menu.classList.remove("active");
             hamburger.classList.remove("active");
             document.body.classList.remove("menu-open");
+            document.body.style.overflow = '';
             closeAllSubmenus();
         }
     });
+
+    // ── Prevent context menu on long press ──
+    menu.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+    });
+
+    // Also prevent context menu on hamburger
+    hamburger.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+    });
+
+    // ── Global touch prevention when menu is open ──
+    document.addEventListener('touchmove', (e) => {
+        if (isMenuOpen && e.target.closest('.mobile-menu-overlay')) {
+            // Allow scrolling within menu
+        }
+    }, { passive: true });
+
+    // Clear selection on any touch interaction with the menu
+    menu.addEventListener('mousedown', clearSelection);
 }
 
 window.gtranslateSettings = {
@@ -186,7 +269,10 @@ window.gtranslateSettings = {
 
 //--------------------------------------- 
 /* APPLY THEME Start*/
+//const root = document.documentElement;
 function applyTheme(value) {
+    const root = document.documentElement;
+
     const lightness = value / 100;  // 0.0 to 0.8 (since max is 80)
 
     // FIX: Background actually changes now (was interpolating same color twice)
@@ -194,7 +280,7 @@ function applyTheme(value) {
  //   const bg = interpolateColor([14, 16, 24], [20, 22, 32], lightness * 0.4); // Very subtle shift
     const text = interpolateColor([255, 255, 255], [20, 20, 20], lightness);
     const text1 = interpolateColor([220, 220, 220], [20, 20, 20], lightness);
-    const accent = interpolateColor([181, 210, 254], [38, 42, 44], lightness);
+    const accent = interpolateColor([212, 222, 237], [38, 42, 44], lightness);
     const accentBtn = interpolateColor([63, 73, 87], [27, 33, 42], lightness);
     
     root.style.setProperty("--bg", `rgb(${bg})`);
@@ -402,6 +488,7 @@ function initializeJustFireF() {
     const justFireFBtns = document.querySelectorAll("#JustFireF");
     const menu = document.getElementById("menu");
     const hamburger = document.getElementById("hamburger");
+    const mobPanelRoot = document.getElementById("mob-panel-root");
 
     if (!justFireFBtns.length) return;
 
@@ -417,196 +504,306 @@ function initializeJustFireF() {
 
     const okBtn = toast.querySelector("#justFireF-ok");
 
+    // Track state
+    let isFireflyMode = false;
+    let pressTimer = null;
+
+    // Clear selection helper
+    function clearSelection() {
+        if (window.getSelection) {
+            window.getSelection().removeAllRanges();
+        } else if (document.selection) {
+            document.selection.empty();
+        }
+    }
 
     /* ── Hide everything: enter firefly mode ── */
-function hide() {
-    // ... mobile menu closing code ...
-    
-    //  Force CSS animation trigger via reflow
-    document.body.classList.remove('firefly-mode-active');
-    void document.body.offsetWidth;
-    document.body.classList.add('firefly-mode-active');
-    
-   
-    
-    
-    //  Wait for FULL animation (250ms) before hiding navbar
-    setTimeout(() => {
-        //  INSTANT hide - NO transitions allowed
-        if (navbar) {
-            navbar.style.transition = "none";  /* Disable ANY fade */
-            navbar.style.opacity = "";  /* Clear opacity overrides */
-            navbar.style.display = "none";  /* Hide instantly */
+    function hide(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-        if (content) {
-            content.style.transition = "none";  /* Disable ANY fade */
-            content.style.opacity = "";  /* Clear opacity overrides */
-            content.style.display = "none";  /* Hide instantly */
-        }
-        // Show toast
-        toast.style.opacity = "1";
-        // Remove class after animation done
-        document.body.classList.remove('firefly-mode-active');
-    }, 250);
-
-    // Attach listeners after fireflies visible
-    setTimeout(() => {
         
-        document.addEventListener("keydown", onKey);
-        document.addEventListener("click", onPointer);
-    }, 400);
+        if (isFireflyMode) return;
+        isFireflyMode = true;
+        
+        // Clear any text selection
+        clearSelection();
+        document.body.classList.add('firefly-mode-active');
+        toast.style.opacity = "1";
 
-    okBtn.addEventListener("click", dismissToast, { once: true });
-    
-}
+        setTimeout(() => {
+            // Close mobile menu
+            if (menu) {
+                menu.classList.remove("active");
+                menu.style.display = "";
+            }
+            if (hamburger) {
+                hamburger.classList.remove("active");
+            }
+            
+            document.body.classList.remove("menu-open");
+            document.body.style.overflow = '';
+            
+            if (mobPanelRoot) {
+                mobPanelRoot.classList.remove("dimmed");
+            }
+            
+            document.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
 
+            // Hide navbar/content
+            if (navbar) {
+                navbar.style.transition = "none";
+                navbar.style.display = "none";
+            }
+            if (content) {
+                content.style.transition = "none";
+                content.style.display = "none";
+            }
+        }, 300);
+
+        setTimeout(() => {
+            document.addEventListener("keydown", onKey);
+            document.addEventListener("click", onPointer);
+        }, 450);
+
+        okBtn.addEventListener("click", dismissToast, { once: true });
+    }
 
     function dismissToast(e) {
         e.stopPropagation();
         toast.style.opacity = "0";
     }
 
-function revert() {
-    
-    // Remove CSS class (stops button animation)
-    document.body.classList.remove('firefly-mode-active');
-    
-    toast.style.opacity = "0";
-    
-    // Restore navbar/content with inline styles cleared
-    if (navbar) {
-        navbar.style.display = "";
-        navbar.style.opacity = "";
-        navbar.style.transition = "";
-    }
-    if (content) {
-        content.style.display = "";
-        content.style.opacity = "";
-        content.style.transition = "";
-    }
-    
-    document.removeEventListener("keydown", onKey);
-    document.removeEventListener("click", onPointer);
-}
-
-function onPointer(e) {
-    
-    revert();
-}
-
-function onKey(e) {
-    
-    
-    if (e.code === "Space" || e.code === "Escape") {
-        e.preventDefault();
-      
-        revert();
-    }
-}
-
-    // Attach click listener to button
-    justFireFBtns.forEach(btn => btn.addEventListener("click", hide));
-}
-
-
-// ============================================================
-// LOGIN NOTICE MODAL
-// ============================================================
-function initializeLoginModal() {
-      const modal = document.getElementById('loginModal');
-      const closeBtn = document.getElementById('loginModalClose');
-      const gotItBtn = document.getElementById('loginModalGotIt');
-      const notifyBtn = document.getElementById('loginModalNotify');
-    
-      if (!modal) return;
-    
-      // ── Open modal ──
-      function openModal(e) {
-        if (e) e.preventDefault();
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      }
-
-      // ── Close modal ──
-      function closeModal() {
-        modal.classList.remove('active');
+    function revert() {
+        if (!isFireflyMode) return;
+        
+        isFireflyMode = false;
+        document.body.classList.remove('firefly-mode-active');
+        toast.style.opacity = "0";
+        clearSelection();
+        
+        if (navbar) {
+            navbar.style.display = "";
+            navbar.style.transition = "";
+        }
+        if (content) {
+            content.style.display = "";
+            content.style.transition = "";
+        }
+        
+        if (menu) {
+            menu.classList.remove("active");
+            menu.style.display = "";
+        }
+        if (hamburger) {
+            hamburger.classList.remove("active");
+        }
+        
+        document.body.classList.remove("menu-open");
         document.body.style.overflow = '';
-      }
+        
+        if (mobPanelRoot) {
+            mobPanelRoot.classList.remove("dimmed");
+        }
+        
+        document.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
 
-      // ── Attach to Login buttons ──
-      // Desktop login (top-right nav)
-      const loginLinks = document.querySelectorAll('.nav-right a[href="login.html"]');
-      loginLinks.forEach(link => {
-        link.addEventListener('click', openModal);
-        // Keep the href for fallback, but prevent navigation
-        link.addEventListener('click', (e) => e.preventDefault());
-      });
+        document.removeEventListener("keydown", onKey);
+        document.removeEventListener("click", onPointer);
+        clearSelection();
+    }
 
-      // Main "Login" button in centre of landing page
-      const mainLoginBtn = document.querySelector('.buttons .secondary');
-      if (mainLoginBtn) {
-        mainLoginBtn.addEventListener('click', openModal);
-      }
+    function onPointer(e) {
+        if (isFireflyMode && !e.target.closest('#JustFireF')) {
+            revert();
+        }
+    }
 
-      // Also catch any other login buttons by text content
-    document.querySelectorAll('a, button').forEach(el => {
-      const text = el.textContent.trim();
-      // Check if this element should trigger the modal
-      const shouldShowModal = 
-        (text === 'Login' && !el.closest('.nav-left') && !el.closest('.logo')) ||
-        ((text === 'BlazerBits' || 
-          text === 'FAQ' || 
-          text === 'Blog Profiles' ||
-          text === 'Highlighted Posts') && (el.closest('.dropdown') || el.closest('.mob-submenu'))
-        );/* ||
-        (text === 'Just Fireflies' && (el.closest('.dropdown') || el.closest('.mob-submenu')));
-         */
+    function onKey(e) {
+        if ((e.code === "Space" || e.code === "Escape") && isFireflyMode) {
+            e.preventDefault();
+            revert();
+        }
+    }
 
-
-      if (shouldShowModal) {
-        el.removeEventListener('click', openModal);
-        el.addEventListener('click', openModal);
-        el.removeEventListener('click', (e) => e.preventDefault());
-        el.addEventListener('click', (e) => e.preventDefault());
-      }
+    // ── Button Event Handlers ──
+    justFireFBtns.forEach(btn => {
+        // Remove old listeners to prevent duplicates
+        btn.removeEventListener('mousedown', handlePressStart);
+        btn.removeEventListener('touchstart', handlePressStart);
+        btn.removeEventListener('mouseup', handlePressEnd);
+        btn.removeEventListener('touchend', handlePressEnd);
+        btn.removeEventListener('touchcancel', handlePressEnd);
+        btn.removeEventListener('click', handleClick);
+        btn.removeEventListener('contextmenu', preventContextMenu);
+        
+        // Add fresh listeners
+        btn.addEventListener('mousedown', handlePressStart);
+        btn.addEventListener('touchstart', handlePressStart, { passive: true });
+        btn.addEventListener('mouseup', handlePressEnd);
+        btn.addEventListener('touchend', handlePressEnd, { passive: true });
+        btn.addEventListener('touchcancel', handlePressEnd, { passive: true });
+        btn.addEventListener('click', handleClick);
+        btn.addEventListener('contextmenu', preventContextMenu);
     });
 
-
-        // Add after login bindings - This function uses Data Attribute "data-modal-trigger" in the a tags for projects.html and index.html..
-        document.querySelectorAll('a.project-tile[data-modal-trigger]')
-          .forEach(tile => {
-        // Check if listener already exists (via dataset flag)
-        if (!tile.hasAttribute('data-modal-bound')) {
-          tile.addEventListener('click', openModal);
-          tile.addEventListener('click', (e) => e.preventDefault());
-          tile.setAttribute('data-modal-bound', 'true'); // Mark as bound
+    function handlePressStart(e) {
+        if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
         }
-
-      });
-
-      // ── Close handlers ──
-      if (closeBtn) closeBtn.addEventListener('click', closeModal);
-      if (gotItBtn) gotItBtn.addEventListener('click', closeModal);
-
-      if (notifyBtn) {
-        notifyBtn.addEventListener('click', () => {
-          alert('We\'ll notify you as soon as login is ready! 🚀');
-          closeModal();
-        });
-      }
-
-      // Close on backdrop click
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-      });
-
-      // Close on Escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-          closeModal();
+        
+        if (!isFireflyMode) {
+            pressTimer = setTimeout(() => {
+                if (!isFireflyMode) {
+                    if (e.type === 'touchstart') {
+                        e.preventDefault();
+                    }
+                    pressTimer = null;
+                }
+            }, 1000);
         }
-      });
+    }
+
+    function handlePressEnd(e) {
+        if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+        }
+        clearSelection();
+    }
+
+    function handleClick(e) {
+        if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+        }
+        
+        e.preventDefault();
+        e.stopPropagation();
+        clearSelection();
+        
+        if (!isFireflyMode) {
+            hide(e);
+        }
+    }
+    
+    function preventContextMenu(e) {
+        e.preventDefault();
+        return false;
+    }
 }
+
+
+// ============================================================
+// LOGIN\"Under construction" NOTICE MODAL
+// ============================================================
+function initializeLoginModal() {
+    const modal = document.getElementById('loginModal');
+    const closeBtn = document.getElementById('loginModalClose');
+    const gotItBtn = document.getElementById('loginModalGotIt');
+    const notifyBtn = document.getElementById('loginModalNotify');
+
+    if (!modal) return;
+
+    // ── Open modal ──
+    function openModal(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // ── Close modal ──
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // ── DELEGATED EVENT LISTENER ──
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('a, button');
+        if (!target) return;
+
+        // Check if it's a project tile
+        const projectTile = target.closest('.project-tile');
+        
+        // If it's a project tile with a valid href (not #), let it navigate
+        if (projectTile) {
+            const href = projectTile.getAttribute('href');
+            // If it has data-modal-trigger AND href is # or empty, show modal
+            if (projectTile.hasAttribute('data-modal-trigger') && (!href || href === '#')) {
+                e.preventDefault();
+                e.stopPropagation();
+                openModal(e);
+                return;
+            }
+            // Otherwise, let the navigation happen (don't block)
+            return;
+        }
+
+        const text = target.textContent.trim();
+        const href = target.getAttribute('href');
+        
+        // Check if this should trigger the modal
+        const shouldShowModal = 
+            // All "Login" text except in nav-left/logo areas
+            (text === 'Login' && !target.closest('.nav-left') && !target.closest('.logo')) ||
+            // Nav dropdown items
+            (['BlazerBits', 'FAQ', 'Blog Profiles', 'Highlighted Posts'].includes(text) && 
+             (target.closest('.dropdown') || target.closest('.mob-submenu'))) ||
+            // Direct href match for login
+            (href === 'login.html');
+
+        if (shouldShowModal && e.isTrusted) {
+            e.preventDefault();
+            e.stopPropagation();
+            openModal(e);
+        }
+    }, true);
+
+    // ── Close handlers ──
+    if (closeBtn) {
+        closeBtn.onclick = closeModal;
+    }
+    if (gotItBtn) {
+        gotItBtn.onclick = closeModal;
+    }
+
+    if (notifyBtn) {
+        notifyBtn.onclick = () => {
+            alert('We\'ll notify you as soon as login is ready! 🚀');
+            closeModal();
+        };
+    }
+
+    // Close on backdrop click
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
+
+    // Close on Escape key
+    document.onkeydown = (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    };
+}
+
+// ── CALL ONCE, AT THE RIGHT TIME ──
+// Run AFTER navbar loads (ensure login links exist)
+if (document.readyState === 'complete') {
+    setTimeout(initializeLoginModal, 100);
+} else {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initializeLoginModal, 100);
+    });
+}
+
+// REMOVED: MutationObserver and fallback timeout (prevents duplicate bindings)
 
 // ── Call initialiser after navbar loads ──
 // Wrap in a small delay to ensure DOM is ready

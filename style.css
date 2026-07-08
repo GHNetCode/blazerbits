@@ -9,13 +9,72 @@
 @import url('styleModalLoginUnderConst.css');
 
 
-/* NO tap highlight everywhere by default */
+/* NO tap highlights for buttons everywhere by default */
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* ── AGGRESSIVE LONG-PRESS PREVENTION ── */
+.top-nav a,
+.top-nav button,
+.nav-item,
+.logo,
+.nav-right a {
+    /* Most aggressive - completely disables touch gestures */
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    
+    /* Prevent dragging */
+    -webkit-user-drag: none;
+}
+/* ── PREVENT TEXT SELECTION AND LONG-PRESS HIGHLIGHTING ON MOBILE ── */
+/* This applies to ALL interactive elements */
+* {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Specifically target mobile menu elements */
+.mobile-menu-overlay *,
+.mob-panel-root *,
+.mob-submenu *,
+.mob-drill,
+.mob-close,
+.mob-panel-root a,
+.mob-submenu a {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  touch-action: manipulation !important;
+}
+
+/* Prevent text selection on any interactive element */
+a, button, .nav-item, .dropdown, .mob-drill, .mob-close {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Override any potential text selection */
+::selection {
+  background: transparent !important;
+}
+
+/* For Firefox */
+::-moz-selection {
+  background: transparent !important;
+}
 
   
+
+
 :root {
   --bg: #000;
   --bgPortf: #000;
@@ -46,6 +105,12 @@
 
   /*color: rgb(58, 107, 120); */
 }
+
+
+
+
+
+
 
 /* RESET */
 * {
@@ -478,11 +543,11 @@ body[data-theme="dark"] button#JustFireF:active {
     }
 }
 
-/* ✅ CONSOLIDATED RULE — KEEP !IMPORTANT FOR RELIABILITY */
+/* CONSOLIDATED RULE — KEEP !IMPORTANT FOR RELIABILITY */
 body.firefly-mode-active button#JustFireF {
-    -webkit-animation: fireflyPressEffect 0.25s ease forwards;
-    animation: fireflyPressEffect 0.25s ease forwards ;
-    pointer-events: auto ;
+    -webkit-animation: fireflyPressEffect 0.35s ease forwards;
+    animation: fireflyPressEffect 0.35s ease forwards ;
+    /* pointer-events: auto ; */
     z-index: 9999 ;
     position: relative ;
     will-change: transform, opacity ;

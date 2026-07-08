@@ -15,8 +15,11 @@
     
 body{
         background:  rgba(8, 14, 20, 0.901);
-
 }
+
+
+
+
     /* --- Projects Hero --- */
     .projects-hero {
       min-height: 40vh;
@@ -40,7 +43,8 @@ body{
 
     .projects-hero p {
       font-size: 1.1rem;
-      color: var(--muted, #a7b1c2);
+      /* color: var(--muted, #a7b1c2); */
+      color: var(--accent);
       max-width: 600px;
       opacity: 0.7;
     }
@@ -73,6 +77,22 @@ body{
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      
+      /* CRITICAL: Aggressive touch prevention */
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-touch-callout: none !important;
+      -webkit-user-select: none !important;
+      user-select: none !important;
+      touch-action: manipulation !important;
+      -webkit-user-drag: none !important;
+      
+      /* Prevent text selection entirely */
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     .project-tile:hover {
@@ -87,17 +107,22 @@ body{
       align-items: center;
       gap: 0.75rem;
       margin-bottom: 0.75rem;
+      pointer-events: none;
     }
 
     .project-tile-header .project-icon {
       font-size: 1.8rem;
       line-height: 1;
+      pointer-events: none;
     }
 
     .project-tile-header .project-icon-img {
       width: 32px;
       height: 32px;
       border-radius: 6px;
+      pointer-events: none;
+      -webkit-user-drag: none;
+      user-drag: none;
     }
 
     .project-tile-header h2 {
@@ -106,9 +131,9 @@ body{
       font-weight: 400;
       letter-spacing: 0.02em;
       margin: 0;
+      pointer-events: none;
     }
 
-    /* "Coming Soon" Badge */
     .project-status {
       align-self: flex-start;
       background: rgba(255, 210, 80, 0.12);
@@ -121,23 +146,25 @@ body{
       border-radius: 999px;
       border: 1px solid rgba(255, 210, 80, 0.15);
       margin-bottom: 0.75rem;
+      pointer-events: none;
     }
 
-    /* Description */
     .project-tile p {
       font-size: 0.95rem;
       line-height: 1.6;
-      color: var(--muted, #a7b1c2);
+      /* color: var(--muted, #a7b1c2); */
+            color: var(--accent);
       margin-bottom: 1.5rem;
       flex: 1;
+      pointer-events: none;
     }
 
-    /* Tech Tags */
     .project-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
       margin-top: auto;
+      pointer-events: none;
     }
 
     .project-tags span {
@@ -150,21 +177,20 @@ body{
       text-transform: uppercase;
       opacity: 0.6;
       border: 1px solid rgba(255, 255, 255, 0.05);
+      pointer-events: none;
     }
 
-    /* Subtle Arrow on Hover */
     .project-tile::after {
       content: "→";
       position: absolute;
-      /* bottom: 1.5rem; */
-      /* right: 1.5rem; */
-      top:10px;
+      top: 10px;
       right: 0.5rem;
       font-size: 1.7rem;
       opacity: 0;
       color: rgb(255, 136, 0);
       transition: opacity 0.3s ease, transform 0.3s ease;
       transform: translateX(-8px);
+      pointer-events: none;
     }
 
     .project-tile:hover::after {
@@ -173,7 +199,7 @@ body{
     }
 
     /* ============================================================
-       SIMPLE & ELEGANT BACK BUTTON - Bottom Right
+       BACK BUTTON - Bottom Right
        ============================================================ */
     .back-btn {
       position: fixed;
@@ -188,8 +214,6 @@ body{
       padding: 0.6rem 1.2rem;
       
       background: rgba(21, 43, 50, 0.75);
-         /* background: linear-gradient(0.75turn, rgba(8, 74, 103, 0.347),rgba(216, 138, 54, 0.37));
-      background-repeat: no-repeat; */
       border: 1px solid rgba(203, 142, 50, 0.444);
       border-radius: 999px;
       
@@ -208,15 +232,16 @@ body{
       user-select: none;
       -webkit-user-select: none;
       
-      /* Performance */
       will-change: transform;
       contain: layout style paint;
+      
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-touch-callout: none !important;
+      touch-action: manipulation !important;
     }
 
     .back-btn:hover {
       background: rgba(20, 20, 40, 0.85);
-      /* background: linear-gradient(0.75turn, rgba(8, 75, 103, 0.342),rgba(216, 138, 54, 0.417));
-      background-repeat: no-repeat; */
       border: 1px solid rgba(251, 202, 128, 0.346);
       transform: translateY(-2px) scale(1.03);
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
@@ -255,7 +280,6 @@ body{
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
     }
 
-    /* --- Light Theme Overrides for tiles --- */
     body.light-theme .project-tile {
       background: rgba(255, 255, 255, 0.9);
       border-color: rgba(0, 0, 0, 0.06);
@@ -277,7 +301,6 @@ body{
       color: #b8730e;
     }
 
-    /* --- Responsive --- */
     @media (max-width: 640px) {
       .projects-grid {
         grid-template-columns: 1fr;
@@ -305,11 +328,10 @@ body{
       }
 
       .back-btn span {
-        display: none; /* Hide text on mobile, show only arrow */
+        display: none;
       }
     }
 
-    /* --- Navbar Overrides for this page --- */
     .nav-left {
       margin-left: 0;
     }
@@ -323,27 +345,24 @@ body{
         left: 3.5vw;
       }
     }
+
+
   </style>
 </head>
 <body>
 
-  <!-- ===== NAVBAR ===== -->
   <div id="navbar"></div>
-
-  <!-- ===== LOGIN MODAL (optional) ===== -->
   <div id="loginModalContainer"></div>
 
-  <!-- ===== PROJECTS HERO ===== -->
   <section class="projects-hero">
     <h1>FrontEnd Mentor</h1>
     <p>A collection of Challenges\Projects for upskilling on the Frontend Web User Interface.</p>
   </section>
 
-  <!-- ===== PROJECT GRID ===== -->
   <section class="projects-grid">
 
-    <!-- PROJECTS on FrontEnd Mentor Website -->
-    <a href="https://www.frontendmentor.io/profile/GHNetCode" class="project-tile" target="_blank">
+    <!-- PROJECT 1: FrontEnd Mentor Website - Use button instead of anchor -->
+    <div class="project-tile" data-external="https://www.frontendmentor.io/profile/GHNetCode">
       <div class="project-tile-header">
         <img src="https://www.frontendmentor.io/favicon/favicon-32x32.png" alt="FrontEnd Mentor icon" class="project-icon-img">
         <h2>FrontEnd Mentor Website</h2>
@@ -352,12 +371,10 @@ body{
       <p>Visit FrontEnd Mentor Website for Completed Challenges\Projects.</p>
       <div class="project-tags">
       </div>
-    </a>
+    </div>
 
-    <!-- PROJECT 2 ip-address-tracker-->
-    <!-- <a href="ip-address-tracker/" class="project-tile"> -->
-    <a href="ip-address-tracker/" class="project-tile" data-modal-trigger> 
-
+    <!-- PROJECT 2: IP Address Tracker -->
+    <a href="ip-address-tracker/" class="project-tile">
       <div class="project-tile-header">
         <span class="project-icon">🌍</span>
         <h2>Challenge\Project: IP Address Tracker</h2>
@@ -372,25 +389,24 @@ body{
       </div>
     </a>
 
-    <!-- PROJECT 3 url-shortener-->
-    <!-- <a href="url-shortener/" class="project-tile"> -->
-    <a href="url-shortener/" class="project-tile" data-modal-trigger> 
+    <!-- PROJECT 3: URL Shortener -->
+    <a href="url-shortener/" class="project-tile">
       <div class="project-tile-header">
-        <span class="project-icon">🎨</span>
+        <span class="project-icon">🔗</span>
         <h2>Challenge\Project: URL Shortener</h2>
       </div>
       <span class="project-status">Coming Soon</span>
-      <p>Generate harmonious color palettes with a single click. Copy hex codes and preview combinations.</p>
+      <p>URL shortening service with custom aliases and click tracking.</p>
       <div class="project-tags">
         <span>JavaScript</span>
         <span>CSS</span>
-        <span>Design</span>
+        <span>API</span>
+        <span>NodeJS</span>
       </div>
     </a>
 
-    <!-- <a href="#" class="project-tile"> -->
+    <!-- PROJECT 4: Example Project (modal trigger) -->
     <a href="#" class="project-tile" data-modal-trigger>
-
       <div class="project-tile-header">
         <span class="project-icon">🎨</span>
         <h2>Example Project: Color Palette Generator</h2>
@@ -406,9 +422,6 @@ body{
 
   </section>
 
-  <!-- ============================================================
-       BACK BUTTON - Bottom Right
-       ============================================================ -->
   <button class="back-btn" onclick="history.back()">
     <svg viewBox="0 0 24 24">
       <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -416,12 +429,10 @@ body{
     <span>Back</span>
   </button>
 
-  <!-- ===== FOOTER ===== -->
   <footer id="attribution">
     © BlazerBits Website • Designed by Mark Sheard
   </footer>
 
-  <!-- ===== SCRIPTS ===== -->
   <script src="../../script.js"></script>
 
   <script>
@@ -443,7 +454,67 @@ body{
         tile.style.transition = `opacity 0.6s ease ${i * 0.08}s, transform 0.6s ease ${i * 0.08}s`;
         observer.observe(tile);
       });
+
+      // ── Handle external link tiles ──
+      document.querySelectorAll('.project-tile[data-external]').forEach(tile => {
+        tile.addEventListener('click', function(e) {
+          e.preventDefault();
+          const url = this.getAttribute('data-external');
+          if (url) {
+            window.open(url, '_blank');
+          }
+        });
+      });
+
+      // ── Aggressive touch prevention for ALL project tiles ──
+      document.querySelectorAll('.project-tile').forEach(tile => {
+        // Prevent all touch defaults
+        tile.addEventListener('touchstart', function(e) {
+          // Clear any selection
+          if (window.getSelection) {
+            window.getSelection().removeAllRanges();
+          }
+          // Don't prevent default here - allow the click
+        }, { passive: true });
+
+        tile.addEventListener('touchend', function(e) {
+          // Clear selection again
+          if (window.getSelection) {
+            window.getSelection().removeAllRanges();
+          }
+        }, { passive: true });
+
+        // Block context menu
+        tile.addEventListener('contextmenu', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        });
+
+        // Block drag
+        tile.addEventListener('dragstart', function(e) {
+          e.preventDefault();
+          return false;
+        });
+      });
+
+      // ── Global selection prevention ──
+      document.addEventListener('selectstart', function(e) {
+        if (e.target.closest('.project-tile')) {
+          e.preventDefault();
+        }
+      });
+
+      // ── Clear selection on any touch outside the tiles ──
+      document.addEventListener('touchstart', function(e) {
+        if (!e.target.closest('.project-tile')) {
+          if (window.getSelection) {
+            window.getSelection().removeAllRanges();
+          }
+        }
+      }, { passive: true });
     });
+    
   </script>
 
 </body>
