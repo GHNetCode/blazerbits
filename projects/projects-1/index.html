@@ -128,7 +128,6 @@ body{
       border-radius: 6px;
       pointer-events: none;
       -webkit-user-drag: none;
-      user-drag: none;
     }
 
     .project-tile-header h2 {
@@ -578,22 +577,22 @@ body{
         tile.addEventListener('touchend', function(e) {
           // Mark touch as inactive
           touchActive.set(this, false);
-          
+
           // Clear arrow timer if still pending
           if (pressTimers.has(this)) {
             clearTimeout(pressTimers.get(this));
             pressTimers.delete(this);
           }
-          
+
           // Remove touch-active class
           this.classList.remove('touch-active');
-          
+
           // Only prevent default if the event is cancelable
           if (e.cancelable) {
             e.preventDefault();
             e.stopPropagation();
           }
-          
+
           // Start delayed action
           const actionTimer = setTimeout(() => {
             if (!navigationTriggered) {
@@ -602,14 +601,14 @@ body{
             }
             actionTimers.delete(this);
           }, NAV_DELAY);
-          
+
           actionTimers.set(this, actionTimer);
-          
+
           // Remove arrow after delay (after action has started)
           setTimeout(() => {
             this.classList.remove('touch-arrow');
           }, 100);
-          
+
         }, { passive: false }); // passive: false so we can preventDefault when possible
         
         // Touch cancel - cancel everything
