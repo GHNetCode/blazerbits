@@ -501,30 +501,29 @@ btnArrHvr.addEventListener("pointerdown", async function(e) {
           console.log("[59] btnArrHvr - dnsdata content:", JSON.stringify(dnsdata));
           
           // ========== FIX: Check for error object (has 'code' property) ==========
-          if (dnsdata.code) {
-            console.log("[60] btnArrHvr - ⚠️ DNS error detected, code:", dnsdata.code);
-            // Handle DNS error
-            btnArrHvrStyle();
-            rotateArrow.cancel();
-            console.log("[61] btnArrHvr - DNS error details:", JSON.stringify(dnsdata));
+            if (dnsdata.errno) {
+                console.log("[60] btnArrHvr - ⚠️ DNS error detected, errno:", dnsdata.errno);
+                btnArrHvrStyle();
+                rotateArrow.cancel();
+                console.log("[61] btnArrHvr - DNS error details:", JSON.stringify(dnsdata));
             
-            // Display user-friendly error message
-            let errorMessage = '';
-            if (dnsdata.code === 'ENOTFOUND') {
-              errorMessage = "Domain '" + dnsdata.hostname + "' could not be found. The domain may not exist or DNS resolution failed.";
-              console.log("[62] btnArrHvr - ENOTFOUND error - domain not found:", dnsdata.hostname);
-            } else if (dnsdata.code === 'ETIMEOUT') {
-              errorMessage = "DNS lookup timed out for '" + dnsdata.hostname + "'. Please try again.";
-              console.log("[63] btnArrHvr - ETIMEOUT error - timeout for:", dnsdata.hostname);
-            } else {
-              errorMessage = "DNS error: " + dnsdata.code + " - " + dnsdata.hostname;
-              console.log("[64] btnArrHvr - Unknown DNS error:", dnsdata.code);
+                const dnsErrors = {
+                    'ENOTFOUND': `The domain '${srchInpTxtcleaned}' could not be found. Please check the domain and try again.`,
+                    'ENODATA':   `No IP address records found for '${srchInpTxtcleaned}'.`,
+                    'ETIMEOUT':  `DNS lookup timed out for '${srchInpTxtcleaned}'. Please try again.`,
+                    'ESERVFAIL': `DNS server failed for '${srchInpTxtcleaned}'. Please try again later.`,
+                    'EREFUSED':  `DNS lookup was refused for '${srchInpTxtcleaned}'. Please try again later.`,
+                    'EBADNAME':  `'${srchInpTxtcleaned}' is not a valid domain name.`,
+                };
+              
+                const friendlyMsg = dnsErrors[dnsdata.errno] ||
+                    `DNS error (${dnsdata.errno}) for '${dnsdata.hostname}'. Please check the domain and try again.`;
+              
+                console.log("[62] btnArrHvr - Showing friendly DNS error:", friendlyMsg);
+                alert(friendlyMsg);
+                return;
             }
-            
-            alert(errorMessage);
-            console.log("[65] btnArrHvr - Exiting due to DNS error");
-            return; // Exit early
-          }
+
           
           // ========== FIX: Check if we have an array of IP addresses ==========
           if (Array.isArray(dnsdata) && dnsdata.length > 0) {
