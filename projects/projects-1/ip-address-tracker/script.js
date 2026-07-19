@@ -664,7 +664,7 @@ async function getJSONurlFwrapr() {
         
         try {
           console.log("[96] getJSONurlFwrapr.getUserIP - Fetching from:", errMsgSite);
-          const response = await fetch('https://api.bigdatacloud.net/data/client-ip', { signal: AbortSignal.timeout(5000) });
+          const response = await fetch('https://api.bigdatacloud.net/data/client-ip', { signal: AbortSignal.timeout(10000) });
           console.log("[97] getJSONurlFwrapr.getUserIP - Response status:", response.status);
           if (response.ok) {
             const respData = await response.json();
