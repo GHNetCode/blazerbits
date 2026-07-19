@@ -664,7 +664,7 @@ async function getJSONurlFwrapr() {
         
         try {
           console.log("[96] getJSONurlFwrapr.getUserIP - Fetching from:", errMsgSite);
-          const response = await fetch('https://api.bigdatacloud.net/data/client-ip', { signal: AbortSignal.timeout(10000) });
+          const response = await fetch('https://api.bigdatacloud.net/data/client-ip', { signal: AbortSignal.timeout(5000) });
           console.log("[97] getJSONurlFwrapr.getUserIP - Response status:", response.status);
           if (response.ok) {
             const respData = await response.json();
@@ -678,6 +678,7 @@ async function getJSONurlFwrapr() {
             console.log("[100] getJSONurlFwrapr.getUserIP - Updated URL with IP:", url);
             getUserIPChk = true;
             console.log("[101] getJSONurlFwrapr.getUserIP - getUserIPChk set to true");
+            srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
           } else {
             console.log("[102] getJSONurlFwrapr.getUserIP - Response not OK, status:", response.status);
             throw new Error('Something went wrong');
@@ -718,7 +719,6 @@ async function getJSONurlFwrapr() {
           } else {
             console.log("[115] getJSONurlFwrapr - ✅ Valid geolocation data for IP:", data.ip);
             console.log("[116] getJSONurlFwrapr - Updating UI with location data");
-            srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
             sBRCiPaDD.innerHTML = data.ip;
             sBRCLoc.innerText = (data.city + "," + data.country_code3 + " " + data.zipcode + " ");
             document.getElementById('sBRCLoc').appendChild(sBRCLocFlag);
