@@ -166,3 +166,8 @@ DEV/styleAll.css
 DEV/portfolioOLD.html
 DEV/indexFireflies.html
 DEV/indexOld copy.html
+
+local.settings.json
+
+.gitignore
+.vscode/

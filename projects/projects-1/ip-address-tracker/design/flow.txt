@@ -1,0 +1,7 @@
+basic flow is as follows:
+- If search field on the client is blank:
+1. On web client side, user pushes the search button (if field is blank).
+2. Client fetches the ip address from api.bigdatacloud.net/data/client-ip await fetch('https://api.bigdatacloud.net/data/client-ip',{ signal: AbortSignal.timeout(5000)})
+3. once received it then calls async function getip()and then getJSON(url).then(data => {....  that reaches out to nodejs. url example(http://127.0.0.1/ipgeoApi/146.70.120.212)
+4. nodejs then routes it to ipgeoApi to get the ip information of ISP, Time, country, and the geo coordinates etc..
+5. using this info from ipgeoApi the client then uses the route /hereMApi on nodejs to find the coordinates on the map requested.
