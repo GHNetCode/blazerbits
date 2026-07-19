@@ -55,8 +55,10 @@ body{
     padding-left: 20px;
     padding-right: 20px;
     z-index: 1;
+    /* Remove fixed min-height and let it be dynamic */
     background: transparent;
     overflow: visible;
+    /* border: red 1px solid; */
 }
 
 /* Top background - covers the entire cntr1 area */
@@ -73,6 +75,7 @@ body{
     background-position: center;
     z-index: -1;
     min-width: 100%;
+    /* Ensure it covers the whole container including padding */
     min-height: 100%;
 }
 
@@ -99,15 +102,12 @@ body{
     display: inline-flex;
     align-items: center;
     justify-content: center;
-     
-    width: 24px;/*28px*/
-    height: 24px;
-    font-size: 15px; /*18px*/
-        /* border-width: 2.5px; */
-    top: -7px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.15);
     color: white;
+    font-size: 18px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -116,7 +116,7 @@ body{
     font-family: 'Rubik', sans-serif;
     flex-shrink: 0;
     position: relative;
-  
+    top: -12px;
 }
 
 #helptips:hover {
@@ -217,32 +217,6 @@ body{
     margin-top: 10px;
 }
 
-#osmInfoTip {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    font-size: 11px;
-    font-style: italic;
-    font-weight: 700;
-    border-radius: 50%;
-    background: rgba(116, 116, 116, 0.2);
-    color: rgb(116, 116, 116);
-    border: 1.5px solid rgba(116, 116, 116, 0.4);
-    cursor: pointer;
-    margin-left: 6px;
-    vertical-align: middle;
-    transition: all 0.3s ease;
-    user-select: none;
-    font-family: 'Rubik', sans-serif;
-}
-
-#osmInfoTip:hover {
-    background: rgba(116, 116, 116, 0.4);
-    border-color: rgba(116, 116, 116, 0.7);
-}
-
 #srchBarCnt1{
     display:flex;
     position: relative;
@@ -262,7 +236,6 @@ body{
     height: 57px;
     border-radius: 14px;
     z-index: 1;
-    overflow: visible;
 }
 
 #srchBarFldBtn{
@@ -293,82 +266,36 @@ body{
     z-index:2;
     -webkit-transition-duration:1.5s; 
     transition-duration:1.5s;
-    cursor: pointer;
-    overflow: visible;
-}
-
-/* Bubble animation - continues playing and rises upward */
-@keyframes bubbleRise {
-    0% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.3);
-        width: 10px;
-        height: 10px;
-        background: rgba(2, 123, 189, 0.9);
-        box-shadow: 0 0 10px rgba(2, 123, 189, 0.5);
-    }
-    15% {
-        opacity: 1;
-        transform: translate(-50%, -80%) scale(0.8);
-        width: 10px;
-        height: 10px;
-        background: rgba(2, 123, 189, 0.8);
-        box-shadow: 0 0 20px rgba(2, 123, 189, 0.6);
-    }
-    40% {
-        opacity: 1;
-        transform: translate(-50%, -180%) scale(1.5);
-        width: 10px;
-        height: 10px;
-        background: rgba(2, 123, 189, 0.6);
-        box-shadow: 0 0 40px rgba(2, 123, 189, 0.5);
-    }
-    65% {
-        opacity: 0.8;
-        transform: translate(-50%, -300%) scale(2.2);
-        width: 10px;
-        height: 10px;
-        background: rgba(2, 123, 189, 0.3);
-        box-shadow: 0 0 60px rgba(2, 123, 189, 0.3);
-    }
-     90% {
-        opacity: 0.4;
-        transform: translate(-50%, -450%) scale(3);
-        width: 10px;
-        height: 10px;
-        background: rgba(2, 123, 189, 0.1);
-        box-shadow: 0 0 80px rgba(2, 123, 189, 0.1);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translate(-50%, -600%) scale(3.5);
-        width: 10px;
-        height: 10px;
-        background: rgba(2, 123, 189, 0);
-        box-shadow: 0 0 100px rgba(2, 123, 189, 0);
-    } 
 }
 
 #btnArrHvr:after {
-    content: "";
-    display: block;
-    position: absolute;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    width: 10px;
-    height: 10px;
-    pointer-events: none;
-    background: rgba(2, 123, 189, 0.8);
-    transition: none;
+    content:" ";
+    display:block;
+    position:inherit;
+    justify-content:center;
+    align-items:center;
+    text-align: center;
+    border-radius:50%;
+    top:-170px;
+    width:5px;
+    height:5px;
+    margin-left:25px;
+    opacity:1;
+    transition:all 10s ease-in-out;
+    box-shadow:0px 0px 0px 20px rgb(2, 123, 189);
 }
 
-/* When button is clicked, trigger the animation */
-#btnArrHvr.bubble-active:after {
-    animation: bubbleRise 3.5s ease-out forwards;
+#btnArrHvr:active:after {
+    box-shadow:0 0 0 0 rgb(8, 108, 161);
+    position:absolute;
+    border:1px dotted rgba(6, 255, 234, 0.865) ;
+    border-radius:50%;
+    width:5px;
+    height: 5px;
+    left:0px;
+    top:0px; 
+    opacity:1;
+    transition:0s;
 }
 
 #btnArrHvr:active{
@@ -406,8 +333,6 @@ body{
     height: 14px;
     width: 11px;
     cursor: pointer;
-    z-index: 3;
-    pointer-events: none;
 }
 
 #srchInpTxt{
@@ -427,26 +352,23 @@ body{
     border-radius: 30px 0px 0px 30px;
 }
 
-/* Results container - positioned exactly halfway between backgrounds */
+/* Results container - positioned at the join between containers */
 #srchBarResCnt1{
-    display:flex;/*flex none*/
+    display:flex;
     position: relative;
-    /* justify-content:center; */
     flex-direction:column;
+    top:38px;
     width: 100%;
-    top:124px;
-    left:-7px;
     max-width: 1111px;
-    background:rgb(234, 235, 237);
+    background:white;
     border-radius:15px;
-    margin-top: 70px;
+    margin-top: 53px;
     padding: 0 20px;
     z-index: 3;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    margin-bottom: -45px;
+    /* This sits exactly at the join point */
+    margin-bottom: -30px;
 }
- 
-
 
 #sBRCiPaDDLbl,#sBRCLocLbl,#sBRCtimeZLbl,#sBRCiSPLbl{
     position:relative;
@@ -487,26 +409,12 @@ body{
     z-index: 0;
     overflow: hidden;
     background: rgb(32, 38, 50);
+    /* border: greenyellow 1px solid; */
 }
-
-/* OpenStreetMaps Leaflet attribution sits above map but below UI */
-.leaflet-control-attribution {
-    font-size: 10px;
-    opacity: 0.8;
-}
-#leafletMap {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
 
 #HereApiMapMble{
     display:flex;
-    position: absolute;/*relative*/
+    position: relative;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -538,7 +446,6 @@ body{
     }
 
     #cntr1{
-        justify-content:center;
         padding-top: 25px;
         padding-bottom: 0;
     }
@@ -554,24 +461,20 @@ body{
     }
     
     #helptips {
-        width: 24px;/*34px*/
-        height: 24px;
-        font-size: 15px;
-        /* border-width: 2.5px; */
-        top: -7px;
+        width: 34px;
+        height: 34px;
+        font-size: 22px;
+        border-width: 2.5px;
+        top: -12px;
     }
 
     #srchBarResCnt1{
         flex-direction:row;
         justify-content:center;
-        top:22px;
         height:162px;
-        left:-8px;
-        padding: 0 0 0 10px;
-        margin-top: 100px;
-        margin-bottom: -60px;
-        
-
+        padding: 0 0 0 33px;
+        margin-top: 80px;
+        margin-bottom: -40px;
     }
 
     .cnt1Boxes{
@@ -614,7 +517,7 @@ body{
 
     #HereApiMapDskt{
         display:flex;
-        position: absolute;/**/
+        position: relative;
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -623,19 +526,10 @@ body{
     #HereApiMapMble{
         display: none;
     }
-    #leafletMap {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
 }
 
 /* Responsive adjustments for help popup */
 @media (max-width: 700px) {
-
     .help-popup-content {
         padding: 25px 20px;
         margin: 20px;
@@ -650,10 +544,5 @@ body{
         font-size: 28px;
         top: 12px;
         right: 16px;
-    }
-        #osmInfoTip {
-        color: rgb(158, 158, 158);
-        background: rgba(158, 158, 158, 0.15);
-        border-color: rgba(158, 158, 158, 0.4);
     }
 }
