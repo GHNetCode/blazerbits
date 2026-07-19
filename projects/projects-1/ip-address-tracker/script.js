@@ -550,7 +550,8 @@ btnArrHvr.addEventListener("pointerdown", async function(e) {
               inpTxtHasIp = true;
               url = 'https://iptracker-api-cdcqaxduasakbjb8.ukwest-01.azurewebsites.net/api/ipgeoApi/' + dnsdata[0];
               console.log("[71] btnArrHvr - Geolocation URL:", url);
-              srchInpTxt.value = dnsdata[0];
+              //comment out to leave the domain name in the search field..
+              //srchInpTxt.value = dnsdata[0];
               // Now get the geolocation data for this IP
               console.log("[72] btnArrHvr - Calling getJSONurlFwrapr for geolocation");
               await getJSONurlFwrapr();
@@ -670,11 +671,7 @@ async function getJSONurlFwrapr() {
             console.log("[98] getJSONurlFwrapr.getUserIP - User IP data received");
             console.log('[99] getJSONurlFwrapr.getUserIP - User IP Address:', respData.ipString);
 
-            //check field is blank before updating found ip address.
-            if (srchInpTxt.value ==''){
-              srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
-              }
-            
+            srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
 
             url = url + respData.ipString;
             console.log("[100] getJSONurlFwrapr.getUserIP - Updated URL with IP:", url);
