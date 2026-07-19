@@ -671,7 +671,11 @@ async function getJSONurlFwrapr() {
             console.log("[98] getJSONurlFwrapr.getUserIP - User IP data received");
             console.log('[99] getJSONurlFwrapr.getUserIP - User IP Address:', respData.ipString);
 
-            srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
+            if (inpTxtHasDom=false){
+              srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
+            }
+
+           // srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
 
             url = url + respData.ipString;
             console.log("[100] getJSONurlFwrapr.getUserIP - Updated URL with IP:", url);
