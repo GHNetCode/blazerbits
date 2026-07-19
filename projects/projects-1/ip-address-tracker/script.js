@@ -671,10 +671,7 @@ async function getJSONurlFwrapr() {
             console.log("[98] getJSONurlFwrapr.getUserIP - User IP data received");
             console.log('[99] getJSONurlFwrapr.getUserIP - User IP Address:', respData.ipString);
 
-            if (srchInpTxt.value==""){
-              srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
-            }
-
+           
            // srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
 
             url = url + respData.ipString;
@@ -721,6 +718,7 @@ async function getJSONurlFwrapr() {
           } else {
             console.log("[115] getJSONurlFwrapr - ✅ Valid geolocation data for IP:", data.ip);
             console.log("[116] getJSONurlFwrapr - Updating UI with location data");
+            srchInpTxt.value = respData.ipString; // Update the input field(srchInpTxt) with the IP
             sBRCiPaDD.innerHTML = data.ip;
             sBRCLoc.innerText = (data.city + "," + data.country_code3 + " " + data.zipcode + " ");
             document.getElementById('sBRCLoc').appendChild(sBRCLocFlag);
