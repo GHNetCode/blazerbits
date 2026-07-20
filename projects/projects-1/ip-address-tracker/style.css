@@ -601,6 +601,10 @@ body{
         margin-bottom: 31px;
     }
 
+    #sBRCiPaDD { /* Enable word wrapping for the ip address */
+    word-break: break-all;
+}
+
     #sBRCLocFlag{
         width:70px;
         height:30px;
