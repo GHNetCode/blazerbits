@@ -171,3 +171,5 @@ local.settings.json
 
 .gitignore
 .vscode/
+projects/projects-1/ip-address-tracker/script_AZ.js
+projects/projects-1/ip-address-tracker/script_Local.js
