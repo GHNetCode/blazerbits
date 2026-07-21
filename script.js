@@ -723,42 +723,42 @@ function initializeLoginModal() {
         document.body.style.overflow = '';
     }
 
-    // ── DELEGATED EVENT LISTENER ──
+    // ── SIMPLIFIED: Direct click handler for ALL login links ──
     document.addEventListener('click', function(e) {
         const target = e.target.closest('a, button');
         if (!target) return;
 
-        // Check if it's a project tile
+        // Check if it's a project tile with valid href
         const projectTile = target.closest('.project-tile');
-        
-        // If it's a project tile with a valid href (not #), let it navigate
         if (projectTile) {
             const href = projectTile.getAttribute('href');
-            // If it has data-modal-trigger AND href is # or empty, show modal
             if (projectTile.hasAttribute('data-modal-trigger') && (!href || href === '#')) {
                 e.preventDefault();
                 e.stopPropagation();
                 openModal(e);
                 return;
             }
-            // Otherwise, let the navigation happen (don't block)
             return;
         }
 
+        // ── FIXED: Simple text-based check for login ──
         const text = target.textContent.trim();
         const href = target.getAttribute('href');
         
-        // Check if this should trigger the modal
-        const shouldShowModal = 
-            // All "Login" text except in nav-left/logo areas
-            (text === 'Login' && !target.closest('.nav-left') && !target.closest('.logo')) ||
-            // Nav dropdown items
-            (['BlazerBits', 'FAQ', 'Blog Profiles', 'Highlighted Posts'].includes(text) && 
-             (target.closest('.dropdown') || target.closest('.mob-submenu'))) ||
-            // Direct href match for login
-            (href === 'login.html');
+        // Check if this is a login link (by text or href)
+        if (text === 'Login' || href === '/login.html' || href === 'login.html') {
+            // Don't intercept if it's the logo area or desktop nav-left (if you want to keep those working)
+            // But since you want all Login to show modal, remove the exclusion
+            
+            e.preventDefault();
+            e.stopPropagation();
+            openModal(e);
+            return;
+        }
 
-        if (shouldShowModal && e.isTrusted) {
+        // Nav dropdown items
+        if (['BlazerBits', 'FAQ', 'Blog Profiles', 'Highlighted Posts'].includes(text) && 
+            (target.closest('.dropdown') || target.closest('.mob-submenu'))) {
             e.preventDefault();
             e.stopPropagation();
             openModal(e);
@@ -766,13 +766,8 @@ function initializeLoginModal() {
     }, true);
 
     // ── Close handlers ──
-    if (closeBtn) {
-        closeBtn.onclick = closeModal;
-    }
-    if (gotItBtn) {
-        gotItBtn.onclick = closeModal;
-    }
-
+    if (closeBtn) closeBtn.onclick = closeModal;
+    if (gotItBtn) gotItBtn.onclick = closeModal;
     if (notifyBtn) {
         notifyBtn.onclick = () => {
             alert('We\'ll notify you as soon as login is ready! 🚀');
@@ -780,12 +775,10 @@ function initializeLoginModal() {
         };
     }
 
-    // Close on backdrop click
     modal.onclick = (e) => {
         if (e.target === modal) closeModal();
     };
 
-    // Close on Escape key
     document.onkeydown = (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
             closeModal();
