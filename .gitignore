@@ -173,3 +173,4 @@ local.settings.json
 .vscode/
 projects/projects-1/ip-address-tracker/script_AZ.js
 projects/projects-1/ip-address-tracker/script_Local.js
+scriptOrig.js
