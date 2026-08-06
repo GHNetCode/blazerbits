@@ -431,7 +431,7 @@ const domainValidator = new DomainValidator();
 
 // Simple debounce - prevents rapid clicks
 let lastClickTime = 0;
-const DEBOUNCE_DELAY = 4000; // 4 seconds
+const DEBOUNCE_DELAY = 4000; // 4 seconds..
 
 
 // ========== UPDATED BUTTON EVENT LISTENER ==========
