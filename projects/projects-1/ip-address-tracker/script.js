@@ -472,11 +472,6 @@ btnArrHvr.addEventListener("pointerdown", async function(e) {
   let chkDomIpvalid = srchInpTxtcleaned.split(".");
   //--console.log("[48] btnArrHvr - Split into parts:", chkDomIpvalid, "Part count:", chkDomIpvalid.length);
   
-
-
-
-
-
   // Check if it's a domain or IPV6 (less than 4 parts)
   if (chkDomIpvalid.length > 0 && chkDomIpvalid.length < 4) {
      //--console.log("[49] btnArrHvr - 🔍 Detected as domain (less than 4 parts)");
@@ -590,7 +585,7 @@ btnArrHvr.addEventListener("pointerdown", async function(e) {
          //--console.log("[77] btnArrHvr - ❌ Error during DNS lookup:", error.message);
          rotateArrow.cancel();
          btnArrHvrStyle();
-         console.error("[78] btnArrHvr - Error details:", error);
+         //--console.error("[78] btnArrHvr - Error details:", error);
          alert("Error fetching DNS data for '" + srchInpTxtcleaned + "'. Please check the internet connection.");
          return;
        }
@@ -669,15 +664,41 @@ btnArrHvr.addEventListener("pointerdown", async function(e) {
 // ========== UPDATED getJSONurlFwrapr FUNCTION ==========
 async function getJSONurlFwrapr() {
   //--console.log("[88] getJSONurlFwrapr - 🚀 Function called with url:", url);
-  
+ 
   // Define getJSON function
   const getJSON = async url => {
     //--console.log("[89] getJSONurlFwrapr.getJSON - 📡 Fetching URL:", url);
     try {
       const response = await fetch(url);
       //--console.log("[90] getJSONurlFwrapr.getJSON - Response status:", response.status);
+      
+      // Handle 429 — read friendly message from server and show it
+        if (response.status === 429) {
+            const data = await response.json();
+            
+            // Format nextTry timestamp in user's local timezone
+            let nextTryMsg = '';
+            if (data.nextTry) {
+                const nextTryDate = new Date(data.nextTry);
+                const hours = nextTryDate.getHours().toString().padStart(2, '0');
+                const minutes = nextTryDate.getMinutes().toString().padStart(2, '0');
+                const day = nextTryDate.getDate();
+                const monthNames = ['January','February','March','April','May','June',
+                                    'July','August','September','October','November','December'];
+                const month = monthNames[nextTryDate.getMonth()];
+                nextTryMsg = ` Please try again after: ${hours}:${minutes} on ${day} ${month}.`;
+            }
+          
+            const friendlyMsg = `Unfortunately this application has reached its request limit.${nextTryMsg}`;
+            //--console.log("[91a] getJSONurlFwrapr.getJSON - ⚠️ 429 limit reached:", friendlyMsg);
+            rotateArrow.cancel();
+            btnArrHvrStyle();
+            alert(friendlyMsg);
+            throw new Error('LIMIT_REACHED');
+        }
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);       
       }
       const data = await response.json();
       //--console.log("[91] getJSONurlFwrapr.getJSON - ✅ Raw data received (length:", JSON.stringify(data).length, "bytes)");
@@ -788,12 +809,13 @@ async function getJSONurlFwrapr() {
         }
       } catch (error) {
         //--console.log("[122] getJSONurlFwrapr - ❌ Error fetching geolocation:", error.message);
+		if (error.message === 'LIMIT_REACHED') return; // Already handled above
         rotateArrow.cancel();
         btnArrHvrStyle();
         htmlEreset();
         alert("Unable to reach the site: " + errMsgSite + " Please check internet connection.");
-        console.error("[123] getJSONurlFwrapr - Unable to reach site:", errMsgSite);
-        console.error("[124] getJSONurlFwrapr - Error details:", error);
+        //--console.error("[123] getJSONurlFwrapr - Unable to reach site:", errMsgSite);
+        //--console.error("[124] getJSONurlFwrapr - Error details:", error);
       }
     } else {
       //--console.log("[125] getJSONurlFwrapr - ⚠️ getUserIPChk and inpTxtHasIp both false, skipping geolocation");
@@ -829,7 +851,7 @@ async function getmap(lti, lgi, width, height) {
         osmDisplayName = osmData.display_name || 'Address not available';
         document.getElementById('osmDisplayName').textContent = osmDisplayName;
     } catch (error) {
-        console.warn("[128c] getmap - OSM proxy fetch failed (non-fatal):", error.message);
+        //--console.warn("[128c] getmap - OSM proxy fetch failed (non-fatal):", error.message);
         // Non-fatal — Leaflet will still render the map from the coords we already have
         osmDisplayName = 'Address not available';
         document.getElementById('osmDisplayName').textContent = osmDisplayName;
