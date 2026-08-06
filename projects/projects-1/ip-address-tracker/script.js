@@ -428,8 +428,23 @@ class DomainValidator {
 const domainValidator = new DomainValidator();
 //--console.log("[38] DomainValidator - Instance created successfully");
 
+
+// Simple debounce - prevents rapid clicks
+let lastClickTime = 0;
+const DEBOUNCE_DELAY = 4000; // 4 seconds
+
+
 // ========== UPDATED BUTTON EVENT LISTENER ==========
 btnArrHvr.addEventListener("pointerdown", async function(e) {
+    const now = Date.now();
+    if (now - lastClickTime < DEBOUNCE_DELAY) {
+        console.log("[Debounce] ⏳ Button clicked too soon, ignoring");
+        // Show a message to the user
+        alert("Please wait a few seconds and try again.");
+        return;
+    }
+    lastClickTime = now;
+
   //--console.log("[39] btnArrHvr - 🚀 Button clicked/activated");
   
   btnArrHvrMASK.style.zIndex = "2";
