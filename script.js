@@ -7,9 +7,9 @@ function getBasePath() {
     if (path.includes('/projects/')&& !path.includes('/projects/projects-1/')) {
         console.log("found: /projects/")
         return '../';
-    }else if (path.includes('/projects/projects-1/')) {
-        console.log("found: /projects/projects-1/ ")
-        return '../../';
+     }else if (path.includes('/projects/projects-1/')) {
+         console.log("found: /projects/projects-1/ ")
+         return '../../';
     }
     else{
         return ''; 
