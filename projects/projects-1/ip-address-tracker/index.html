@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
   <title>Frontend Mentor | IP Address Tracker</title>
 
-   <link rel="stylesheet" href="./style.css">
+   <link rel="stylesheet" href="./stylev2.css">
 
    <!-- For OpenStreetMaps -->
    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -15,7 +15,10 @@
 
 </head>
 <body>
-  <p id="resizeInnerW"><span>&nbsp;</span>-</p>
+  <!-- <p id="resizeInnerW"><span>&nbsp;</span>-</p> -->
+
+
+
   <main id="mainPage">
       
         <div id="cntr1">
@@ -85,10 +88,22 @@
         <div id="leafletMap"></div>
       </div>
   </main>
+<!-- ============================================================
+       BACK BUTTON - Bottom Right
+       ============================================================ -->
+  <button class="back-btn" onclick="history.back()">
+    <svg viewBox="0 0 24 24">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    <span>Back</span>
+  </button>
+
   <footer id="attribution">
     Challenge by &nbsp;<a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>
     &nbsp;&nbsp;Coded by&nbsp;&nbsp<a href="#">Mark</a>
   </footer> 
+   <!-- <script src="../../../script.js"></script>  --> <!-- For the NAV BAR -->
+
   <script src="./scriptv2.js"></script>
 </body>
 </html>
