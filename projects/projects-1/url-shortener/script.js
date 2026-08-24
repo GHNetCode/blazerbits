@@ -3,7 +3,9 @@ window.onresize=()=>{
 }
 
 // ─── API CONFIG ────────────────────────────────────────────────────────
-const API_BASE_URL = 'http://localhost:7071';
+//const API_BASE_URL = 'http://localhost:7071';
+const API_BASE_URL = 'https://urlshortener-api-bwgad5erhxaxhthn.ukwest-01.azurewebsites.net';
+
 
 // ─── CLIENT TOKEN ─────────────────────────────────────────────────────
 const CLIENT_ID_STORAGE_KEY = 'shortly_client_id';
