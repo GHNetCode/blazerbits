@@ -67,17 +67,21 @@
 
     </div>
 
-    <!-- <div id="ct1B" src="./images/illustration-working.svg" alt="illustration-working.svg"></div> -->
-    <!-- <img id="ct1BM" src="./images/illustration-working.svg" alt="illustration-working.svg"> -->
-    <img id="ct1B" src="./images/illustration-working.svg" alt="illustration-working.svg">
+    <!-- Wrapper added so the image and text can be laid out side-by-side on
+         desktop (text left, image right) while stacking on mobile. -->
+    <div id="ct1Hero">
+      <!-- <div id="ct1B" src="./images/illustration-working.svg" alt="illustration-working.svg"></div> -->
+      <!-- <img id="ct1BM" src="./images/illustration-working.svg" alt="illustration-working.svg"> -->
+      <img id="ct1B" src="./images/illustration-working.svg" alt="illustration-working.svg">
 
-    <div id="ct1C">
-      <H1>More than just shorter links</H1>
-      
-      <p>Build your brand’s recognition and get detailed insights 
-        on how your links are performing.</p>
+      <div id="ct1C">
+        <H1>More than just shorter links</H1>
 
-        <button id="ct1Cbtn">Get Started</button>
+        <p>Build your brand’s recognition and get detailed insights
+          on how your links are performing.</p>
+
+          <button id="ct1Cbtn">Get Started</button>
+      </div>
     </div>
   
 
@@ -91,14 +95,16 @@
          </div>
          <!--  -->
          <button id="ct1D1Btn" class="BtnstylC">Shorten It!</button>
+         <!-- <button id="ct1D1Btn2" class="BtnstylC">Burner Link!</button> -->
      </div>
      
      <!--to be cloned-->
      <div id="ct1D1LnksN1" class="ct1D1LnksN1Cls">
-        <p id="ct1DlongUrlP" class="ct1DlongUrlPC">https:<span class="fwdSlsh">//</span>www.frontendmentor.io/asefaefaefefefefefefefefefefefefefefefef</p>
+        <p id="ct1DlongUrlP" class="ct1DlongUrlPC">https:<span class="fwdSlsh">//</span>www.frontendmentor.io/</p>
         <span id="ct1Dsep" class="ct1DsepC"></span>
         <p id="ct1D1ShrtLnkP" class="ct1D1ShrtLnkPC">https:<span class="fwdSlsh">//</span>rel.ink/k4lKyk</p>
         <button id="ct1D1CpyLnkBtn" class="BtnstylC ct1D1CpyLnkBtnC">Copy</button>
+        <button id="ct1D1CpyLnkBtnDelete" class="BtnstylC ct1D1CpyLnkBtnC">Delete</button>
      </div>
      <!--to be cloned-->
 
@@ -108,36 +114,40 @@
           advanced statistics dashboard.</p>
      </div>
 
-     <div id="ct1D3">
-       <div id="ct1D3img">
-         <img src="./images/icon-brand-recognition.svg" alt="icon-brand-recognition.svg">
+     <!-- Wrapper added so the three cards can become a CSS Grid row on
+          desktop, with the joiner bars positioned reliably between them. -->
+     <div id="ct1Dcards">
+       <div id="ct1D3">
+         <div id="ct1D3img">
+           <img src="./images/icon-brand-recognition.svg" alt="icon-brand-recognition.svg">
+         </div>
+         <h2>Brand Recognition</h2>
+         <p>Boost your brand recognition with <span id="ct1D3sp1"> each click.</span> 
+            <span id="ct1D3sp2">Generic links don’t</span> <span id="ct1D3sp3">me</span>an a thing.<span id="ct1D3sp4">
+            Branded links help</span> instil confidence in your content.</p>
        </div>
-       <h2>Brand Recognition</h2>
-       <p>Boost your brand recognition with <span id="ct1D3sp1"> each click.</span> 
-          <span id="ct1D3sp2">Generic links don’t</span> <span id="ct1D3sp3">me</span>an a thing.<span id="ct1D3sp4">
-          Branded links help</span> instil confidence in your content.</p>
-     </div>
 
-     <div id="ctjoinerD3D4"></div>
+       <div id="ctjoinerD3D4"></div>
 
-     <div id="ct1D4"> 
-        <div id="ct1D4img">
-          <img src="./images/icon-detailed-records.svg" alt="icon-detailed-records.svg">
-        </div>
-        <h2>Detailed Records</h2>
-       <p>Gain insights into who is clicking your links. Knowing when and <span id="ct1D4sp1">where 
-          people engage with your</span> <span id="ct1D4sp2">content helps inform better</span> decisions.</p>
-     </div>
-
-     <div id="ctjoinerD4D5"></div>
-
-     <div id="ct1D5"> 
-       <div id="ct1D5img">
-          <img src="./images/icon-fully-customizable.svg" alt="icon-fully-customizable.svg">
+       <div id="ct1D4"> 
+          <div id="ct1D4img">
+            <img src="./images/icon-detailed-records.svg" alt="icon-detailed-records.svg">
+          </div>
+          <h2>Detailed Records</h2>
+         <p>Gain insights into who is clicking your links. Knowing when and <span id="ct1D4sp1">where 
+            people engage with your</span> <span id="ct1D4sp2">content helps inform better</span> decisions.</p>
        </div>
-       <h2>Fully Customizable</h2>
-       <p>Improve brand awareness and content discoverability through <span id="ct1D5sp1">customizable 
-          links</span>, supercharging audience engagement.</p>
+
+       <div id="ctjoinerD4D5"></div>
+
+       <div id="ct1D5"> 
+         <div id="ct1D5img">
+            <img src="./images/icon-fully-customizable.svg" alt="icon-fully-customizable.svg">
+         </div>
+         <h2>Fully Customizable</h2>
+         <p>Improve brand awareness and content discoverability through <span id="ct1D5sp1">customizable 
+            links</span>, supercharging audience engagement.</p>
+       </div>
      </div>
 
     </div>
@@ -150,29 +160,43 @@
  
        
       </div>
+
+      <!-- Wrapper added so the logo/links block and the social-icons block
+           can sit in the same row on desktop (they're independent siblings
+           in the original markup, so without this they can only stack). -->
+      <div id="ct1EBottom">
       <div id="ct1E2">
 
          <img id="ct1E2img"src="./images/logo.svg" alt="Shortly logo.svg">
 
-
+          <!-- Wrapper added around each heading+links group so CSS Grid
+               keeps "Features"/"Resources"/"Company" and their links
+               together in one column each, instead of auto-placing every
+               item into a new column row by row. -->
+          <div id="ct1E2colFeatures">
           <h2 id="ct1E2h2a">Features</h2>
 
           <h3 id="ct1E2h3a">Link Shortening</h3>
           <h3 id="ct1E2h3b">Branded Links</h3>
           <h3 id="ct1E2h3c">Analytics</h3>
-         
+          </div>
+
+          <div id="ct1E2colResources">
           <h2 id="ct1E2h2b">Resources</h2>
          
           <h3 id="ct1E2h3d">Blog</h3>
           <h3 id="ct1E2h3e">Developers</h3>
           <h3 id="ct1E2h3f">Support</h3>
+          </div>
 
+          <div id="ct1E2colCompany">
           <h2 id="ct1E2h2c">Company</h2>
 
           <h3 id="ct1E2h3g">About</h3>
           <h3 id="ct1E2h3h">Our Team</h3>
           <h3 id="ct1E2h3i">Careers</h3>
           <h3 id="ct1E2h3j">Contact</h3>
+          </div>
           
        </div>
        <div id="ct1E2A">
@@ -188,9 +212,31 @@
           Coded by &nbsp<a href="#">Mark</a>.
         </div>   
        </div>
+      </div>
      </div>
     </div>
    </main>
+
+<!-- Archive Dialog -->
+<div id="archiveDialog" style="display:none;">
+  <div id="archiveOverlay"></div>
+  <div id="archiveModal">
+    <div id="archiveHeader">
+      <span id="archiveIcon">📋</span>
+      <h2 id="archiveTitle">Links Expired</h2>
+    </div>
+    <div id="archiveBody">
+      <p id="archiveMessage">Your links have expired after 7 days.</p>
+      <p id="archiveCount">You have 2 links that will be deleted.</p>
+    </div>
+    <div id="archiveFooter">
+      <button id="archiveYesBtn" class="archive-btn archive-btn-theme">Save Links</button>
+      <button id="archiveNoBtn" class="archive-btn archive-btn-theme-secondary">Delete</button>
+    </div>
+    <p id="archiveHint">Links will be saved as a text file on your computer.</p>
+  </div>
+</div>
+
 </body>
 <script src="./script.js"></script>
 </html>
