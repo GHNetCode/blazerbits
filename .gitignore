@@ -150,7 +150,7 @@ vite.config.ts.timestamp-*
 
 # Keep backups local..
 .Backups/
-
+.Bak/
 # Keep .BackEnd local.. (Used for NodeJS etc..)
 BackEnd/
 
@@ -175,3 +175,4 @@ projects/projects-1/ip-address-tracker/script_AZ.js
 projects/projects-1/ip-address-tracker/script_Local.js
 scriptOrig.js
 projects/projects-1/ip-address-tracker/script_LocalOLD.js
+cspell.json

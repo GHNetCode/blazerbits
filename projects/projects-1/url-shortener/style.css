@@ -1,1314 +1,1040 @@
 /* To improve performance, below file is the contents of this link-: https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap  */
 @import url('FontPoppins500700.css');
 
-/*Reset all inherited values to 0.*/
-*{box-sizing:border-box; margin:0;padding:0;}
+/*
+   RESPONSIVE NOTES
+   This version uses normal document flow (flexbox/grid), relative
+   units (%, rem) and clamp() for fluid scaling, so the layout reflows
+   smoothly at any viewport width rather than jumping between two fixed
+   states. Visual design/spacing is kept as close to the original as
+   possible, but exact pixel offsets are gone by necessity.
+*/
 
+*{ box-sizing: border-box; margin: 0; padding: 0; }
+
+html{
+  /* Fluid base font size: scales gently between small phones and large desktops */
+  font-size: clamp(15px, 0.9vw + 12px, 17px);
+}
 
 body{
-  font-family:'Poppins';
-  display:flex;
-  position:relative;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  width: 100vw; /* 100vw  375px*/
-  height: 100%;
-  background:rgb(21, 20, 23);
-  /* overflow-x: hidden;  */
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background: rgb(21, 20, 23);
+  overflow-x: hidden; /* guards against any residual overflow */
 }
 
-#resizeInnerW{/*disable before release...*/
-  display:none; /* none\flex */
-  position:absolute;
-  justify-content:center;
-  top:0px; 
-  z-index:100;
-  color:rgb(239, 6, 6);
+#resizeInnerW{ /* debug helper */
+  display: none;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  color: rgb(239, 6, 6);
 }
+
 
 #mainPage{
-  display:flex;
-  position:relative;
-  flex-direction:column;
-  /* justify-content:center; */
-  align-items:center;/*left<>right*/
-  width:375px;/*100vw 100% */
-  /* max-width:100%; */
-  /* height: 100%;  */
-  /* 3470px 785px 100vh  100%*/
-  background-color: blueviolet;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1440px;/* caps growth on ultra-wide screens instead of leaving background gaps */
+  margin: 0 auto;
+  background-color: transparent;
 }
 
 #ct1{
-  display:flex;
-  position:relative;
-  flex-direction:column;
-  /* justify-content:center; */
-  align-items:center;/*left<>right*/
-  width:375px;/*100vw 100% */
-  height: 100%;/*3470px 785px 100vh  100%*/
-  /* border: 1px green solid; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
   background-color: white;
 }
 
-
+/*  HEADER / NAV*/
 #ct1A{
-  display:flex;
-  position:relative;
-  flex-direction:row;
-  width:375px;/*100vw 100% */
-  /* border: 1px red solid; */
-  top:40px
-}
-#ct1A1{
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1110px;
+  padding: clamp(20px, 5vw, 40px) clamp(16px, 4vw, 24px) 0;
+}
+
+#ct1A1 img{
+  width: clamp(90px, 8vw, 130px);
+  height: auto;
+  display: block;
+}
+
+/* #ct1A2 is the <nav> itself — on mobile it only ever shows the hamburger
+   (#toggleMenu), but on desktop it holds both menu groups (#deskTmenuL and
+   #deskTmenuR) and needs to lay them out as a row, not let them stack. */
+#ct1A2{
+  display: flex;
+  align-items: center;
+}
+@media (min-width: 700px){
+  #ct1A2{
+    flex: 1 1 auto;
+    justify-content: space-between;
+    margin-left: clamp(24px, 4vw, 48px);
+  }
+}
+
+/* ----- Mobile hamburger menu (shown < 700px) ----- */
+#toggleMenu{
+  display: block;
   position: relative;
-  /* width:100px; */
-  margin-left: 24px;
+  z-index: 1;
+  -webkit-user-select: none;
+  user-select: none;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  transition: color 0.2s ease;
 }
-/* Menu toggle example from https://codepen.io/erikterwan/pen/EVzeRP */
- #toggleMenu{
-   display: block;
-   position: relative;
-   top:6px;
-   left:182px;/* 230px --: includes ct1A1 margin.. */
-   z-index:1;
-   -webkit-user-select:none;
-   user-select:none;
- 
-/* #toggleMenu { Was '#toggleMenu a' --anchor tags removed..*/
-        text-align: center;
-        text-decoration: none;/* remove underline..*/
-        color: white;
-        transition: color 0.2s ease;
-      }
 
-      #sep{
-        /* display: hidden; */
-        margin-top: 32px;
-        margin-bottom: 30px;
-        height: 1px;
-        width: 280px;
-        background-color: rgb(82, 68, 118);
-        cursor:default;
-      }
-      
-
-      /* #toggleMenu li:hover{   */
-        .tMenHovActC:hover{
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        border:10px rgb(43,209,209) solid;
-        box-shadow:inset 5px 5px 25px rgb(43,209,209);
-        border-radius: 30px;
-        background: linear-gradient(0.25turn,#4779a1,#2bd1d1,#4779a1);
-        transition: all 0.1s ease-out;
-      }
-      /* #toggleMenu li:active{ */
-        .tMenHovActC:active{
-        border:10px rgb(58, 48, 83) solid;
-        box-shadow:inset 1px 1px 10px rgb(46, 53, 189);
-      }
-
-      #toggleMenu input{
-        display: block;
-        width: 40px;
-        height: 32px;
-        position: absolute;
-        top: -7px;
-        left: -5px;
-        cursor: pointer;
-        opacity: 0%; /* hide this */
-        z-index: 2; /* and place it over the hamburger */
-        -webkit-touch-callout: none;
-      }
-    
-      /*
-       * Just a quick hamburger
-       */
-      #toggleMenu span{
-        display: block;
-        width: 24px;
-        height: 3px;
-        margin-bottom: 6px;
-        position: relative;
-        background:rgb(157,156,165);
-        transform-origin: 0px 0px;
-        transition: transform 0.2s cubic-bezier(0.77,0.2,0.05,1.0),
-                    background 0.2s cubic-bezier(0.77,0.2,0.05,1.0),
-                    opacity 0.2s ease;
-         z-index: 1;
-      }
-    
-      #toggleMenu span:first-child{
-         transform-origin: 0% 0%;
-      }
-    
-      #toggleMenu span:nth-last-child(2){
-        transform-origin: 0% 100%;
-      }
-    
-      /* Transform span hamburger to a crossmark.*/
-      #toggleMenu input:checked ~ span{
-        opacity: 1;
-        transform: rotate(45deg) translate(1px, 1px);;
-       background:rgb(157,156,165);
-      }
-    
-      /*   Hide the middle span element.  */
-      #toggleMenu input:checked ~ span:nth-last-child(3){
-        opacity: 0;
-        transform: scale(0.0, 0.0);
-      }
-    
-      /*Last one should go the other direction */
-      #toggleMenu input:checked ~ span:nth-last-child(2){
-        transform: rotate(-45deg) translate(0px, 0px);;
-      }
-    
-      /*Make this absolute positioned at the top right of the screen*/
-      #menu{
-        position: absolute;
-        width: 328px;
-        height: 383px;
-        margin: 23px -0px 0px -303px;/* top, right, bottom, left */
-        padding: 25px;
-        padding-top: 25px;
-        background: rgb(58, 48, 83);
-        border-radius: 10px;
-        list-style-type: none;
-        -webkit-font-smoothing: antialiased;
-        /* to stop flickering of text in safari  */
-
-      /*   transform-origin: 0% 0%; */
-        transform: translate(00%, -190%);   /* move menu left\right - up\down.. */
-        transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
-      }
-        #menu li{
-          margin: 14px 0 28px 0;
-          font-size: 18.5px;
-        }
-        /* Let`s slide it... */
-        #toggleMenu input:checked ~ ul{
-          transform: none;
-        }
-
-
-      /* #ct1B{
-        display: flex;
-        position: relative;
-        width: 375px; 
-        height: 330px; 
-        top:75px;
-        background: no-repeat url(./images/illustration-working.svg);
-        background-size:500px 330px;
-        background-position-x: 23px;
-      } */
-      #ct1B{
-        display: flex;
-        position: relative;
-        width:370px; 
-        height:325px;  
-        top:76px;
-        /* background: no-repeat url(./images/illustration-working.svg);
-        background-size:500px 330px;
-        background-position-x: 23px; */
-        object-fit: cover;/*contain; cover; fill; none; scale-down;*/
-        object-position:21px 0px;
-        
-      }
-
-
-      #ct1C{
-        display: flex;
-        position: relative;
-        flex-direction:column;
-        text-align: center;
-        align-items:center;
-        height: 472px;
-        top:98px;
-        /* border:red solid 1px; */
-        padding:19px;
-      }
-      #ct1C H1{
-        font-size: 42px;
-        letter-spacing: -1px;
-        color: rgb(53,49,62);
-        line-height: 47px;
-        font-weight: 900;
-      }
-      #ct1C p{
-        margin-top: 15px;
-        margin-left: 0px;
-        color: rgb(176,175,182);
-        font-size: 18px;
-        letter-spacing: 0.1px;
-        line-height:30px
-      }
-      #ct1Cbtn{
-        font-family: 'poppins';
-        display: flex;
-        position: relative;
-        flex-direction:column;
-        justify-content:center;
-        align-items:center;
-        border: none;
-        top:28px;
-        height: 58px;
-        width: 199px;
-        border-radius: 30px;
-        color:white;
-        background: linear-gradient(#2bd1d1,#4779a1);
-        margin-top: 1px;
-        margin-left: -2px;
-        font-size: 20px;
-        font-weight: 900;
-        cursor: pointer;
-      }
-
-
-
-    /* ------------------------------------------------------------------------------------------------------------------------ */
-      #ct1D{
-        display:flex;
-        position:relative;
-        flex-direction:column;
-        align-items:center;
-        height:1485px; /*(ct1D1LnksN1 adjust height when short url is added -: 160px+1485px =1645px--perfect 100% to long..*/
-        top:97px;
-        width:100%; /* 100%  375px*/
-        background:rgb(240,241,246);
-        /* border:3px solid red; */
-      }
-
-      #ct1D1{
-        display:flex;
-        position:relative;
-        flex-direction:column;
-        justify-content:center;
-        align-items:center;
-        height:160px;/*'ct1D1AdLnkMsg' 160px -- adjust to 182px for when ct1D1AdLnkMsg msg occurs*/
-        width:327px;
-        top:-79px;
-        margin-left: -2px;
-        background: rgb(56,49,83);
-        border-radius: 10px;
-        }
-
-          /* #ct1D1 img{ */
-          #ct1D1imgM{
-          display:flex;
-          position:absolute;
-          height:130px; 
-          width:290px; 
-          top:0px;/* top:-15px; */ /*position:relative ... */
-          left:37px;
-          object-fit: contain;/*contain; cover; fill; none; scale-down;*/
-          object-position:53px 0px ;
-          border-top-right-radius: 10px;
-          /* filter: invert(25%) sepia(7%) saturate(3845%) hue-rotate(214deg) brightness(89%) contrast(84%);; */
-          filter: brightness(95%) contrast(100%);        
-          }        
-          #ct1D1inpFld{
-          display:flex;
-          position:absolute;
-          justify-content:center;
-            top:22px;
-            width: 280px;
-            height: 50px;
-            }
-            #ct1D1Lbl{display: none;}
-            #ct1D1inp{
-              font-family: 'poppins';
-              width: 280px;
-              appearance:none;
-              text-overflow:ellipsis;
-              border:none;/*'ct1D1AdLnkMsg' none / - change to 'inset 3px rgba(255, 0, 0, 0.500)' via js when 'add link ct1D1AdLnkMsg'msg occurs*/
-              outline:none; 
-              border-radius: 5px;
-              padding-left: 14px;
-              padding-top: 1px;
-              font-size: 16px;
-              letter-spacing: 0.1px;
-              color: rgb(172,172,174);
-            }
-            /*'ct1D1AdLnkMsg' https://stackoverflow.com/questions/54749402/how-to-update-placeholder-color-using-javascript */
-            /* Define a "warn" class here to be used via JS to style id ct1D1inp when error msg is required*/
-            .warn::placeholder { color: rgb(255, 0, 0); opacity: 50%;}
-
-            /*'ct1D1AdLnkMsg': To be removed\commented out after implementing in js.. */
-            /* #ct1D1AdLnkMsg{  
-              display:flex;
-              position:relative;
-              flex-direction:column;
-              justify-content:center;
-              align-items:center;
-              margin-left: -177px;
-              margin-top: -10px;
-              font-size: 12px;
-              font-style:italic;
-              font-weight: 560;
-              color: rgba(255, 0, 0, 0.500);
-            }*/
-
-
-            /* Button Styling class */
-              .BtnstylC{
-             font-family: 'poppins';
-              display:flex;
-              position:absolute;
-              justify-content:center;
-              align-items:center;
-              top:86px;/*'ct1D1AdLnkMsg' 86px -- adjusting to 110px for when ct1D1AdLnkMsg msg occurs*/
-              width:280px;
-              height:48px;
-              padding-right: 3px;
-              color:white;
-              background: linear-gradient(#2bd1d1,#4779a1);
-              font-size:18px;
-              font-weight:600;
-              border-radius:5px;
-              border:none;
-              outline:none;
-              cursor: pointer;
-            }
-
-            #ct1D1LnksN1, .ct1D1LnksN1Cls{/*Display shortened Url sample for template when cloning, adding a class*/
-              display: none;/*none flex*/
-              position:relative;
-              flex-Direction:column;
-              text-align: left;
-              top:-58px;
-
-              text-overflow:ellipsis;
-              /* 327 x 160   ct1D height adjusts when links are added\removed via js...*/
-              height:155px;
-              width:327px;
-              background: white;
-              /* border:rgb(212, 206, 206) solid 1px; */
-              border-radius: 5px;
-              margin-bottom: 25px;
-              cursor: pointer;
-            }
-              #ct1DlongUrlP, .ct1DlongUrlPC{                
-                /* display: flex; */
-                position: relative;
-                width: 312px;
-                margin-left: 15px;
-                margin-top: 14px;
-                font-size: 16px;
-                font-weight: 600;
-                color: rgb(83,82,88);
-                letter-spacing: -0.2px;
-                /* Both of the following are required for text-overflow */
-                white-space:nowrap;
-                overflow:-moz-hidden-unscrollable;
-                overflow:hidden;
-                text-overflow:ellipsis;
-              }
-              .fwdSlsh{letter-spacing: -1px;}
-              
-              #ct1Dsep, .ct1DsepC{/*class added due to cloned div`s having unique id`s..*/
-                height: 1.5px;
-                background: linear-gradient(0.25turn,rgb(0, 0, 0),rgb(43, 209, 209),rgb(72, 37, 159));
-                margin: 10px 2px 0px 2px;
-                opacity: 40%;
-              }
-              #ct1D1ShrtLnkP, .ct1D1ShrtLnkPC{/*class added due to cloned div`s having unique id`s..*/
-                /* display: flex; */
-                position: relative;
-                width: 315px;
-                margin-left: 15px;
-                margin-top: 14px;
-                font-size: 16px;
-                font-weight: 600;
-                letter-spacing: -0.5px;
-                color: #2bd1d1;
-                /* Both of the following are required for text-overflow */
-                /* white-space:nowrap; */
-                overflow:-moz-hidden-unscrollable;
-                overflow:hidden;
-                text-overflow:ellipsis;
-              }
-              #ct1D1CpyLnkBtn, .ct1D1CpyLnkBtnC{/* override class.BtnstylC . Class added due to cloned div`s having unique id`s..*/ 
-                height: 40px;
-                width: 295px;
-                margin-left: 15px;
-                margin-top: 14px;
-                font-size: 16px;
-                padding-left: 3px;
-              }
-              .ct1D1CpyLnkBtnC:active{
-                background: linear-gradient(rgb(29, 23, 46),rgb(76, 48, 145));
-              }
-/* ------------------------------------------------------------------------------------------------------------------------ */
-      #ct1D2{
-        display:flex;
-        position:relative;
-        flex-direction:column;
-        align-items:center;
-        text-align: center;
-        height:160px;
-        width:327px;
-       
-      }
-          #ct1D2 h1{
-            font-size: 28px;
-            margin-top: 6px;
-            margin-left: -3px;
-            letter-spacing: -0.7px;
-          }
-          #ct1D2 p{
-            margin-top: 17.5px;
-            margin-left: -3px;
-            line-height: 27.5px;
-            color: rgb(142, 143, 149);
-          }
-
-       #ct1D3{
-        display:flex;
-        position:relative;
-        flex-direction:column;
-        align-items:center;
-        height:269px;
-        width:327px;
-        top:79px;
-        background: white;
-        border-radius: 6px;
-        }
-            #ct1D3img,#ct1D4img,#ct1D5img{
-              display:flex;
-              position:relative;
-              justify-content:center;
-              align-items:center;
-              height:89px;
-              width: 89px;
-              top: -44.5px;
-              border-radius: 60px;
-              margin-left: 1px;
-              background-color: rgb(59, 47, 83);
-            }
-            #ct1D3 h2,#ct1D4 h2,#ct1D5 h2{
-              font-size: 22px;
-              margin-top: -12px;
-            }
-            #ct1D3 p,#ct1D4 p,#ct1D5 p{
-              text-align: center;
-              margin: 16px 30px 0px 29px;
-              font-size: 15.2px;
-              letter-spacing: -0.1px;
-              line-height: 26px;
-              color: rgb(172,171,177);
-            }
-            #ct1D3 p::first-letter,#ct1D5 p::first-letter{
-              letter-spacing:-1px;
-            }
-            #ct1D3sp1{margin-left: 3px;}
-            #ct1D3sp2{margin-left: -2px;
-              letter-spacing: -0.2px;
-            }
-            #ct1D3sp3{letter-spacing:-1px;
-              margin-left: 0px;
-            }
-            #ct1D3sp4{
-              letter-spacing:-0.2px;
-            }
-
-            #ctjoinerD3D4, #ctjoinerD4D5{
-              height:49px;
-              width: 9px;
-              margin-top: 78px;
-              margin-left: 2px;
-              background-color:rgb(43, 209,209) ;
-            }
-
-
-       #ct1D4{
-        display:flex;
-        position:relative;
-        flex-direction:column;
-        align-items:center;
-        height:286px;
-        width:328px;
-        top:42px;
-        background: white;
-        border-radius: 6px;
-        } 
-          #ct1D4 p{
-            letter-spacing: -0.2px;
-            margin-left: 31px;
-            margin-top: 15px;
-          }
-          #ct1D4sp1{
-            letter-spacing: -0.09px;
-          }
-          #ct1D4sp2{
-            letter-spacing: -0.0px;
-            word-spacing: -0.8px;
-            margin-left: -2px;
-          }
-          #ctjoinerD4D5{
-            margin-top: 38px;
-            height: 51px;
-           }
-
-
-        
-       #ct1D5{
-        display:flex;
-        position:relative;
-        flex-direction:column;
-        align-items:center;
-        height:269px;
-        width:327px;
-        top:44px;
-        background: white;
-        border-radius: 6px;
-        } 
-          #ct1D5sp1{
-            letter-spacing: -0.2px;
-            margin-left: 2px;
-          }
-      #ct1E{ /*ct1D links...*/
-        display:flex;
-        position:relative;
-        flex-direction:column;
-        align-items:center;
-        height:100%;/*970px*/
-        width:375px;
-        top:96px;
-        background-color:rgb(35,32,39);
-        /* border: rgb(76, 196, 76) solid 3px; */
-      }
-           #ct1E1{
-             display:flex;
-             position:relative;
-             flex-direction:column;
-             align-items:center;
-             height:300px;
-             width:375px;
-             background: rgb(58,48,83);
-             /* border: lightblue solid 3px; */
-
-           }
-           #ct1E1 h2{
-             font-family: 'Poppins', sans-serif;
-             position:absolute;
-             top:98px;
-             font-size: 26.5px;
-             margin-left: 1px;
-             color:white;
-             font-weight: 700;
-           }
-           #ct1E1 button{
-             font-family: 'Poppins', sans-serif;
-             position:absolute;
-             top:155px;
-             width: 197px;
-             height: 55px;
-             margin-left: 2px;
-             color:white;
-             border:none;
-             background: linear-gradient(#2bd1d1,#4779a1);
-             border-radius: 30px;
-             font-size: 20px;
-             font-weight: 600;
-             padding-left: 2px;
-           }
-           #ct1E2{
-             display:flex;
-             position:relative;
-             flex-direction:column;
-             align-items:center;
-             height:100%;/*620px*/
-             width:375px;
-             background-color:rgb(35,32,39);
-          }
-            #ct1E2img{
-              position:absolute;
-              filter: brightness(0) invert(1);
-              margin-top:54px;
-            }
-
-            #ct1E2h2a,#ct1E2h2b,#ct1E2h2c{
-              position:relative;
-              color:white;
-              font-size: 16px;
-              margin-top: 136px;
-             }
-              #ct1E2h3a,#ct1E2h3b,#ct1E2h3c,#ct1E2h3d,#ct1E2h3e,
-              #ct1E2h3f,#ct1E2h3g,#ct1E2h3h,#ct1E2h3i,#ct1E2h3j{
-              color:rgb(156, 153, 160);
-              font-size: 14.5px;
-            }
-            #ct1E2 h3::first-letter{
-              letter-spacing: -1px;
-             }
-             #ct1E2h3a,#ct1E2h3b,#ct1E2h3c{
-              margin-top: 21.7px;
-              margin-bottom: -12.5px;
-              margin-left: 2px;
-              font-weight: 500;
-              word-spacing: 0px;
-             }
-               #ct1E2h3b{/* Branded Links */
-                position: relative;
-                margin-top:25px;
-                margin-bottom:-12px;
-                margin-left:3px;
-               }
-            #ct1E2h2b{/* Resources */
-              top: -84px;
-              letter-spacing: -0.1px;
-              margin-left: 3px;
-            }
-            #ct1E2h3d{/* Blog */
-              margin-top: -62px;
-            }
-            #ct1E2h3d, #ct1E2h3e{
-              margin-left: 3px;
-            }
-            #ct1E2h3e{
-              font-weight: 400;
-              margin-top: 12px;
-              margin-left: 5px;
-              letter-spacing: 0.2px;
-            }
-            #ct1E2h3f{ /* Support */
-              margin-top: 11px;
-            }
-            #ct1E2h2c{ /* Company */
-              margin-top:39.5px;
-              margin-left: 3px;
-            }
-            #ct1E2h3g,#ct1E2h3h,#ct1E2h3i,#ct1E2h3j{ /* about */
-              margin-top: 20.5px;
-              margin-left: 6px;
-              font-size: 15.5px;
-              font-weight: 400;
-            }
-            #ct1E2h3g{
-              letter-spacing: -0.4px;
-              margin-left:4px;
-            }
-            #ct1E2h3h,#ct1E2h3i,#ct1E2h3j{
-              margin-top: 10px;
-              margin-left: 2px;
-              word-spacing: -1px;
-              letter-spacing: -0.5px;
-            }
-            #ct1E2h3j{
-              margin-left: 4px;
-              letter-spacing:-0.4px;
-            }
-            #ct1E2A{
-             display:flex;
-             position:relative;
-             flex-direction: column;
-             justify-content:center;
-             align-items: center;
-             top:5px;
-             width:375px;
-             background: rgb(35,32,39); 
-            }
-            #ct1E2A1{
-              display: flex;
-              position: relative;
-              justify-content:space-between;
-              align-items:center;
-              height: 110px;
-              width: 168px;
-              margin-left: 2px;
-              background: rgb(35,32,39);
-            }
-
-            #ct1E1btn{
-              cursor: pointer;
-             }
-
- 
-
-            @media (hover: hover) and (pointer: fine){
-              #ct1E1btn:hover,#ct1D1Btn:hover,#ct1Cbtn:hover,.BtnstylC:hover,#dskTmR2Btn:hover{
-              border:2px rgb(181, 229, 255) solid;
-              box-shadow:inset 1px 1px 15px #7bf7f7;
-              transition: all 0.2s ease-out;
-              /* 
-              border:1px rgb(58, 48, 83) solid;
-              box-shadow:inset 1px 1px 10px rgb(46, 53, 189);
-              box-shadow:inset 0px 0px 15px rgb(170, 43, 209);
-              background: linear-gradient(0.25turn,#4779a1,#2bd1d1,#4779a1);
-              transition: all 0.1s ease-out;
-              */
-              }
-              #ct1D1inp:hover{box-shadow:inset 0px 0px 5px rgb(28, 189, 248);}
-
-              .deskTmenC:hover{
-                color: rgb(34, 169, 184);
-              }
-            }
-            .deskTmenC:active{
-              color: rgb(44, 11, 72);
-            }
-
-            #ct1E1btn:active,#ct1D1Btn:active,#ct1Cbtn:active,#dskTmR2Btn:active,.BtnstylC:active{
-              border:1px #7bf7f7 solid;
-              box-shadow:inset 0px 0px 25px #ffffff;
-              /* transition: all 0.2s ease-out; */
-            }
-
-            /* Get rid of that pesky blue background for touch screens when 
-               an element is touched\pushed..: https://stackoverflow.com/questions/45049873/how-to-remove-the-blue-highlight-of-button-on-mobile
-            */
-            .deskTmenC,.ct1D1LnksN1Cls,input,textarea,button,select,a{
-            -webkit-tap-highlight-color: transparent;}
-
- 
-
-            /* Class to disable button presses for the 'Shorten It!' button when pressed 
-            momentarily via JS..*/
-            .noPointerEvnC{
-              pointer-events: none;
-              background: #3c1e70;
-            }
-
-
-            /* Disable Elements for Desktop... */
-            #deskTmenuL,#deskTmenuR,#ct1D1imgD,#ct1E1Dimg {display: none;}
-
-
-  @media (min-width:700px){/*700px or more required for Desktops...*/
-        
-        body{width:100%;}
-        #mainPage{
-          /* display:flex; */
-          /* position:relative; */
-          /* flex-direction:column; */
-          /* justify-content:center; */
-          align-items:center;
-          /*left<>right*/
-          width:1440px;/*100vw 100% */
-          /* max-width:100%; */
-          height: 100%;
-          /* 3470px 785px 100vh */
-          background-color: blueviolet;
-        }
-        #ct1{
-            /*    <<<<<<-----------------------------------------*/
-          height: 100%;/*2269px  100%   */ 
-          width:100%;/*100vw 100% */
-        }
-        #toggleMenu{display: none;}
-        #menu{display: none;}
-            #ct1A1{ /* Shortly logo.svg */
-              display: flex;
-              position: relative;
-              /* width:100px; */
-              margin-left: -365px;
-              top:15px;
-            }
-
-            #deskTmenuL,#deskTmenuR{
-              display:flex;
-              position:absolute;
-              flex-direction: row;
-              justify-content: space-between;
-              /* align-content: center; */
-              align-items: center;
-              top: 13px;
-              height: 30px;
-              width: 266px;
-              margin-left: 44px;
-              font-size: 15px;
-              font-weight: 600;
-              /* border: red 1px solid; */
-              color: rgb(173, 172, 180);
-            }
-            #dskTmL2{
-              margin-right: 1px;
-            }
-            #deskTmenuR{ 
-              width: 184px;
-              margin-left: 802px;
-              font-size: 15px;
-              font-weight: 600;
-              /* border: red 1px solid; */
-              color: rgb(173, 172, 180);
-            }
-            #dskTmR2Btn{
-              height: 40px;
-              width: 104px;
-              color: white;
-              font-size: 15px;
-              font-weight: 600;
-              /* margin-left:10px; */ /*use width #deskTmenuR*/
-              background: linear-gradient(#50fcfe,#1bb3b6);
-              border-radius: 20px;
-              border: none;
-            }
-            .deskTmenC{
-              cursor: pointer;
-            }
-            #ct1B{ /* working illustration */
-              display: flex;
-              position: relative;
-              width: 638px;/*633px*/
-              height: 480px;/*480*/
-              top:133px;
-              margin-left: 808px;
-              margin-right: 5px;
-              object-fit: cover;/*contain; cover; fill; none; scale-down;*/
-              object-position:28px 0px;
-              /* background: no-repeat url(./images/illustration-working.svg); */
-              /* background-size:730px 480px;    */
-              /*width height*/
-              /* background-position-x: 24px; */
-              /* border: blue 3px solid; */
-            }
-
-            #ct1C{
-              display:flex;
-              position:absolute;
-              flex-direction:column;
-              text-align:left;
-              align-items:start;
-              height:472px;
-              width:640px;
-              top:216px;
-              left:145px;
-              /* border:red solid 1px; */
-              /* padding:19px; */
-            }
-            #ct1C H1{
-              font-size: 81px;
-              letter-spacing: -2.5px;
-              color: rgb(53,49,62);
-              line-height: 90px;
-              font-weight: 900;
-            }
-            #ct1C p{
-              margin-top: 0px;
-              margin-left: 0px;
-              color: rgb(176,175,182);
-              font-size: 22px;
-              letter-spacing: 0.1px;
-              line-height:35px
-            }
-            #ct1Cbtn{
-              font-family: 'poppins';
-              display: flex;
-              position: relative;
-              flex-direction:column;
-              justify-content:center;
-              align-items:center;
-              border: none;
-              top:35px;
-              height: 58px;
-              width: 199px;
-              border-radius: 30px;
-              color:white;
-              background: linear-gradient(#2bd1d1,#4779a1);
-              margin-top: 1px;
-              margin-left: -2px;
-              font-size: 20px;
-              font-weight: 900;
-              cursor: pointer;
-            }
-
-            #ct1D{
-              top:281px;/* 280px */
-               height:100%; /*1485px*/
-               /* background: #c8b5ea; */
-              /* border: green solid; */
-            } 
-            #ct1D1{
-              display:flex;
-              position:relative;
-              flex-direction:row;
-              justify-content:left; 
-              align-items:none;
-              height:168px;/*'ct1D1AdLnkMsg' 160px -- adjust to 182px for when ct1D1AdLnkMsg msg occurs*/
-              width:1110px;
-              top:-75px;/*79px*/
-              margin-left: -2px;
-                /* margin-bottom: 10px; */
-              background: rgb(56,49,83);
-              border-radius: 10px;
-              }
-
-              #ct1D1imgM{display: none;}
-              #ct1D1imgD{
-                display:flex;
-                position:relative;
-                height:100%;/*100% */
-                width:100%;/* 100% */
-                object-fit:cover;/*contain; cover; fill; none; scale-down;*/
-                object-position:0px 0px ;/*Left,Right / up,down*/
-                /* filter: invert(25%) sepia(7%) saturate(3845%) hue-rotate(214deg) brightness(89%) contrast(84%);; */
-                filter:brightness(95%) contrast(100%);
-                border-radius:10px;
-                }
-                #ct1D1inpFld{
-                  /* display:flex; */
-                  position:absolute;
-                  justify-content:none;
-                  top:50px;
-                  margin-left: 65px; 
-                  width: 769px;
-                  height: 65px;
-                  }
-                  #ct1D1inp{
-                    width: 777px;
-                    /*'ct1D1AdLnkMsg' none / - change to 'inset 3px rgba(255, 0, 0, 0.500)' via js when 'add link ct1D1AdLnkMsg'msg occurs*/
-                    border-radius: 10px;
-                    padding-left: 32px;
-                    padding-top: 3px;
-                    font-size: 20px;
-                    letter-spacing: 0.1px;
-                    /* color: rgb(172,172,174); */
-                  }
-                  /* #ct1D1Btn .BtnstylC */
-                  #ct1D1Btn{
-                   display:flex;
-                   top:52px;
-                   right:64px;
-                   height:65px;
-                   width:187px;
-                   border-radius:10px;
-                   font-size:20px;
-                  }
-
-          /* -------------------- */
-                  #ct1D1LnksN1, .ct1D1LnksN1Cls{/*Display shortened Url sample for template when cloning, adding a class*/
-                    font-family: 'poppins';
-                    position:relative;
-                    flex-Direction:row;
-                    justify-content: center;
-                    text-align: left;
-                    top:-56px;
-                    height:72px;
-                    width:1110px;
-                    margin-bottom: 16px;
-                  }
-                    #ct1DlongUrlP, .ct1DlongUrlPC{
-                      width: 700px;
-                      height: 40px;
-                      margin-left: -20px;
-                      margin-top: 25px;
-                      font-size: 19px;
-                      font-weight: 600;
-                      color: rgb(83,82,88);
-                      letter-spacing: -0.2px;
-                      /* Both of the following are required for text-overflow */
-                      white-space:nowrap;
-                      overflow:-moz-hidden-unscrollable;
-                      overflow:hidden;
-                      text-overflow:ellipsis;
-                    }
-                    
-                    #ct1Dsep, .ct1DsepC{display: none;}
-
-                    #ct1D1ShrtLnkP, .ct1D1ShrtLnkPC{/*class added due to cloned div`s having unique id`s..*/
-                      /* display: flex; */
-                      position: relative;
-                      width: 315px;
-                         margin-left: 15px;
-                      margin-top: 24px;
-                      font-size: 20px;
-                      font-weight: 600;
-                      letter-spacing: -0.5px;
-                      color: #2bd1d1;
-                      /* Both of the following are required for text-overflow */
-                      /* white-space:nowrap; */
-                      overflow:-moz-hidden-unscrollable;
-                      overflow:hidden;
-                      text-overflow:ellipsis;
-                      /* border:rgb(0, 255, 17) solid 1px; */
-                    }
-                    #ct1D1CpyLnkBtn, .ct1D1CpyLnkBtnC{/* override class.BtnstylC . Class added due to cloned div`s having unique id`s..*/ 
-                      height: 40px;
-                      width: 105px;
-                      margin-left: 958px;
-                      margin-top: -70px;
-                      font-size: 16px;
-                      padding-left: 3px;
-                    }
-                    .ct1D1CpyLnkBtnC:active{
-                      background: linear-gradient(rgb(29, 23, 46),rgb(76, 48, 145));
-                      /* background: linear-gradient(0.25turn, #c7a2ff, #502457, #eb88fa);; */
-                    }
-           /* -------------------- */
-                   #ct1D2{
-                    /* display:flex;
-                    position:relative;
-                    flex-direction:column;
-                    align-items:center; */
-                    top:32px;
-                    height:160px;
-                    width:540px;
-                    border-radius: 10px;
-                    /* border: red solid 1px; */
-                  }
-                    #ct1D2 h1{
-                      font-size: 39.5px;
-                      margin-top: 6px;
-                      margin-left: -1px;
-                      letter-spacing: -0.7px;
-                      color: rgb(49, 48, 57)
-                    }
-                    #ct1D2 h1::first-letter{
-                      letter-spacing:-2px;
-                    }
-                    #ct1D2 p{
-                      text-align: center;
-                      margin-top: 11px;
-                      margin-left: -3px;
-                      font-size: 18px;
-                      transform: scale(1.01,1.00);
-                      line-height: 32px;
-                      color: rgb(166, 166, 176);
-                      /* background: rgba(255, 102, 102, 0.619); */
-                      
-                    }
-                    #ct1D3{
-                      /* display:flex; */
-                      /* position:relative; */
-                      /* flex-direction:column; */
-                      align-items:start;
-                      text-align: left;
-                      height:269px;
-                      width:350px;
-                      top:109px;
-                      left:-380px;
-                      background: white;
-                      border-radius: 6px;
-                      }
-                      #ct1D3img{
-                        /* left:-99px; */
-                        margin-left: 32px;
-
-                        top: -43px;
-                      }
-
-
-
-                      #ct1D3 h2,#ct1D4 h2,#ct1D5 h2{
-                        margin-left: 32px;
-
-                      }
-                      #ct1D3 p,#ct1D4 p,#ct1D5 p{
-                        text-align: left;
-                        margin: 16px 30px 0px 32px;
-                        font-size: 15.2px;
-                        letter-spacing: -0.1px;
-                        line-height: 26px;
-                        color: rgb(172,171,177);
-                      }
-                      #ctjoinerD3D4{
-                        position: absolute;
-                        height:9px;
-                        width: 49px;
-                        margin-left: -360px;
-                        top:512px;
-                      }
-                 #ct1D4{
-                  align-items:start;
-                  text-align: left;
-                  height:269px;
-                  width:350px;
-                  top:-115px;
-                  background: white;
-                  border-radius: 6px;
-                  z-index:1;
-                  }
-                  #ct1D4img,#ct1D5img{
-                    margin-left: 32px;
-                  }
-                    #ct1D4 p{
-                      letter-spacing: -0.2px;
-                      margin-left: 31px;
-                      margin-top: 15px;
-                    }
-                    #ctjoinerD4D5{
-                        position: absolute;
-                       height:9px;
-                      width: 49px;
-                      top:550px;
-                      margin-left: 380px;
-
-                     }
-                 #ct1D5{
-                  align-items:start;
-                  text-align: left;
-                  height:269px;
-                  width:350px;
-                  top:-341px;
-                  left:380px;
-                  background: white;
-                  border-radius: 6px;
-                  }
-                    #ct1D5sp1{
-                      letter-spacing: -0.2px;
-                      margin-left: 2px;
-                    }
-                #ct1E{ /*ct1D links...*/
-                  display:flex;
-                  position:relative;
-                  flex-direction:column;
-                  align-items:center;
-                  height: 560px;/* 628 970px  100% */
-                  width:100%;/*375px*/
-                  top:60px;/*60px*/
-                  background-color:rgb(35,32,39);
-                  }
-                     #ct1E1{
-                       display:flex;
-                       position:relative;
-                       flex-direction:column;
-                       align-items:center;
-                       height:252px;
-                       width:100%;
-                       background: rgb(58,48,83);
-                     }
-                     #ct1E1Mimg{display: none;}
-                     #ct1E1Dimg{
-                      display: flex;
-                    }
-                     #ct1E1 h2{
-                       top:56px;
-                       font-size: 38px;
-                     }
-                     #ct1E1 button{
-                      top:137px;
-                      width: 197px;
-                      height: 55px;
-                      margin-left: -4px;
-                    }
-                    #ct1E2{
-                      display:flex;
-                      position:relative;
-                      flex-direction:column;
-                      align-items:start;
-                      height:100%;/*620px*/
-                      width:575px;/*375px*/
-                      margin-left: 90px;/*90px --------- */
-                      background-color:rgb(35,32,39);/*rgb(28, 8, 55)*/
-                   }
-                     #ct1E2img{
-                       margin-top:68px;
-                       margin-left: -317px;
-                     }
-                      #ct1E2h2a{
-                       margin-top: 68px;
-                       margin-left: 65px;
-                      }
-                       #ct1E2h3a,#ct1E2h3b,#ct1E2h3c,#ct1E2h3d,#ct1E2h3e,
-                       #ct1E2h3f,#ct1E2h3g,#ct1E2h3h,#ct1E2h3i,#ct1E2h3j{
-                       color:rgb(156, 153, 160);
-                       font-size: 14.5px;
-                     }
-                     #ct1E2 h3::first-letter{
-                       letter-spacing: -1px;
-                      }
-                      #ct1E2h3a,#ct1E2h3b,#ct1E2h3c{
-                       margin-top: 24px;
-                       margin-bottom: -12.5px;
-                       margin-left: 65px; 
-                       font-weight: 500;
-                       word-spacing: 0px;
-                      }
-                        #ct1E2h3b{/* Branded Links */
-                         position: relative;
-                         margin-top:25px;
-                         margin-left:65px;
-                        }
-                     #ct1E2h2b{/* Resources */
-                       top: -259px;
-                       letter-spacing: -0.1px;
-                       margin-left: 255px;
-                     }
-                     #ct1E2h3d{/* Blog */
-                       margin-top: -235px;
-                       margin-left: 257px;
-                     }
-                   
-                     #ct1E2h3e{/* Developers */
-                       font-weight: 400;
-                       margin-top: 11px;
-                       margin-left: 257px;
-                       letter-spacing: 0.2px;
-                     }
-                     #ct1E2h3f{ /* Support */
-                       margin-left: 257px;
-                     }
-                     #ct1E2h2c{ /* Company */
-                       margin-top: -136px;
-                       margin-left: 445px;
-                     }
-                     #ct1E2h3g,#ct1E2h3h,#ct1E2h3i,#ct1E2h3j{ /* about */
-                       margin-top: 20.5px;
-                       margin-left: 445px;
-                       font-size: 15.5px;
-                       font-weight: 400;
-                     }
-                     #ct1E2h3g{
-                       letter-spacing: -0.4px;
-                       margin-left:445px;
-                     }
-                     #ct1E2h3h,#ct1E2h3i,#ct1E2h3j{
-                       margin-top: 10px;
-                       margin-left: 445px;
-                       word-spacing: -1px;
-                       letter-spacing: -0.5px;
-                     }
-                     #ct1E2h3j{
-                       margin-left: 445px;
-                       /* letter-spacing:-0.4px; */
-                     }
-                     #ct1E2A{
-                      top:-208px;
-                      width:270px;
-                      margin-left:935px;
-                     }
-                     #ct1E2A1{
-                       display: flex;
-                       position: relative;
-                       justify-content:space-between;
-                       align-items:center;
-                       height: 110px;
-                       width: 168px;
-                       margin-left: 2px;
-                     }
-
-   }
-
-
-.attribution {font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
-  font-size:10px;display:flex;position:relative ; text-align:center; 
-  justify-content:center; width:100%;
-  color:hsl(227, 21%, 57%);
-  /* background: rgb(58,48,83) */
+#sep{
+  margin-top: 32px;
+  margin-bottom: 30px;
+  height: 1px;
+  width: 100%;
+  background-color: rgb(82, 68, 118);
+  cursor: default;
 }
-.attribution a { color:hsl(228, 45%, 44%); }
+
+.tMenHovActC{
+  padding: 1px;
+  border: 3px #4778a165 solid;
+  margin: 3px;
+  border-radius: 30px;
+}
+.tMenHovActC:hover{
+  justify-content: center;
+  align-items: center;
+  /* border: 1px rgb(43,209,209) solid; */
+  /* box-shadow: inset 5px 5px 25px rgb(43,209,209); */
+  border-radius: 30px;
+  /* padding: 1px; */
+  background: linear-gradient(0.25turn,#4779a1,#1e8585,#4779a1);
+  transition: all 0.1s ease-out;
+}
+.tMenHovActC:active{
+  /* border: 10px rgb(58, 48, 83) solid; */
+  box-shadow: inset 1px 1px 10px #4d9fb4;
+}
+
+#toggleMenu input{
+  display: block;
+  width: 40px;
+  height: 32px;
+  position: absolute;
+  top: -7px;
+  left: -5px;
+  cursor: pointer;
+  opacity: 0%;
+  z-index: 2;
+  -webkit-touch-callout: none;
+}
+
+#toggleMenu span{
+  display: block;
+  width: 24px;
+  height: 3px;
+  margin-bottom: 6px;
+  position: relative;
+  background: rgb(157,156,165);
+  transform-origin: 0px 0px;
+  transition: transform 0.2s cubic-bezier(0.77,0.2,0.05,1.0),
+              background 0.2s cubic-bezier(0.77,0.2,0.05,1.0),
+              opacity 0.2s ease;
+  z-index: 1;
+}
+#toggleMenu span:first-child{ transform-origin: 0% 0%; }
+#toggleMenu span:nth-last-child(2){ transform-origin: 0% 100%; }
+
+#toggleMenu input:checked ~ span{
+  opacity: 1;
+  transform: rotate(45deg) translate(1px, 1px);
+  background: rgb(157,156,165);
+}
+#toggleMenu input:checked ~ span:nth-last-child(3){
+  opacity: 0;
+  transform: scale(0.0, 0.0);
+}
+#toggleMenu input:checked ~ span:nth-last-child(2){
+  transform: rotate(-45deg) translate(0px, 0px);
+}
+
+/* Dropdown */
+#menu{
+  position: absolute;
+  right: -5px;
+  top: 44px;
+  width: min(90vw, 328px);
+  padding: 25px;
+  background: rgb(58, 48, 83);
+  border-radius: 10px;
+  list-style-type: none;
+  -webkit-font-smoothing: antialiased;
+  transform: translateY(-20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.77,0.2,0.05,1.0), opacity 0.3s ease;
+}
+#menu li{
+  margin: 14px 0 28px 0;
+  font-size: 1.05rem;
+}
+#toggleMenu input:checked ~ ul{
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ----- Desktop nav (shown >= 700px) ----- */
+#deskTmenuL, #deskTmenuR{ display: none; }
+
+.deskTmenC{ cursor: pointer; }
+.deskTmenC:active{ color: rgb(44, 11, 72); }
+
+#dskTmR2Btn{
+  height: 40px;
+  padding: 0 24px;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: linear-gradient(#50fcfe,#1bb3b6);
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+/* illustration/heading */
+#ct1Hero{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1110px;
+  padding: 0 clamp(16px, 4vw, 24px);
+}
+@media (min-width: 700px){
+  #ct1Hero{
+    /* DOM order is image (ct1B) then text (ct1C). row-reverse paints the
+       first child on the right and the last child on the left, which puts
+       the image on the right and the text on the left. */
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(24px, 5vw, 60px);
+  }
+}
+
+#ct1B{
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  margin-top: clamp(30px, 8vw, 60px);
+  flex: 1 1 50%;
+  min-width: 0;
+}
+@media (min-width: 700px){
+  #ct1B{ margin-top: 0; max-width: none; }
+}
+
+#ct1C{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 640px;
+  padding: clamp(16px, 4vw, 19px) 0;
+  flex: 1 1 50%;
+  min-width: 0;
+}
+@media (min-width: 700px){
+  #ct1C{
+    align-items: flex-start;
+    text-align: left;
+    max-width: 470px;
+    padding: 0;
+  }
+}
+#ct1C H1{
+  font-size: clamp(2.2rem, 5vw + 1rem, 4.6rem);
+  letter-spacing: -1px;
+  color: rgb(53,49,62);
+  line-height: 1.1;
+  font-weight: 900;
+}
+#ct1C p{
+  margin-top: 15px;
+  color: rgb(176,175,182);
+  font-size: clamp(1rem, 0.4vw + 0.9rem, 1.2rem);
+  letter-spacing: 0.1px;
+  line-height: 1.6;
+}
+#ct1Cbtn{
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  margin-top: 28px;
+  height: 58px;
+  width: 199px;
+  border-radius: 30px;
+  color: white;
+  background: linear-gradient(#2bd1d1,#4779a1);
+  margin-top: 28px;
+  font-size: 1.15rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* link shortener + features*/
+#ct1D{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: clamp(70px, 12vw, 130px) clamp(16px, 4vw, 24px) 60px;
+  margin-top: clamp(30px, 6vw, 55px);
+  background: rgb(240,241,246);
+}
+
+/* ----- Shorten-a-link box (overlaps the section above it) ----- */
+#ct1D1{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 1110px;
+  padding: clamp(24px, 4vw, 48px) clamp(20px, 5vw, 64px);
+  margin-top: clamp(-90px, -10vw, -60px); /* the overlap effect from the original design */
+  background: rgb(56,49,83);
+  background-image: url('./images/bg-shorten-mobile.svg');
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: contain;
+  border-radius: 10px;
+}
+@media (min-width: 700px){
+  #ct1D1{
+    flex-direction: row;
+    background-image: url('./images/bg-shorten-desktop.svg');
+    background-size: cover;
+    background-position: center;
+  }
+}
+
+/* the separate mobile/desktop <img> tags are no longer needed since the
+   background art is applied via CSS background-image above (swapped by the
+   media query), which scales far better than two absolutely-positioned
+   <img> elements. Hiding them here rather than editing the HTML. */
+#ct1D1imgM, #ct1D1imgD{ display: none; }
+
+#ct1D1inpFld{
+  display: flex;
+  width: 100%;
+}
+#ct1D1Lbl{ display: none; }
+#ct1D1inp{
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  appearance: none;
+  text-overflow: ellipsis;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  letter-spacing: 0.1px;
+  color: rgb(172,172,174);
+}
+.warn::placeholder{ color: rgb(255, 0, 0); opacity: 50%; }
+
+.BtnstylC{
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  padding: 0 12px;
+  color: white;
+  background: linear-gradient(#2bd1d1,#4779a1);
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+@media (min-width: 700px){
+  .BtnstylC{ 
+    display: flex;
+    width: auto; 
+    min-width: 140px; 
+  
+  }
+}
+
+/* ----- Result rows (cloned per shortened link) ----- */
+#ct1D1LnksN1, .ct1D1LnksN1Cls{
+  display: none; /* toggled to flex via JS */
+  flex-direction: column;
+  text-align: left;
+  width: 100%;
+  max-width: 1110px;
+  margin-top: 16px;
+  background: white;
+  border-radius: 5px;
+  /* cursor: pointer; */
+  overflow: hidden;
+}
+@media (min-width: 700px){
+  #ct1D1LnksN1, .ct1D1LnksN1Cls{
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly; /* This spreads the content */
+    padding-right: 15px;  
+
+  }
+}
+#ct1DlongUrlP, .ct1DlongUrlPC{
+  max-width: 250px; /*Displayed length of copied Long URL*/
+  padding: 14px 15px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgb(83,82,88);
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+@media (min-width: 700px){
+  #ct1DlongUrlP, .ct1DlongUrlPC{  min-width: 0; padding: 14px 0 14px 20px; }
+}
+.fwdSlsh{ letter-spacing: -1px; }
+
+#ct1Dsep, .ct1DsepC{
+  height: 1.5px;
+  background: linear-gradient(0.25turn,rgb(0,0,0),rgb(43,209,209),rgb(72,37,159));
+  margin: 10px 15px 0;
+  opacity: 40%;
+}
+@media (min-width: 700px){
+  #ct1Dsep, .ct1DsepC{ display: none; }
+}
+
+#ct1D1ShrtLnkP, .ct1D1ShrtLnkPC{
+  padding: 14px 15px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: #2bd1d1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (min-width: 700px){
+  #ct1D1ShrtLnkP, .ct1D1ShrtLnkPC{  min-width: 0; padding: 14px 0 14px 20px;}
+}
+
+#ct1D1CpyLnkBtn, .ct1D1CpyLnkBtnC{
+  height: 40px;
+  width: calc(100% - 30px);
+  margin: 14px 15px;
+  font-size: 1rem;
+}
+@media (min-width: 700px){
+  #ct1D1CpyLnkBtn, .ct1D1CpyLnkBtnC{ width: 130px; flex-shrink: 0; }
+}
+.ct1D1CpyLnkBtnC:active{
+  background: linear-gradient(rgb(29, 23, 46),rgb(76, 48, 145));
+}
+
+/* ----- "Advanced statistics" heading ----- */
+#ct1D2{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 540px;
+  margin-top: clamp(60px, 10vw, 90px);
+}
+#ct1D2 h1{
+  font-size: clamp(1.7rem, 2vw + 1rem, 2.5rem);
+  letter-spacing: -0.7px;
+  color: rgb(49, 48, 57);
+}
+#ct1D2 p{
+  margin-top: 17.5px;
+  line-height: 1.7;
+  color: rgb(142, 143, 149);
+  font-size: clamp(0.95rem, 0.3vw + 0.85rem, 1.1rem);
+}
+
+/* ----- Feature cards -----
+   #ct1Dcards wraps: ct1D3, ctjoinerD3D4, ct1D4, ctjoinerD4D5, ct1D5 (in that
+   DOM order — see index.html). On desktop the three cards sit in a row and
+   are staggered downward (0 / 40px / 80px) to match the original zig-zag.
+   Each card's icon badge is always exactly -44.5px above that CARD's own
+   top edge — so the badge's position only depends on the fixed stagger
+   value, never on how tall the card's text makes it. That means the joiner
+   bars below can be positioned with plain CSS (no JS height-measuring
+   needed) and stay correctly connected at any screen width. */
+#ct1Dcards{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1110px;
+  margin-top: clamp(70px, 8vw, 90px);
+}
+@media (min-width: 700px){
+  #ct1Dcards{
+    flex-direction: row;
+    align-items: flex-start;
+    margin-top: 90px;
+    /* no gap here — the joiners themselves are fixed-width flex items that
+       occupy the space between cards, so no separate gap is needed */
+  }
+}
+
+#ct1D3, #ct1D4, #ct1D5{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 350px;
+  padding: 55px 30px 30px;
+  background: white;
+  border-radius: 6px;
+}
+#ct1D3{ margin-top: 70px; } /* space below the "Advanced Statistics" heading */
+#ct1D4, #ct1D5{ margin-top: 0; } /* spacing now comes from the joiner bar between cards */
+@media (min-width: 700px){
+  #ct1D3, #ct1D4, #ct1D5{
+    flex: 1 1 0;
+    min-width: 0;
+    align-items: flex-start;
+    text-align: left;
+    max-width: none;
+    margin-top: 0; /* base case: ct1D3 */
+  }
+  /* stagger cards vertically to echo the original zig-zag (measured from
+     the design file: each card sits ~44px lower than the previous one) */
+  #ct1D4{ margin-top: 44px; }
+  #ct1D5{ margin-top: 88px; }
+}
+
+#ct1D3img, #ct1D4img, #ct1D5img{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 89px;
+  width: 89px;
+  position: absolute;
+  top: -44.5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 60px;
+  background-color: rgb(59, 47, 83);
+}
+@media (min-width: 700px){
+  #ct1D3img, #ct1D4img, #ct1D5img{ left: 32px; transform: none; }
+}
+
+#ct1D3 h2, #ct1D4 h2, #ct1D5 h2{ font-size: 1.4rem; margin-top: 12px; }
+#ct1D3 p, #ct1D4 p, #ct1D5 p{
+  margin-top: 16px;
+  font-size: 0.95rem;
+  letter-spacing: -0.1px;
+  line-height: 1.7;
+  color: rgb(172,171,177);
+}
+
+/* Connector bars.
+   Mobile: cards stack in a column, so the joiner is just a normal flex
+   item sitting between two cards — it's a centered vertical bar that
+   provides the vertical gap itself. Matches the mobile design file.
+   Desktop: measuring the actual design file (desktop-design.jpg) shows
+   these are NOT diagonal lines between the icon badges — they're short
+   horizontal bars, ~26px wide by ~4px tall, sitting at ONE fixed height
+   (~155px down from the row's top) for both joiners, filling the gap
+   between adjacent cards. Since they're a fixed width, they can just be
+   normal flex items sitting between the cards in the row (no gap/calc()
+   needed) with a fixed margin-top to drop them to the right height. */
+#ctjoinerD3D4, #ctjoinerD4D5{
+  display: block;
+  width: 4px;
+  height: 48px;
+  margin: 0 auto;
+  background-color: rgb(43, 209, 209);
+}
+@media (min-width: 700px){
+  #ctjoinerD3D4, #ctjoinerD4D5{
+    flex: 0 0 30px;   /* fixed-width slot the joiner fills, sitting between the cards */
+    width: auto;
+    height: 4px;
+    margin: 155px 0 0; /* fixed offset from the row's top, matching the design */
+  }
+}
+
+/* ==========================================================================
+   SECTION E: CTA banner + footer
+   ========================================================================== */
+#ct1E{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background-color: rgb(35,32,39);
+}
+
+#ct1E1{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: clamp(50px, 10vw, 70px) 20px;
+  background: rgb(58,48,83) url('./images/bg-boost-mobile.svg') no-repeat top center / cover;
+  text-align: center;
+}
+@media (min-width: 700px){
+  #ct1E1{ background-image: url('./images/bg-boost-desktop.svg'); }
+}
+#ct1E1Mimg, #ct1E1Dimg{ display: none; } /* replaced by CSS background-image above */
+
+#ct1E1 h2{
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.7rem, 3vw + 1rem, 2.4rem);
+  color: white;
+  font-weight: 700;
+}
+#ct1E1 button{
+  font-family: 'Poppins', sans-serif;
+  margin-top: 24px;
+  width: 197px;
+  height: 55px;
+  color: white;
+  border: none;
+  background: linear-gradient(#2bd1d1,#4779a1);
+  border-radius: 30px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#ct1EBottom{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1110px;
+  padding: 0 clamp(16px, 4vw, 24px);
+}
+@media (min-width: 700px){
+  #ct1EBottom{
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px 40px;
+    padding-top: 68px;
+  }
+}
+
+#ct1E2{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 50px;
+}
+@media (min-width: 700px){
+  #ct1E2{
+    display: grid;
+    /* 4 direct children now: logo img, then the 3 column wrapper divs */
+    grid-template-columns: auto 1fr 1fr 1fr;
+    flex: 1 1 auto;
+    gap: 40px;
+    text-align: left;
+    padding-top: 0;
+  }
+}
+
+#ct1E2colFeatures, #ct1E2colResources, #ct1E2colCompany{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+@media (min-width: 700px){
+  #ct1E2colFeatures, #ct1E2colResources, #ct1E2colCompany{
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+#ct1E2img{
+  filter: brightness(0) invert(1);
+  width: clamp(90px, 8vw, 130px);
+  height: auto;
+}
+
+#ct1E2h2a, #ct1E2h2b, #ct1E2h2c{
+  color: white;
+  font-size: 1rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 40px;
+}
+@media (min-width: 700px){
+  #ct1E2h2a, #ct1E2h2b, #ct1E2h2c{ margin-top: 0; }
+}
+
+#ct1E2h3a, #ct1E2h3b, #ct1E2h3c, #ct1E2h3d, #ct1E2h3e,
+#ct1E2h3f, #ct1E2h3g, #ct1E2h3h, #ct1E2h3i, #ct1E2h3j{
+  color: rgb(156, 153, 160);
+  font-size: 0.95rem;
+  font-weight: 400;
+  margin-top: 14px;
+}
+
+#ct1E2A{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 40px;
+}
+@media (min-width: 700px){
+  #ct1E2A{
+    width: auto;
+    flex: 0 0 auto;
+    align-items: flex-end;
+    margin-top: 0;
+  }
+}
+#ct1E2A1{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 168px;
+  margin-bottom: 20px;
+}
+#ct1E2A1 img{ width: 22px; height: auto; }
+
+/* ==========================================================================
+   SHARED STATES / UTILITIES
+   ========================================================================== */
+#ct1E1btn{ cursor: pointer; }
+
+@media (hover: hover) and (pointer: fine){
+  #ct1E1btn:hover, #ct1D1Btn:hover, #ct1Cbtn:hover, .BtnstylC:hover, #dskTmR2Btn:hover{
+    /* border: 2px rgb(181, 229, 255) solid; */
+    box-shadow: inset 1px 1px 15px #7bf7f7;
+    transition: all 0.2s ease-out;
+  }
+  #ct1D1inp:hover{ box-shadow: inset 0px 0px 5px rgb(28, 189, 248); }
+  .deskTmenC:hover{ color: rgb(34, 169, 184); }
+}
+
+#ct1E1btn:active, #ct1D1Btn:active, #ct1Cbtn:active, #dskTmR2Btn:active, .BtnstylC:active{
+  /* border: 1px #7bf7f7 solid; */
+  box-shadow: inset 0px 0px 25px #6ebeff;
+
+}
+
+.deskTmenC, .ct1D1LnksN1Cls, input, textarea, button, select, a{
+  -webkit-tap-highlight-color: transparent;
+}
+
+.noPointerEvnC{
+  pointer-events: none;
+  background: #3c1e70;
+}
+
+/* ==========================================================================
+   DESKTOP NAV SWAP (>= 700px)
+   ========================================================================== */
+@media (min-width: 700px){
+  #toggleMenu, #menu{ display: none; }
+
+  #deskTmenuL, #deskTmenuR{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgb(173, 172, 180);
+  }
+  #deskTmenuR{ gap: 24px; }
+}
+
+/* ─── ARCHIVE DIALOG - START ────────────────────────────────────────────── */
+      #archiveDialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      #archiveDialog.active {
+        display: flex;
+      }
+
+      #archiveOverlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(21, 20, 23, 0.7);
+        backdrop-filter: blur(4px);
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      #archiveModal {
+        position: relative;
+        background: rgb(240, 241, 246);
+        padding: 40px 35px 30px;
+        border-radius: 12px;
+        max-width: 520px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 1;
+      }
+
+      /* ─── Header ────────────────────────────────────────────────────────── */
+      #archiveHeader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      #archiveIcon {
+        font-size: 2rem;
+        line-height: 1;
+      }
+
+      #archiveTitle {
+        margin: 0;
+        color: rgb(49, 48, 57);
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+
+      /* ─── Body ───────────────────────────────────────────────────────────── */
+      #archiveBody {
+        margin-bottom: 25px;
+      }
+
+      #archiveMessage {
+        margin: 0 0 8px 0;
+        color: #3a3a3a;
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+
+      #archiveMessage strong {
+        color: rgb(49, 48, 57);
+      }
+
+      #archiveCount {
+        margin: 0;
+        color: #555;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+/* ─── Buttons ────────────────────────────────────────────────────────── */
+#archiveFooter {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 20px 0 12px;
+}
+
+.archive-btn {
+  font-family: 'Poppins', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  padding: 12px 32px;
+  min-width: 140px;
+  height: 48px;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  color: white;
+}
+
+/* ─── Yes/Save Button ────────────────────────────────────────────────── */
+.archive-btn-primary {
+  background: linear-gradient(135deg, #2bd1d1, #27ae60);
+}
+
+.archive-btn-primary:hover {
+  box-shadow: inset 1px 1px 15px rgba(123, 247, 247, 0.5);
+  transition: all 0.2s ease-out;
+}
+
+.archive-btn-primary:active {
+  box-shadow: inset 0px 0px 25px rgba(110, 190, 255, 0.5);
+}
+
+/* ─── No/Discard Button ──────────────────────────────────────────────── */
+.archive-btn-secondary {
+  background: linear-gradient(135deg, #f5a6a6, #c0392b);
+}
+
+.archive-btn-secondary:hover {
+  box-shadow: inset 1px 1px 15px rgba(255, 200, 200, 0.5);
+  transition: all 0.2s ease-out;
+}
+
+.archive-btn-secondary:active {
+  box-shadow: inset 0px 0px 25px rgba(255, 100, 100, 0.4);
+}
+
+/* ─── Alternative: Site Theme Colors (Exact Match) ──────────────────── */
+/* Use these to match your site's exact gradient */
+
+.archive-btn-theme {
+  /* background: linear-gradient(135deg, #2bd1d1, #4779a1); */
+  background: linear-gradient(#2bd1d1,#4779a1);
+}
+
+.archive-btn-theme:hover {
+  box-shadow: inset 1px 1px 15px #7bf7f7;
+  transition: all 0.2s ease-out;
+}
+
+.archive-btn-theme:active {
+  box-shadow: inset 0px 0px 25px #6ebeff;
+}
+
+.archive-btn-theme-secondary {
+  /* background: linear-gradient(135deg, #a29bfe, #4834d4); */
+  background: linear-gradient( #a29bfe, #4834d4);
+}
+
+.archive-btn-theme-secondary:hover {
+  box-shadow: inset 1px 1px 15px rgba(162, 155, 254, 0.5);
+  transition: all 0.2s ease-out;
+}
+
+.archive-btn-theme-secondary:active {
+  box-shadow: inset 0px 0px 25px rgba(108, 92, 231, 0.4);
+}
+
+/* ─── Alternative: Subtle Red/Green ──────────────────────────────────── */
+.archive-btn-primary-subtle {
+  background: linear-gradient(135deg, #4ecdc4, #2ecc71);
+}
+
+.archive-btn-primary-subtle:hover {
+  box-shadow: inset 1px 1px 15px rgba(78, 205, 196, 0.5);
+  transition: all 0.2s ease-out;
+}
+
+.archive-btn-primary-subtle:active {
+  box-shadow: inset 0px 0px 25px rgba(46, 204, 113, 0.4);
+}
+
+.archive-btn-secondary-subtle {
+  background: linear-gradient(135deg, #f5a6a6, #e74c3c);
+}
+
+.archive-btn-secondary-subtle:hover {
+  box-shadow: inset 1px 1px 15px rgba(245, 166, 166, 0.5);
+  transition: all 0.2s ease-out;
+}
+
+.archive-btn-secondary-subtle:active {
+  box-shadow: inset 0px 0px 25px rgba(231, 76, 60, 0.35);
+}
 
 
+      /* ─── Hint ───────────────────────────────────────────────────────────── */
+      #archiveHint {
+        margin: 10px 0 0 0;
+        color: #999;
+        font-size: 0.8rem;
+        font-style: italic;
+      }
+
+      /* ─── Animations ────────────────────────────────────────────────────── */
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+/* ─── ARCHIVE DIALOG - END ────────────────────────────────────────────── */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
+/* ==========================================================================
+   ATTRIBUTION
+   ========================================================================== */
+.attribution{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.7rem;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 0 30px;
+  color: hsl(227, 21%, 57%);
+}
+.attribution a{ color: hsl(228, 45%, 44%); }
