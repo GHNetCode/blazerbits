@@ -484,8 +484,13 @@ async function getShortUrl(ct1DlongUrl) {
             method: 'POST',
             mode: 'cors',
             signal: AbortSignal.timeout(15000),
-            headers: { 'Content-Type': 'application/json', 'X-Client-Id': CLIENT_ID },
-            body: JSON.stringify({ url: ct1DlongUrl })
+            // text/plain avoids a CORS preflight (it's a "safelisted" content-type);
+            // the payload is still JSON, just parsed server-side instead of via
+            // the Content-Type header. client_id moved into the body so we don't
+            // need a custom header either — Azure's built-in preflight handling
+            // can't cope with custom headers, so we sidestep it entirely.
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ url: ct1DlongUrl, client_id: CLIENT_ID })
         });
         const data = await response.json();
         if (!response.ok) {
