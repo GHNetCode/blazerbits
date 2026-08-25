@@ -4,7 +4,7 @@ window.onresize=()=>{
 
 // ─── API CONFIG ────────────────────────────────────────────────────────
 //const API_BASE_URL = 'http://localhost:7071';
-const API_BASE_URL = 'https://urlshortener-api-bwgad5erhxaxhthn.ukwest-01.azurewebsites.net';
+const API_BASE_URL = 'https://go.blazerbits.uk';
 
 
 // ─── CLIENT TOKEN ─────────────────────────────────────────────────────
