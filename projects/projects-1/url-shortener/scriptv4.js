@@ -231,12 +231,62 @@ function showExpiredArchiveDialog(expiredLinks) {
 
 // ─── DELETE LINK FUNCTION ─────────────────────────────────────────────
 
-function deleteLink(btnId) {
+async function deleteLink(btnId) {
     console.log(`🗑️ Deleting link: ${btnId}`);
     
     // Confirm deletion
     if (!confirm('Are you sure you want to delete this link?')) {
         return;
+    }
+
+    // Find the matching clone so we can (a) read its short code and
+    // (b) remove it from the DOM once we're done.
+    let matchedClone = null;
+    const allClones = document.querySelectorAll('.ct1D1LnksN1Cls');
+    for (let clone of allClones) {
+        let cloneBtn = clone.querySelector('[id^="ct1D1CpyLnkBtn"]');
+        if (cloneBtn && cloneBtn.id === btnId) {
+            matchedClone = clone;
+            break;
+        }
+    }
+
+    // Pull the short code out of the displayed short URL text
+    // (e.g. "https://go.blazerbits.uk/AbC123" -> "AbC123")
+    let shortCode = null;
+    if (matchedClone) {
+        const shortUrlEl = matchedClone.querySelector('[id^="ct1D1ShrtLnkP"]');
+        if (shortUrlEl && shortUrlEl.textContent) {
+            try {
+                shortCode = new URL(shortUrlEl.textContent).pathname.split('/').filter(Boolean).pop();
+            } catch (e) {
+                console.warn('   ⚠️ Could not parse short code from displayed URL:', shortUrlEl.textContent);
+            }
+        }
+    }
+
+    // Ask the backend to delete the actual record too — best-effort, so a
+    // network hiccup here doesn't prevent the user from clearing it locally.
+    if (shortCode) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/delete`, {
+                method: 'POST',
+                mode: 'cors',
+                signal: AbortSignal.timeout(15000),
+                headers: { 'Content-Type': 'text/plain' }, // avoids a CORS preflight, same trick as /shorten
+                body: JSON.stringify({ code: shortCode, client_id: CLIENT_ID })
+            });
+            const data = await response.json().catch(() => ({}));
+            if (response.ok) {
+                console.log(`   ✅ Removed from backend: ${shortCode}`);
+            } else {
+                console.warn(`   ⚠️ Backend delete failed (${response.status}):`, data?.error);
+            }
+        } catch (err) {
+            console.warn('   ⚠️ Backend delete request failed:', err);
+        }
+    } else {
+        console.warn('   ⚠️ Could not determine short code — skipping backend delete');
     }
     
     // Remove from localStorage
@@ -250,14 +300,9 @@ function deleteLink(btnId) {
     }
     
     // Remove from DOM
-    const allClones = document.querySelectorAll('.ct1D1LnksN1Cls');
-    for (let clone of allClones) {
-        let cloneBtn = clone.querySelector('[id^="ct1D1CpyLnkBtn"]');
-        if (cloneBtn && cloneBtn.id === btnId) {
-            clone.remove();
-            console.log(`   ✅ Removed from DOM: ${btnId}`);
-            break;
-        }
+    if (matchedClone) {
+        matchedClone.remove();
+        console.log(`   ✅ Removed from DOM: ${btnId}`);
     }
     
     showNotification('🗑️ Link deleted.', 'info');
