@@ -421,13 +421,52 @@ let maxRows = MAX_ROWS;
 
 const effect = new KeyframeEffect(
     ct1D1Btn,
+    //[{ transform: 'rotate(0deg) scalex(0.3)' }, { transform: 'rotate(100000deg) scalex(0.0)' }],
     [{ transform: 'rotate(0deg) scalex(0.3)' }, { transform: 'rotate(100000deg) scalex(0.0)' }],
     { duration: 15000 }
 );
 const rotatect1D1Btn = new Animation(effect, document.timeline);
 
-ct1D1Btn.addEventListener("pointerdown", e => {
-    console.log('ct1D1Btn Button has been pressed..')
+
+
+// ─── DEBOUNCE UTILITY ──────────────────────────────────────────────────
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ─── ENHANCED DEBOUNCED HANDLER WITH LOADING STATE ──────────────────
+const debouncedBtnProc = debounce(async function() {
+    console.log('ct1D1Btn Button has been pressed..');
+    
+    // Add loading state
+    ct1D1Btn.classList.add('ct1D1Btn--loading');
+    //ct1D1Btn.textContent = 'Processing';
+    
+    try {
+        await BtnProc();
+    } catch (error) {
+        console.error('Error in button processing:', error);
+    } finally {
+        // Remove loading state after 2 seconds
+        setTimeout(() => {
+            ct1D1Btn.classList.remove('ct1D1Btn--loading');
+            //ct1D1Btn.textContent = 'Shorten';
+        }, 1700);
+    }
+}, 10);
+
+ct1D1Btn.addEventListener("pointerdown", debouncedBtnProc);
+
+//ct1D1Btn.addEventListener("pointerdown", e => {
+//    console.log('ct1D1Btn Button has been pressed..')
     async function BtnProc() {
         if (ct1D1inp.value) {
             ct1DlongUrl = ct1D1inp.value;
@@ -451,8 +490,15 @@ ct1D1Btn.addEventListener("pointerdown", e => {
                 }, 1000);
                 ct1DshortUrl = await getShortUrl(ct1DlongUrl);
                 if (ct1DshortUrl) {
-                    rotatect1D1Btn.cancel();
-                    UrlLinkDiv(ct1D1CpyLnkBtnId, ct1D1ShrtLnkPId, ct1DlongUrl, ct1DshortUrl, false);
+                    //clear the 'Shorten a link here...' field
+                     setTimeout(() => { ct1D1inp.value = '';
+                                        ct1D1inp.style.opacity = '1';
+                                        resetErrStyles();
+                                    }, 1700);
+                    //Delay to the next "Shorten It!" button push
+                     setTimeout(() => {rotatect1D1Btn.cancel();}, 1700);
+                     //Delay when the link is added..
+                      setTimeout(() => {UrlLinkDiv(ct1D1CpyLnkBtnId, ct1D1ShrtLnkPId, ct1DlongUrl, ct1DshortUrl, false);}, 1700);                   
                 } else {
                     rotatect1D1Btn.cancel();
                     console.log('Error fetching url, please check internet connection..:' + error);
@@ -467,8 +513,12 @@ ct1D1Btn.addEventListener("pointerdown", e => {
             oneClickFlag = true;
         }
     }
-    BtnProc();
-})
+
+
+    //BtnProc();
+
+    
+//})
 
 function plsAddLnkMsg() {
     let childElem = document.getElementById("ct1D1Btn");

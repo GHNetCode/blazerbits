@@ -778,6 +778,73 @@ body{
   background: #3c1e70;
 }
 
+/*Shorten It button State */
+.ct1D1Btn--loading {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+
+/* ── Back button long-press prevention ── */
+.back-btn {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    touch-action: manipulation !important;
+}
+
+.back-btn {
+      font-family: 'Poppins', sans-serif; 
+      position: fixed;
+      bottom: 0.5rem;
+      right: 2vw;
+      display: inline-flex;
+      align-items: center;
+      border: none;
+      margin-top: 28px;
+      height: 45px;
+      width: 100px;
+      border-radius: 30px;
+      color: white;
+      /* background: linear-gradient(rgb(43, 209, 209, 0.95),rgb(71, 121, 161, 0.95)); */
+      background: linear-gradient(rgb(43, 209, 209, 0.95),rgba(58, 47, 83, 0.95));
+      margin-top: 28px;
+      font-size: 0.99rem;
+      font-weight: 900;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background: rgba(20, 20, 40, 0.85);
+      border: 1px solid rgba(251, 202, 128, 0.346);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-btn:active {
+      transform: translateY(0) scale(0.97);
+      transition-duration: 0.1s;
+    }
+
+    .back-btn svg {
+      width: 10px;
+      height: 10px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      transition: transform 0.3s ease;
+    }
+
+    .back-btn:hover svg {
+      transform: translateX(-3px);
+    }
+
+
 /* ==========================================================================
    DESKTOP NAV SWAP (>= 700px)
    ========================================================================== */
