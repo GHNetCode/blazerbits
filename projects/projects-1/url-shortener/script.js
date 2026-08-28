@@ -24,7 +24,7 @@ function getOrCreateClientId() {
       });
 
   localStorage.setItem(CLIENT_ID_STORAGE_KEY, clientId);
-  console.log('🆕 User token created (permanent):', clientId);
+  // -- console.log('🆕 User token created (permanent):', clientId);
   return clientId;
 }
 
@@ -112,7 +112,7 @@ class LinkEncryption {
 // ─── TOKEN MANAGEMENT ──────────────────────────────────────────────────
 
 function checkAndCleanExpiredLinks() {
-    console.log('Checking for expired links...');
+    // -- console.log('Checking for expired links...');
     const now = new Date();
     const expiryDays = LINK_EXPIRY_DAYS;
     let removedCount = 0;
@@ -140,7 +140,7 @@ function checkAndCleanExpiredLinks() {
                                 shortUrl: decrypted.shortUrl,
                                 createdAt: data[4].createdAt
                             });
-                            console.log(`✅ Decrypted expired link: ${key} → ${decrypted.longUrl}`);
+                            // -- console.log(`✅ Decrypted expired link: ${key} → ${decrypted.longUrl}`);
                         });
                         decryptPromises.push(decryptPromise);
                         removedCount++;
@@ -153,14 +153,14 @@ function checkAndCleanExpiredLinks() {
     }
     
     if (removedCount === 0) {
-        console.log('✅ No expired links found');
+        // -- console.log('✅ No expired links found');
         return 0;
     }
     
     Promise.all(decryptPromises).then(() => {
         keysToRemove.forEach(key => {
             localStorage.removeItem(key);
-            console.log('Removed expired link:', key);
+            // -- console.log('Removed expired link:', key);
             if (ct1D1CpyLnkBtnMap && ct1D1CpyLnkBtnMap.has(key)) {
                 ct1D1CpyLnkBtnMap.delete(key);
             }
@@ -169,14 +169,14 @@ function checkAndCleanExpiredLinks() {
                 let cloneBtn = clone.querySelector('[id^="ct1D1CpyLnkBtn"]');
                 if (cloneBtn && cloneBtn.id === key) {
                     clone.remove();
-                    console.log('Removed expired link from DOM:', key);
+                    // -- console.log('Removed expired link from DOM:', key);
                     break;
                 }
             }
         });
         
         if (expiredLinks.length > 0) {
-            console.log(`✅ Removed ${removedCount} expired link(s)`);
+            // -- console.log(`✅ Removed ${removedCount} expired link(s)`);
             showNotification(`🗑️ ${removedCount} link(s) have expired and been removed.`, 'warning');
             showExpiredArchiveDialog(expiredLinks);
         }
@@ -232,7 +232,7 @@ function showExpiredArchiveDialog(expiredLinks) {
 // ─── DELETE LINK FUNCTION ─────────────────────────────────────────────
 
 async function deleteLink(btnId) {
-    console.log(`🗑️ Deleting link: ${btnId}`);
+    // -- console.log(`🗑️ Deleting link: ${btnId}`);
     
     // Confirm deletion
     if (!confirm('Are you sure you want to delete this link?')) {
@@ -278,7 +278,7 @@ async function deleteLink(btnId) {
             });
             const data = await response.json().catch(() => ({}));
             if (response.ok) {
-                console.log(`   ✅ Removed from backend: ${shortCode}`);
+                // -- console.log(`   ✅ Removed from backend: ${shortCode}`);
             } else {
                 console.warn(`   ⚠️ Backend delete failed (${response.status}):`, data?.error);
             }
@@ -291,22 +291,22 @@ async function deleteLink(btnId) {
     
     // Remove from localStorage
     localStorage.removeItem(btnId);
-    console.log(`   ✅ Removed from localStorage: ${btnId}`);
+    // -- console.log(`   ✅ Removed from localStorage: ${btnId}`);
     
     // Remove from the map
     if (ct1D1CpyLnkBtnMap && ct1D1CpyLnkBtnMap.has(btnId)) {
         ct1D1CpyLnkBtnMap.delete(btnId);
-        console.log(`   ✅ Removed from map: ${btnId}`);
+        // -- console.log(`   ✅ Removed from map: ${btnId}`);
     }
     
     // Remove from DOM
     if (matchedClone) {
         matchedClone.remove();
-        console.log(`   ✅ Removed from DOM: ${btnId}`);
+        // -- console.log(`   ✅ Removed from DOM: ${btnId}`);
     }
     
     showNotification('🗑️ Link deleted.', 'info');
-    console.log(`✅ Link ${btnId} deleted successfully`);
+    // -- console.log(`✅ Link ${btnId} deleted successfully`);
 }
 
 // ─── ARCHIVE FUNCTIONS ────────────────────────────────────────────────
@@ -393,7 +393,7 @@ function showNotification(message, type = 'info') {
 
 function initTokenManagement() {
   const clientId = getOrCreateClientId();
-  console.log('✅ User token active:', clientId);
+  // -- console.log('✅ User token active:', clientId);
   checkAndCleanExpiredLinks();
   
   document.addEventListener('visibilitychange', () => {
@@ -444,7 +444,7 @@ function debounce(func, wait) {
 
 // ─── ENHANCED DEBOUNCED HANDLER WITH LOADING STATE ──────────────────
 const debouncedBtnProc = debounce(async function() {
-    console.log('ct1D1Btn Button has been pressed..');
+    // -- console.log('ct1D1Btn Button has been pressed..');
     
     // Add loading state
     ct1D1Btn.classList.add('ct1D1Btn--loading');
@@ -466,7 +466,7 @@ const debouncedBtnProc = debounce(async function() {
 ct1D1Btn.addEventListener("pointerdown", debouncedBtnProc);
 
 //ct1D1Btn.addEventListener("pointerdown", e => {
-//    console.log('ct1D1Btn Button has been pressed..')
+     // -- console.log('ct1D1Btn Button has been pressed..')
     async function BtnProc() {
         if (ct1D1inp.value) {
             ct1DlongUrl = ct1D1inp.value;
@@ -501,11 +501,11 @@ ct1D1Btn.addEventListener("pointerdown", debouncedBtnProc);
                       setTimeout(() => {UrlLinkDiv(ct1D1CpyLnkBtnId, ct1D1ShrtLnkPId, ct1DlongUrl, ct1DshortUrl, false);}, 1700);                   
                 } else {
                     rotatect1D1Btn.cancel();
-                    console.log('Error fetching url, please check internet connection..:' + error);
+                    // -- console.log('Error fetching url, please check internet connection..:' + error);
                 }
             }
         } else {
-            console.log('Please add a link..')
+            // -- console.log('Please add a link..')
             if (!oneClickFlag || ct1DlongUrl == '') {
                 resetErrStyles();
                 plsAddLnkMsg();
@@ -557,7 +557,7 @@ function resetErrStyles() {
     if (ct1D1AdLnkMsg !== null) { ct1D1AdLnkMsg.remove(); }
     ct1D1inp.classList.remove('warn');
     ct1D1inp.style.border = "unset";
-    console.log('window.innerWidth :' + window.innerWidth);
+    // -- console.log('window.innerWidth :' + window.innerWidth);
     if (window.innerWidth <= 700) {
         parentElemct1D1.style.height = "160px";
         ct1D1Btn.style.top = "86px"
@@ -748,7 +748,7 @@ function UrlLinkDiv(ct1D1CpyLnkBtnId, ct1D1ShrtLnkPId, ct1DlongUrl, ct1DshortUrl
                     ct1D1CpyLnkBtnMap.delete(btnId);
                     oldestElement.remove();
                     localStorage.removeItem(oldestKey);
-                    console.log('Removed oldest link from DOM and localStorage:', oldestKey);
+                    // -- console.log('Removed oldest link from DOM and localStorage:', oldestKey);
                 }
             }
         }
@@ -847,9 +847,9 @@ addGlobalEventListener('click', 'button', e => {
             const copyText = async () => {
                 try {
                     await navigator.clipboard.writeText(shortUrl);
-                    console.log('Short link copied to clipboard ok..:' + shortUrl);
+                    // -- console.log('Short link copied to clipboard ok..:' + shortUrl);
                 } catch (error) {
-                    console.log('Copy failed..:' + error.message);
+                    // -- console.log('Copy failed..:' + error.message);
                     alert('Copy failed: timed out, please try again.:' + error.message);
                 }
             };
@@ -893,14 +893,14 @@ function addGlobalEventListener(type, selector, callback) {
 
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
-        console.log('visibilitychange visibilityState changed to visible 1..');
+        // -- console.log('visibilitychange visibilityState changed to visible 1..');
         ct1Cbtn.click();
     }
 });
 
 function onWriteLclStrg(ct1D1CpyLnkBtnId, ct1D1ShrtLnkPId, cloneLinkData) {
     localStorage.setItem(ct1D1CpyLnkBtnId, JSON.stringify(cloneLinkData));
-    console.log('Stored link:', ct1D1CpyLnkBtnId);
+    // -- console.log('Stored link:', ct1D1CpyLnkBtnId);
 }
 
 async function wakeupAPIsite() {
@@ -915,7 +915,7 @@ async function wakeupAPIsite() {
 }
 
 function OnLoadLclStrg() {
-    console.log("OnLoadLclStrg function..");
+    // -- console.log("OnLoadLclStrg function..");
     
     const existingClones = document.querySelectorAll('.ct1D1LnksN1Cls');
     existingClones.forEach(clone => clone.remove());
@@ -940,7 +940,7 @@ function OnLoadLclStrg() {
                         const createdDate = new Date(LSkey[4].createdAt);
                         const daysOld = (now - createdDate) / (1000 * 60 * 60 * 24);
                         if (daysOld >= expiryDays) {
-                            console.log('Skipping expired link:', key);
+                            // -- console.log('Skipping expired link:', key);
                             localStorage.removeItem(key);
                             continue;
                         }
@@ -963,7 +963,7 @@ function OnLoadLclStrg() {
         }
     }
 
-    console.log('Found ' + allLinks.length + ' links in localStorage');
+    // -- console.log('Found ' + allLinks.length + ' links in localStorage');
 
     allLinks.sort((a, b) => {
         if (!a.timestamp) return 1;
@@ -971,14 +971,14 @@ function OnLoadLclStrg() {
         return new Date(b.timestamp) - new Date(a.timestamp);
     });
 
-    console.log('Link order after sorting (newest first):');
+    // -- console.log('Link order after sorting (newest first):');
     allLinks.forEach((link, index) => {
-        console.log(`  ${index + 1}. ${link.data[2].ct1DlongUrl} (created: ${link.timestamp})`);
+        // -- console.log(`  ${index + 1}. ${link.data[2].ct1DlongUrl} (created: ${link.timestamp})`);
     });
 
     if (allLinks.length > maxRows) {
         allLinks = allLinks.slice(0, maxRows);
-        console.log('Limited to ' + maxRows + ' links');
+        // -- console.log('Limited to ' + maxRows + ' links');
     }
 
     for (let i = allLinks.length - 1; i >= 0; i--) {
@@ -1003,7 +1003,7 @@ function OnLoadLclStrg() {
         } else {
             iKey = 1;
         }
-        console.log('iKey set to:', iKey);
+        // -- console.log('iKey set to:', iKey);
         wakeupAPIsite();
     }, 100);
 }
