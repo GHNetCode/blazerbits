@@ -29,7 +29,7 @@ let sBRCtimeZ=document.getElementById('sBRCtimeZ');// Local Time Zone (UTC)
 let sBRCiSP=document.getElementById('sBRCiSP');// ISP ...
 
 
-let dnsResUrl = 'https://iptracker-api-cdcqaxduasakbjb8.ukwest-01.azurewebsites.net/api/dnsRes/' // used for finding Information for ip address`s and Domain names entered..
+let dnsResUrl = 'https://ip.blazerbits.uk/api/dnsRes/' // used for finding Information for ip address`s and Domain names entered..
                                            // this is the domain name of where the nodejs instance is running.  -old location (https://njsar.glitch.me)
                                            // for local testing use http://127.0.0.1 for all locations in this file,  if nodejs is running locally..
 let dnsResUrlget=''; //set flag 'dnsResUrlget' to call dnsRes to convert Domain name to Ip...
@@ -465,7 +465,7 @@ btnArrHvr.addEventListener("pointerdown", async function(e) {
   // If search field is empty - get current IP
   if (srchInpTxt.value === "") {
     //--console.log("[42] btnArrHvr - Search field is EMPTY, getting current IP address");
-    url = 'https://iptracker-api-cdcqaxduasakbjb8.ukwest-01.azurewebsites.net/api/ipgeoApi/';
+    url = 'https://ip.blazerbits.uk/api/ipgeoApi/';
     //--console.log("[43] btnArrHvr - URL set to:", url);
     errMsgSite = url;
     //--console.log("[44] btnArrHvr - Calling getJSONurlFwrapr for IP lookup");
@@ -564,7 +564,7 @@ btnArrHvr.addEventListener("pointerdown", async function(e) {
 
                //--console.log("[70] btnArrHvr - Tracker 6 - Setting up geolocation lookup");
                inpTxtHasIp = true;
-               url = 'https://iptracker-api-cdcqaxduasakbjb8.ukwest-01.azurewebsites.net/api/ipgeoApi/' + dnsdata[0];
+               url = 'https://ip.blazerbits.uk/api/ipgeoApi/' + dnsdata[0];
                //--console.log("[71] btnArrHvr - Geolocation URL:", url);
                //comment out to leave the domain name in the search field..
                //srchInpTxt.value = dnsdata[0];
@@ -626,7 +626,7 @@ btnArrHvr.addEventListener("pointerdown", async function(e) {
 
                 //--console.log("[80a] btnArrHvr - ✅ Valid IP address:", srchInpTxtcleaned);
                 inpTxtHasIp = true;
-                url = 'https://iptracker-api-cdcqaxduasakbjb8.ukwest-01.azurewebsites.net/api/ipgeoApi/' + srchInpTxtcleaned;
+                url = 'https://ip.blazerbits.uk/api/ipgeoApi/' + srchInpTxtcleaned;
                 //--console.log("[80b] btnArrHvr - Geolocation URL for IP:", url);
                 //--console.log("[80c] btnArrHvr - Calling getJSONurlFwrapr for IP geolocation");
                 await getJSONurlFwrapr();
@@ -653,7 +653,7 @@ btnArrHvr.addEventListener("pointerdown", async function(e) {
     if (isValidIp(srchInpTxtcleaned)) {
       //--console.log("[82] btnArrHvr - ✅ Valid IP address:", srchInpTxtcleaned);
       inpTxtHasIp = true;
-      url = 'https://iptracker-api-cdcqaxduasakbjb8.ukwest-01.azurewebsites.net/api/ipgeoApi/' + srchInpTxtcleaned;
+      url = 'https://ip.blazerbits.uk/api/ipgeoApi/' + srchInpTxtcleaned;
       //--console.log("[83] btnArrHvr - Geolocation URL for IP:", url);
       //--console.log("[84] btnArrHvr - Calling getJSONurlFwrapr for IP geolocation");
       await getJSONurlFwrapr();
@@ -857,7 +857,7 @@ async function getmap(lti, lgi, width, height) {
 
     // Call our Node.js osmApi proxy (consistent with ipgeoApi/dnsRes pattern)
     try {
-        const osmUrl = `https://iptracker-api-cdcqaxduasakbjb8.ukwest-01.azurewebsites.net/api/osmApi/${lti}/${lgi}`;
+        const osmUrl = `https://ip.blazerbits.uk/api/osmApi/${lti}/${lgi}`;
         //--console.log("[128a] getmap - Fetching OSM data via Node proxy:", osmUrl);
         const osmResponse = await fetch(osmUrl);
         const osmData = await osmResponse.json();
