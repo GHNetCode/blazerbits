@@ -1,821 +1,1015 @@
-//const root = document.documentElement;
+window.onresize=()=>{
+  document.getElementById('resizeInnerW').textContent=window.innerWidth;
+}
 
-// Determine base path for assets
-function getBasePath() {
-    const path = window.location.pathname.toLowerCase();
+// ─── API CONFIG ────────────────────────────────────────────────────────
+//const API_BASE_URL = 'http://localhost:7071';
+const API_BASE_URL = 'https://go.blazerbits.uk';
+
+
+// ─── CLIENT TOKEN ─────────────────────────────────────────────────────
+const CLIENT_ID_STORAGE_KEY = 'shortly_client_id';
+const LINK_EXPIRY_DAYS = 7;
+const MAX_ROWS = 7;
+
+function getOrCreateClientId() {
+  let clientId = localStorage.getItem(CLIENT_ID_STORAGE_KEY);
+  if (clientId) return clientId;
+
+  clientId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+
+  localStorage.setItem(CLIENT_ID_STORAGE_KEY, clientId);
+  // -- console.log('🆕 User token created (permanent):', clientId);
+  return clientId;
+}
+
+const CLIENT_ID = getOrCreateClientId();
+
+// ─── PER-LINK ENCRYPTION ─────────────────────────────────────────────
+
+class LinkEncryption {
+    constructor(linkId, createdAt) {
+        this.linkId = linkId;
+        this.createdAt = createdAt;
+        this.salt = 'link-specific-salt-v1';
+    }
+
+    async getLinkEncryptionKey() {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(this.linkId + this.createdAt + this.salt);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        return new Uint8Array(hashBuffer);
+    }
+
+    async encrypt(text) {
+        try {
+            const keyData = await this.getLinkEncryptionKey();
+            const key = await crypto.subtle.importKey(
+                'raw',
+                keyData,
+                { name: 'AES-GCM' },
+                false,
+                ['encrypt']
+            );
+
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+
+            const encrypted = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                data
+            );
+
+            const encryptedArray = new Uint8Array(encrypted);
+            const result = new Uint8Array(iv.length + encryptedArray.length);
+            result.set(iv, 0);
+            result.set(encryptedArray, iv.length);
+
+            return btoa(String.fromCharCode(...result));
+        } catch (error) {
+            console.error('Encryption error for link:', this.linkId, error);
+            return text;
+        }
+    }
+
+    async decrypt(encryptedData) {
+        try {
+            const keyData = await this.getLinkEncryptionKey();
+            const key = await crypto.subtle.importKey(
+                'raw',
+                keyData,
+                { name: 'AES-GCM' },
+                false,
+                ['decrypt']
+            );
+
+            const decoded = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
+            const iv = decoded.slice(0, 12);
+            const encrypted = decoded.slice(12);
+
+            const decrypted = await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                encrypted
+            );
+
+            const decoder = new TextDecoder();
+            return decoder.decode(decrypted);
+        } catch (error) {
+            console.error('Decryption error for link:', this.linkId, error);
+            return encryptedData;
+        }
+    }
+}
+
+// ─── TOKEN MANAGEMENT ──────────────────────────────────────────────────
+
+function checkAndCleanExpiredLinks() {
+    // -- console.log('Checking for expired links...');
+    const now = new Date();
+    const expiryDays = LINK_EXPIRY_DAYS;
+    let removedCount = 0;
+    let expiredLinks = [];
     
-    if (path.includes('/projects/')&& !path.includes('/projects/projects-1/')) {
-        console.log("found: /projects/")
-        return '../';
-     }else if (path.includes('/projects/projects-1/')) {
-         console.log("found: /projects/projects-1/ ")
-         return '../../';
-    }
-    else{
-        return ''; 
-    }
-}
-
-// Get the base path once
-const basePath = getBasePath();
-//console.log('Base path:', basePath);
-
-// FIXED: Use basePath in fetch calls
-fetch(basePath + 'navbar.html')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Navbar not found at: ' + basePath + 'navbar.html');
-        }
-        return response.text();
-    })
-    .then(data => {
-        document.getElementById('navbar').innerHTML = data;
-
-      
-
-        // Initialize components
-        initializeGTranslate();
-        initializeThemeSlider();
-        initializeMobileMenu();
-        initializeJustFireF();
-        
-        // ── CHECK FIREFLIES AFTER NAVBAR IS LOADED ──
-        // This ensures the #JustFireF buttons exist in the DOM
-        checkAndHideFireflyButton();
- 
-        
-    })
-    .catch(error => {
-        console.warn('Could not load navbar:', error);
-        const navbar = document.getElementById('navbar');
-        if (navbar) {
-            navbar.innerHTML = '<div style="padding: 1rem; text-align: center; opacity: 0.5;">Navigation unavailable</div>';
-        }
-    });
-
- 
-// FIXED: Use basePath in modal fetch
-fetch(basePath + 'modal.html')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Modal not found at: ' + basePath + 'modal.html');
-        }
-        return response.text();
-    })
-    .then(data => {
-        const container = document.getElementById('loginModalContainer');
-        if (container) {
-            container.innerHTML = data;
-            setTimeout(initializeLoginModal, 100);
-        }
-    })
-    .catch(error => {
-        console.warn('Could not load modal:', error);
-    });
-
-
-
-
-/* LOAD SAVED THEME */
-function initializeThemeSlider() {
-    const slider = document.getElementById("themeSlider");
-    if (!slider) return;
-    const saved = localStorage.getItem("themeValue");
-    if (saved) {
-        slider.value = saved;
-        applyTheme(saved);
-    } else {
-        applyTheme(slider.value); // 👈 use the HTML default (30) on first visit
-    }
-    slider.addEventListener("input", (e) => {
-        const value = e.target.value;
-        applyTheme(value);
-        localStorage.setItem("themeValue", value);
-    });
-}
-
-function initializeGTranslate() {
-    if (document.querySelector('script[data-gtranslate]')) return;
-    const script = document.createElement('script');
-    script.src = 'https://cdn.gtranslate.net/widgets/latest/dwf.js';
-
-    script.defer = true;
-    script.setAttribute('data-gtranslate', 'true');
-    document.body.appendChild(script);
-}
-
-function initializeMobileMenu() {
-    const menu = document.getElementById("menu");
-    const hamburger = document.getElementById("hamburger");
-    const root = document.getElementById("mob-panel-root");
-    if (!menu || !hamburger) return;
-
-    // Track state
-    let isMenuOpen = false;
-    let touchStartTarget = null;
-
-    function closeAllSubmenus() {
-        menu.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
-        if (root) root.classList.remove("dimmed");
-    }
-
-    function openSubmenu(id) {
-        closeAllSubmenus();
-        const sub = document.getElementById(id);
-        if (sub) {
-            sub.classList.add("active");
-            if (root) root.classList.add("dimmed");
-        }
-    }
-
-    // Clear text selection helper
-    function clearSelection() {
-        if (window.getSelection) {
-            window.getSelection().removeAllRanges();
-        } else if (document.selection) {
-            document.selection.empty();
-        }
-    }
-
-    // ── Open / close overlay ──
-    hamburger.addEventListener("click", (e) => {
-        e.preventDefault();
-        clearSelection();
-        
-        isMenuOpen = !isMenuOpen;
-        menu.classList.toggle("active", isMenuOpen);
-        hamburger.classList.toggle("active", isMenuOpen);
-        
-        if (isMenuOpen) {
-            document.body.classList.add("menu-open");
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.classList.remove("menu-open");
-            document.body.style.overflow = '';
-            closeAllSubmenus();
-        }
-    });
-
-    // ── Touch event handling for better mobile support ──
-    menu.addEventListener('touchstart', (e) => {
-        // Store the target for later use
-        touchStartTarget = e.target;
-        
-        // Prevent default on interactive elements to avoid selection
-        if (e.target.closest('a') || e.target.closest('button') || 
-            e.target.closest('.mob-drill') || e.target.closest('.mob-close')) {
-            // Don't prevent default completely - allow scrolling
-        }
-    }, { passive: true });
-
-    menu.addEventListener('touchend', (e) => {
-        // Clear any text selection that might have occurred
-        clearSelection();
-        
-        // If touch was on an interactive element, handle it
-        const target = e.target.closest('a, button, .mob-drill, .mob-close');
-        if (target) {
-            // Simulate click after touch ends
-            setTimeout(() => {
-                target.click();
-            }, 10);
-        }
-    }, { passive: true });
-
-    // ── Click event delegation ──
-    menu.addEventListener("click", (e) => {
-        // Clear selection on any click
-        clearSelection();
-        
-        const drillBtn = e.target.closest(".mob-drill");
-        const closeBtn = e.target.closest(".mob-close");
-
-        // Handle drill buttons
-        if (drillBtn) {
-            e.preventDefault();
-            e.stopPropagation();
-            clearSelection();
-            openSubmenu(drillBtn.dataset.target);
-            return;
-        }
-
-        // Handle close buttons
-        if (closeBtn) {
-            e.preventDefault();
-            e.stopPropagation();
-            clearSelection();
-            closeAllSubmenus();
-            return;
-        }
-
-        // Handle backdrop click
-        if (e.target === menu || e.target === menu.querySelector('.mobile-menu-content')) {
-            e.preventDefault();
-            clearSelection();
-            menu.classList.remove("active");
-            hamburger.classList.remove("active");
-            document.body.classList.remove("menu-open");
-            document.body.style.overflow = '';
-            closeAllSubmenus();
-        }
-    });
-
-    // ── Prevent context menu on long press ──
-    menu.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        return false;
-    });
-
-    // Also prevent context menu on hamburger
-    hamburger.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        return false;
-    });
-
-    // ── Global touch prevention when menu is open ──
-    document.addEventListener('touchmove', (e) => {
-        if (isMenuOpen && e.target.closest('.mobile-menu-overlay')) {
-            // Allow scrolling within menu
-        }
-    }, { passive: true });
-
-    // Clear selection on any touch interaction with the menu
-    menu.addEventListener('mousedown', clearSelection);
-}
-
-window.gtranslateSettings = {
-    default_language: "en",
-    native_language_names: true,
-    detect_browser_language: true,
-    languages: ["en", "hu", "cy", "ga", "iw", "nl", "fr", "de", "it", "es"],
-    wrapper_selector: ".gtranslate_wrapper",
-    flag_size: 16,
-    // switcher_vertical_position: "top",
-    switcher_horizontal_position: "inline",
-    flag_style: "3d",
-    // switcher_text_color:"#f7f7f7",
-    // switcher_text_color:"#ffffff",
-    // switcher_arrow_color:"#f2f2f2",
-    // switcher_arrow_color:"#f2f2f2",
-    switcher_border_color: "#161616",
-    switcher_border_radius: "10",
-    switcher_background_color: "#040308",
-    switcher_background_shadow_color: "#232323",
-    switcher_background_hover_color: "#3a3a3a",
-    dropdown_text_color: "#ffffff",
-    dropdown_hover_color: "#3a3a3a",
-    dropdown_background_color: "#040308"
-};
-
-//--------------------------------------- 
-/* APPLY THEME Start*/
-//const root = document.documentElement;
-function applyTheme(value) {
-    const root = document.documentElement;
-
-    const lightness = value / 100;  // 0.0 to 0.8 (since max is 80)
-
-    // FIX: Background actually changes now (was interpolating same color twice)
-    const bg = interpolateColor([14, 16, 24], [255, 255, 255], lightness);
- //   const bg = interpolateColor([14, 16, 24], [20, 22, 32], lightness * 0.4); // Very subtle shift
-    const text = interpolateColor([255, 255, 255], [20, 20, 20], lightness);
-    const text1 = interpolateColor([220, 220, 220], [20, 20, 20], lightness);
-    const accent = interpolateColor([212, 222, 237], [38, 42, 44], lightness);
-    const accentBtn = interpolateColor([63, 73, 87], [27, 33, 42], lightness);
+    const keysToRemove = [];
+    const decryptPromises = [];
     
-    root.style.setProperty("--bg", `rgb(${bg})`);
-    root.style.setProperty("--text", `rgb(${text})`);
-    root.style.setProperty("--text1", `rgb(${text1})`);
-    root.style.setProperty("--accent", `rgb(${accent})`);
-    root.style.setProperty("--accentBtn", `rgb(${accentBtn})`);
-    
-    // CORRECTED: Left (low value) = LIGHT, Right (high value) = DARK   -- <0.5
-    if (lightness < 0.3) {
-        document.body.setAttribute('data-theme', 'light');
-    } else {
-        document.body.setAttribute('data-theme', 'dark');
-    }
-    
-    updateGTranslateArrowColor(text);
-}
-
-//----------------------------------
-/* COLOR INTERPOLATION */
-function interpolateColor(start, end, factor) {
-    return start.map((s, i) => Math.round(s + factor * (end[i] - s))).join(",");
-}
-
-function updateGTranslateArrowColor(rgbColor) {
-    // Convert RGB to hex for the SVG fill
-    const hexColor = rgbToHex(rgbColor);
-
-    // Create new SVG data URL with the dynamic color
-    const svgString = `<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 285 285'><path d='M282 76.5l-14.2-14.3a9 9 0 0 0-13.1 0L142.5 174.4 30.3 62.2a9 9 0 0 0-13.2 0L3 76.5a9 9 0 0 0 0 13.1l133 133a9 9 0 0 0 13.1 0l133-133a9 9 0 0 0 0-13z' fill='${hexColor}'/></svg>`;
-
-    const encodedSVG = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
-
-    // Find all GTranslate arrows and update them
-    const styleId = 'gtranslate-arrow-style';
-    let styleElement = document.getElementById(styleId);
-
-    if (!styleElement) {
-        styleElement = document.createElement('style');
-        styleElement.id = styleId;
-        document.head.appendChild(styleElement);
-    }
-
-    styleElement.textContent = `
-         .gt_switcher .gt_selected a:after {
-           background-image: url("${encodedSVG}") !important;
-         }
-       `;
-}
-
-function rgbToHex(rgb) {
-    // Handle rgb string like "234,234,234"
-    const rgbValues = rgb.split(',').map(Number);
-    return '#' + rgbValues.map(v => {
-        const hex = v.toString(16);
-        return hex.length === 1 ? '0' + hex : hex;
-    }).join('');
-}
-/* APPLY THEME End*/
-
-
-/*
- * CHECK AND HIDE FIREFLY BUTTON
- * ═══════════════════════════════════════════════
- * This function runs after navbar loads to check if fireflies should be shown
- */
-function checkAndHideFireflyButton() {
-    const back = document.getElementById('particles-back');
-    const front = document.getElementById('particles-front');
-    const landing = document.querySelector('.landing');
-
-    // If firefly containers don't exist, hide the button
-    if (!back || !front || !landing) {
-        console.log('Fireflies: containers not found — hiding button');
-        const justFireFBtns = document.querySelectorAll('#JustFireF');
-        justFireFBtns.forEach(btn => {
-            btn.classList.add('hidden');
-        });
-    }
-}
-
-/*
- * FIREFLY SYSTEM — maximum CPU efficiency build
- * ═══════════════════════════════════════════════
- * Now wrapped in a function that only runs on pages with the required containers
- */
-function initFireflies() {
-    // Skip if the page signals it doesn't want fireflies
-    if (window.skipFireflies) {
-        console.log('Fireflies: skipped by page flag');
-        return;
-    }
-
-    const back = document.getElementById('particles-back');
-    const front = document.getElementById('particles-front');
-    const landing = document.querySelector('.landing');
-    // Guard: only run if both containers exist AND we're on the landing page
-    if (!back || !front || !landing) {
-        console.log('Fireflies: containers not found or not on landing page — skipping');
-        // The button is already hidden by checkAndHideFireflyButton()
-        return;
-    }
-
-    // If we get here, fireflies should be shown — make sure button is visible
-    const justFireFBtns = document.querySelectorAll('#JustFireF');
-    justFireFBtns.forEach(btn => {
-        btn.classList.remove('hidden');
-    });
-
-    const FIREFLY_COUNT = 20;
-
-    // Weighted palette — warm amber/gold dominant, rare cool accent
-    const palette = [
-        { r: 255, g: 210, b: 80, w: 5 },  // warm gold
-        { r: 255, g: 190, b: 50, w: 4 },  // deep amber
-        { r: 220, g: 255, b: 130, w: 4 },  // soft lime-green
-        { r: 255, g: 230, b: 140, w: 4 },  // pale gold
-        { r: 180, g: 255, b: 160, w: 3 },  // cool mint
-        { r: 200, g: 220, b: 255, w: 1 },  // icy blue-white accent
-    ];
-
-    const weighted = [];
-    palette.forEach(c => { for (let w = 0; w < c.w; w++) weighted.push(c); });
-
-    function rand(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
-
-    function randF(a, b) { return +(Math.random() * (b - a) + a).toFixed(3); }
-
-    function pick(arr) { return arr[rand(0, arr.length - 1)]; }
-
-    for (let i = 1; i <= FIREFLY_COUNT; i++) {
-
-        const col = pick(weighted);
-        const isFront = Math.random() < 0.25;
-
-        // Size — tiny core dot
-        const core = rand(2, 4);
-
-        // Opacity range — back layer noticeably dimmer
-        const dim = isFront ? randF(0.08, 0.30) : randF(0.04, 0.16);
-        const bright = isFront ? randF(0.75, 0.99) : randF(0.55, 0.99);
-
-        // Single glow shadow — one compositing op per frame
-        const glowSpread = core * rand(4, 7);
-        const glowAlpha = (isFront ? randF(0.3, 0.6) : randF(0.1, 0.3));
-        const shadow = `0 0 ${glowSpread}px ${glowSpread / 2}px rgba(${col.r},${col.g},${col.b},${glowAlpha})`;
-
-        // Drift path — gentle wander, slight upward bias
-        const x0 = rand(5, 95);
-        const y0 = rand(15, 90);
-        const xMid = Math.min(95, Math.max(5, x0 + rand(-20, 20)));
-        const yMid = Math.min(90, Math.max(5, y0 + rand(-20, 5)));
-        const x1 = Math.min(95, Math.max(5, x0 + rand(-25, 25)));
-        const y1 = Math.min(85, Math.max(5, y0 + rand(-30, 10)));
-
-        // Durations — long and lazy
-        const duration = rand(20000, 55000);
-        const delay = rand(0, 30000);
-
-        const el = document.createElement('div');
-        el.className = 'firefly';
-        
-        // Set all properties as inline styles — CSS custom properties for the animation
-        el.style.cssText = `
-            width: ${core}px;
-            height: ${core}px;
-            background: rgba(${col.r},${col.g},${col.b},1);
-            box-shadow: ${shadow};
-            --x0: ${x0}vw;
-            --y0: ${y0}vh;
-            --xMid: ${xMid}vw;
-            --yMid: ${yMid}vh;
-            --x1: ${x1}vw;
-            --y1: ${y1}vh;
-            --dim: ${dim};
-            --bright: ${bright};
-            animation: firefly-drift ${duration}ms -${delay}ms infinite linear;
-        `;
-
-        (isFront ? front : back).appendChild(el);
-    }
-}
-
-// Initialize fireflies when DOM is ready
-if (document.readyState === 'complete') {
-    // Wait a moment for the navbar to load
-    setTimeout(() => {
-        checkAndHideFireflyButton();
-        initFireflies();
-    }, 250);
-} else {
-    document.addEventListener('DOMContentLoaded', () => {
-        // Wait a moment for the navbar to load
-        setTimeout(() => {
-            checkAndHideFireflyButton();
-            initFireflies();
-        }, 250);
-    });
-}
- 
-
-function initializeJustFireF() {
-    const navbar = document.getElementById("navbar");
-    const content = document.getElementById("content");
-    const justFireFBtns = document.querySelectorAll("#JustFireF");
-    const menu = document.getElementById("menu");
-    const hamburger = document.getElementById("hamburger");
-    const mobPanelRoot = document.getElementById("mob-panel-root");
-
-    if (!justFireFBtns.length) return;
-
-    /* ── Create the dismissible toast message ── */
-    const toast = document.createElement("div");
-    toast.id = "justFireF-toast";
-    toast.innerHTML = `
-        <span>Tap or press <kbd>Esc</kbd> to return</span>
-        <button id="justFireF-ok">OK</button>
-    `;
-
-    document.body.appendChild(toast);
-
-    const okBtn = toast.querySelector("#justFireF-ok");
-
-    // Track state
-    let isFireflyMode = false;
-    let pressTimer = null;
-
-    // Clear selection helper
-    function clearSelection() {
-        if (window.getSelection) {
-            window.getSelection().removeAllRanges();
-        } else if (document.selection) {
-            document.selection.empty();
-        }
-    }
-
-    /* ── Hide everything: enter firefly mode ── */
-    function hide(e) {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        
-        if (isFireflyMode) return;
-        isFireflyMode = true;
-        
-        // Clear any text selection
-        clearSelection();
-        document.body.classList.add('firefly-mode-active');
-        toast.style.opacity = "1";
-
-        setTimeout(() => {
-            // Close mobile menu
-            if (menu) {
-                menu.classList.remove("active");
-                menu.style.display = "";
-            }
-            if (hamburger) {
-                hamburger.classList.remove("active");
-            }
-            
-            document.body.classList.remove("menu-open");
-            document.body.style.overflow = '';
-            
-            if (mobPanelRoot) {
-                mobPanelRoot.classList.remove("dimmed");
-            }
-            
-            document.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
-
-            // Hide navbar/content
-            if (navbar) {
-                navbar.style.transition = "none";
-                navbar.style.display = "none";
-            }
-            if (content) {
-                content.style.transition = "none";
-                content.style.display = "none";
-            }
-        }, 300);
-
-        setTimeout(() => {
-            document.addEventListener("keydown", onKey);
-            document.addEventListener("click", onPointer);
-        }, 450);
-
-        okBtn.addEventListener("click", dismissToast, { once: true });
-    }
-
-    function dismissToast(e) {
-        e.stopPropagation();
-        toast.style.opacity = "0";
-    }
-
-    function revert() {
-        if (!isFireflyMode) return;
-        
-        isFireflyMode = false;
-        document.body.classList.remove('firefly-mode-active');
-        toast.style.opacity = "0";
-        clearSelection();
-        
-        if (navbar) {
-            navbar.style.display = "";
-            navbar.style.transition = "";
-        }
-        if (content) {
-            content.style.display = "";
-            content.style.transition = "";
-        }
-        
-        if (menu) {
-            menu.classList.remove("active");
-            menu.style.display = "";
-        }
-        if (hamburger) {
-            hamburger.classList.remove("active");
-        }
-        
-        document.body.classList.remove("menu-open");
-        document.body.style.overflow = '';
-        
-        if (mobPanelRoot) {
-            mobPanelRoot.classList.remove("dimmed");
-        }
-        
-        document.querySelectorAll(".mob-submenu.active").forEach(s => s.classList.remove("active"));
-
-        document.removeEventListener("keydown", onKey);
-        document.removeEventListener("click", onPointer);
-        clearSelection();
-    }
-
-    function onPointer(e) {
-        if (isFireflyMode && !e.target.closest('#JustFireF')) {
-            revert();
-        }
-    }
-
-    function onKey(e) {
-        if ((e.code === "Space" || e.code === "Escape") && isFireflyMode) {
-            e.preventDefault();
-            revert();
-        }
-    }
-
-    // ── Button Event Handlers ──
-    justFireFBtns.forEach(btn => {
-        // Remove old listeners to prevent duplicates
-        btn.removeEventListener('mousedown', handlePressStart);
-        btn.removeEventListener('touchstart', handlePressStart);
-        btn.removeEventListener('mouseup', handlePressEnd);
-        btn.removeEventListener('touchend', handlePressEnd);
-        btn.removeEventListener('touchcancel', handlePressEnd);
-        btn.removeEventListener('click', handleClick);
-        btn.removeEventListener('contextmenu', preventContextMenu);
-        
-        // Add fresh listeners
-        btn.addEventListener('mousedown', handlePressStart);
-        btn.addEventListener('touchstart', handlePressStart, { passive: true });
-        btn.addEventListener('mouseup', handlePressEnd);
-        btn.addEventListener('touchend', handlePressEnd, { passive: true });
-        btn.addEventListener('touchcancel', handlePressEnd, { passive: true });
-        btn.addEventListener('click', handleClick);
-        btn.addEventListener('contextmenu', preventContextMenu);
-    });
-
-    function handlePressStart(e) {
-        if (pressTimer) {
-            clearTimeout(pressTimer);
-            pressTimer = null;
-        }
-        
-        if (!isFireflyMode) {
-            pressTimer = setTimeout(() => {
-                if (!isFireflyMode) {
-                    if (e.type === 'touchstart') {
-                        e.preventDefault();
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key && key.slice(0, 14) === 'ct1D1CpyLnkBtn') {
+            try {
+                let data = JSON.parse(localStorage.getItem(key));
+                if (data && data[4] && data[4].createdAt) {
+                    const createdDate = new Date(data[4].createdAt);
+                    const daysOld = (now - createdDate) / (1000 * 60 * 60 * 24);
+                    
+                    if (daysOld >= expiryDays) {
+                        keysToRemove.push(key);
+                        
+                        const decryptPromise = decryptLinkData(data).then(decrypted => {
+                            expiredLinks.push({
+                                key: key,
+                                longUrl: decrypted.longUrl,
+                                shortUrl: decrypted.shortUrl,
+                                createdAt: data[4].createdAt
+                            });
+                            // -- console.log(`✅ Decrypted expired link: ${key} → ${decrypted.longUrl}`);
+                        });
+                        decryptPromises.push(decryptPromise);
+                        removedCount++;
                     }
-                    pressTimer = null;
                 }
-            }, 1000);
-        }
-    }
-
-    function handlePressEnd(e) {
-        if (pressTimer) {
-            clearTimeout(pressTimer);
-            pressTimer = null;
-        }
-        clearSelection();
-    }
-
-    function handleClick(e) {
-        if (pressTimer) {
-            clearTimeout(pressTimer);
-            pressTimer = null;
-        }
-        
-        e.preventDefault();
-        e.stopPropagation();
-        clearSelection();
-        
-        if (!isFireflyMode) {
-            hide(e);
+            } catch (e) {
+                console.warn('Failed to parse link:', key, e);
+            }
         }
     }
     
-    function preventContextMenu(e) {
-        e.preventDefault();
-        return false;
+    if (removedCount === 0) {
+        // -- console.log('✅ No expired links found');
+        return 0;
     }
+    
+    Promise.all(decryptPromises).then(() => {
+        keysToRemove.forEach(key => {
+            localStorage.removeItem(key);
+            // -- console.log('Removed expired link:', key);
+            if (ct1D1CpyLnkBtnMap && ct1D1CpyLnkBtnMap.has(key)) {
+                ct1D1CpyLnkBtnMap.delete(key);
+            }
+            const allClones = document.querySelectorAll('.ct1D1LnksN1Cls');
+            for (let clone of allClones) {
+                let cloneBtn = clone.querySelector('[id^="ct1D1CpyLnkBtn"]');
+                if (cloneBtn && cloneBtn.id === key) {
+                    clone.remove();
+                    // -- console.log('Removed expired link from DOM:', key);
+                    break;
+                }
+            }
+        });
+        
+        if (expiredLinks.length > 0) {
+            // -- console.log(`✅ Removed ${removedCount} expired link(s)`);
+            showNotification(`🗑️ ${removedCount} link(s) have expired and been removed.`, 'warning');
+            showExpiredArchiveDialog(expiredLinks);
+        }
+    }).catch(error => {
+        console.error('Error during decryption:', error);
+    });
+    
+    return removedCount;
 }
 
+function showExpiredArchiveDialog(expiredLinks) {
+    const dialog = document.getElementById('archiveDialog');
+    if (!dialog) {
+        console.warn('Archive dialog not found in DOM');
+        return;
+    }
+    
+    const countEl = document.getElementById('archiveCount');
+    const messageEl = document.getElementById('archiveMessage');
+    const titleEl = document.getElementById('archiveTitle');
+    const iconEl = document.getElementById('archiveIcon');
+    
+    const count = expiredLinks.length;
+    iconEl.textContent = count > 1 ? '📋' : '📄';
+    titleEl.textContent = count > 1 ? 'Links Expired' : 'Link Expired';
+    messageEl.innerHTML = 
+        `<strong>${count}</strong> link${count > 1 ? 's' : ''} have expired after ${LINK_EXPIRY_DAYS} days.`;
+    countEl.textContent = count > 1 
+        ? `Would you like to save them before they're permanently deleted?`
+        : `Would you like to save it before it's permanently deleted?`;
+    
+    dialog.classList.add('active');
+    dialog.style.display = 'flex';
+    
+    document.getElementById('archiveYesBtn').onclick = function() {
+        archiveLinks(expiredLinks.map(link => ({
+            longUrl: link.longUrl,
+            createdAt: link.createdAt
+        })));
+        dialog.classList.remove('active');
+        dialog.style.display = 'none';
+        setTimeout(() => location.reload(), 1500);
+    };
+    
+    document.getElementById('archiveNoBtn').onclick = function() {
+        dialog.classList.remove('active');
+        dialog.style.display = 'none';
+        showNotification('Expired links have been discarded.', 'info');
+        setTimeout(() => location.reload(), 1500);
+    };
+}
 
-// ============================================================
-// LOGIN\"Under construction" NOTICE MODAL
-// ============================================================
-function initializeLoginModal() {
-    const modal = document.getElementById('loginModal');
-    const closeBtn = document.getElementById('loginModalClose');
-    const gotItBtn = document.getElementById('loginModalGotIt');
-    const notifyBtn = document.getElementById('loginModalNotify');
+// ─── DELETE LINK FUNCTION ─────────────────────────────────────────────
 
-    if (!modal) return;
+async function deleteLink(btnId) {
+    // -- console.log(`🗑️ Deleting link: ${btnId}`);
+    
+    // Confirm deletion
+    if (!confirm('Are you sure you want to delete this link?')) {
+        return;
+    }
 
-    // ── Open modal ──
-    function openModal(e) {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
+    // Find the matching clone so we can (a) read its short code and
+    // (b) remove it from the DOM once we're done.
+    let matchedClone = null;
+    const allClones = document.querySelectorAll('.ct1D1LnksN1Cls');
+    for (let clone of allClones) {
+        let cloneBtn = clone.querySelector('[id^="ct1D1CpyLnkBtn"]');
+        if (cloneBtn && cloneBtn.id === btnId) {
+            matchedClone = clone;
+            break;
         }
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
     }
 
-    // ── Close modal ──
-    function closeModal() {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
+    // Pull the short code out of the displayed short URL text
+    // (e.g. "https://go.blazerbits.uk/AbC123" -> "AbC123")
+    let shortCode = null;
+    if (matchedClone) {
+        const shortUrlEl = matchedClone.querySelector('[id^="ct1D1ShrtLnkP"]');
+        if (shortUrlEl && shortUrlEl.textContent) {
+            try {
+                shortCode = new URL(shortUrlEl.textContent).pathname.split('/').filter(Boolean).pop();
+            } catch (e) {
+                console.warn('   ⚠️ Could not parse short code from displayed URL:', shortUrlEl.textContent);
+            }
+        }
     }
 
-    // ── SIMPLIFIED: Direct click handler for ALL login links ──
-    document.addEventListener('click', function(e) {
-        const target = e.target.closest('a, button');
-        if (!target) return;
+    // Ask the backend to delete the actual record too — best-effort, so a
+    // network hiccup here doesn't prevent the user from clearing it locally.
+    if (shortCode) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/delete`, {
+                method: 'POST',
+                mode: 'cors',
+                signal: AbortSignal.timeout(15000),
+                headers: { 'Content-Type': 'text/plain' }, // avoids a CORS preflight, same trick as /shorten
+                body: JSON.stringify({ code: shortCode, client_id: CLIENT_ID })
+            });
+            const data = await response.json().catch(() => ({}));
+            if (response.ok) {
+                // -- console.log(`   ✅ Removed from backend: ${shortCode}`);
+            } else {
+                console.warn(`   ⚠️ Backend delete failed (${response.status}):`, data?.error);
+            }
+        } catch (err) {
+            console.warn('   ⚠️ Backend delete request failed:', err);
+        }
+    } else {
+        console.warn('   ⚠️ Could not determine short code — skipping backend delete');
+    }
+    
+    // Remove from localStorage
+    localStorage.removeItem(btnId);
+    // -- console.log(`   ✅ Removed from localStorage: ${btnId}`);
+    
+    // Remove from the map
+    if (ct1D1CpyLnkBtnMap && ct1D1CpyLnkBtnMap.has(btnId)) {
+        ct1D1CpyLnkBtnMap.delete(btnId);
+        // -- console.log(`   ✅ Removed from map: ${btnId}`);
+    }
+    
+    // Remove from DOM
+    if (matchedClone) {
+        matchedClone.remove();
+        // -- console.log(`   ✅ Removed from DOM: ${btnId}`);
+    }
+    
+    showNotification('🗑️ Link deleted.', 'info');
+    // -- console.log(`✅ Link ${btnId} deleted successfully`);
+}
 
-        // Check if it's a project tile with valid href
-        const projectTile = target.closest('.project-tile');
-        if (projectTile) {
-            const href = projectTile.getAttribute('href');
-            if (projectTile.hasAttribute('data-modal-trigger') && (!href || href === '#')) {
-                e.preventDefault();
-                e.stopPropagation();
-                openModal(e);
+// ─── ARCHIVE FUNCTIONS ────────────────────────────────────────────────
+
+function archiveLinks(links) {
+  if (!links || links.length === 0) {
+    showNotification('No links to archive.', 'info');
+    return;
+  }
+  
+  const now = new Date();
+  const dateStr = now.getFullYear() +
+    String(now.getMonth() + 1).padStart(2, '0') +
+    String(now.getDate()).padStart(2, '0');
+  const filename = `shortlyLinks_${dateStr}.txt`;
+  
+  let content = '=== Shortly URL Shortener - Archived Links ===\n';
+  content += `Archive Date: ${now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}\n`;
+  content += '='.repeat(50) + '\n\n';
+  
+  links.forEach((link, index) => {
+    const createdDate = new Date(link.createdAt).toLocaleDateString('en-GB', {
+      day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+    content += `Link #${index + 1}\n`;
+    content += `  URL:  ${link.longUrl}\n`;
+    content += `  Created:   ${createdDate}\n`;
+    content += `  ${'-'.repeat(40)}\n\n`;
+  });
+  
+  content += '\n' + '='.repeat(50) + '\n';
+  content += `Total Links Archived: ${links.length}\n`;
+  content += 'Generated by Shortly URL Shortener\n';
+  
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  
+  showNotification(`✅ ${links.length} links saved to ${filename}`, 'success');
+}
+
+function showNotification(message, type = 'info') {
+  const existing = document.querySelector('.notification');
+  if (existing) existing.remove();
+  
+  const colors = { info: '#2196F3', success: '#2ecc71', error: '#f44336', warning: '#ff9800' };
+  const notif = document.createElement('div');
+  notif.className = `notification ${type}`;
+  notif.textContent = message;
+  notif.style.cssText = `
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: ${colors[type] || colors.info}; color: white;
+    padding: 12px 24px; border-radius: 8px; z-index: 9999;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    animation: slideUp 0.3s ease-out; max-width: 90%; text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  `;
+  
+  if (!document.getElementById('notificationStyles')) {
+    const style = document.createElement('style');
+    style.id = 'notificationStyles';
+    style.textContent = `
+      @keyframes slideUp {
+        from { opacity: 0; transform: translate(-50%, 20px); }
+        to { opacity: 1; transform: translate(-50%, 0); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(notif);
+  setTimeout(() => {
+    notif.style.opacity = '0';
+    notif.style.transition = 'opacity 0.5s';
+    setTimeout(() => notif.remove(), 500);
+  }, 5000);
+}
+
+function initTokenManagement() {
+  const clientId = getOrCreateClientId();
+  // -- console.log('✅ User token active:', clientId);
+  checkAndCleanExpiredLinks();
+  
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      checkAndCleanExpiredLinks();
+    }
+  });
+}
+
+// ─── END OF TOKEN MANAGEMENT ──────────────────────────────────────────
+
+let error = '';
+let parentElemct1D1 = document.getElementById("ct1D1");
+let ct1D1inp = document.getElementById('ct1D1inp');
+let ct1D1Btn = document.getElementById('ct1D1Btn');
+let ct1DlongUrlP = document.getElementById("ct1DlongUrlP");
+let ct1DshortUrl = '';
+let ct1D1CpyLnkBtnId = '';
+let ct1D1ShrtLnkPId = '';
+
+let ct1DlongUrl = '';
+let oneClickFlag = false;
+let iKey = 0;
+let maxRows = MAX_ROWS;
+
+const effect = new KeyframeEffect(
+    ct1D1Btn,
+    //[{ transform: 'rotate(0deg) scalex(0.3)' }, { transform: 'rotate(100000deg) scalex(0.0)' }],
+    [{ transform: 'rotate(0deg) scalex(0.3)' }, { transform: 'rotate(100000deg) scalex(0.0)' }],
+    { duration: 15000 }
+);
+const rotatect1D1Btn = new Animation(effect, document.timeline);
+
+
+
+// ─── DEBOUNCE UTILITY ──────────────────────────────────────────────────
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ─── ENHANCED DEBOUNCED HANDLER WITH LOADING STATE ──────────────────
+const debouncedBtnProc = debounce(async function() {
+    // -- console.log('ct1D1Btn Button has been pressed..');
+    
+    // Add loading state
+    ct1D1Btn.classList.add('ct1D1Btn--loading');
+    //ct1D1Btn.textContent = 'Processing';
+    
+    try {
+        await BtnProc();
+    } catch (error) {
+        console.error('Error in button processing:', error);
+    } finally {
+        // Remove loading state after 2 seconds
+        setTimeout(() => {
+            ct1D1Btn.classList.remove('ct1D1Btn--loading');
+            //ct1D1Btn.textContent = 'Shorten';
+        }, 1700);
+    }
+}, 10);
+
+ct1D1Btn.addEventListener("pointerdown", debouncedBtnProc);
+
+//ct1D1Btn.addEventListener("pointerdown", e => {
+     // -- console.log('ct1D1Btn Button has been pressed..')
+    async function BtnProc() {
+        if (ct1D1inp.value) {
+            ct1DlongUrl = ct1D1inp.value;
+            ct1D1Btn.style.background = 'linear-gradient(0.25turn, #c7a2ff, #502457, #eb88fa)';
+            rotatect1D1Btn.play();
+            oneClickFlag = false;
+            error = '';
+
+            if (!validateUrlLength(ct1DlongUrl)) {
+                rotatect1D1Btn.cancel();
+                ct1D1Btn.style.background = "";
+                alert(error);
                 return;
             }
-            return;
+            urlValidator(ct1DlongUrl);
+            if (error === '') {
+                ct1D1Btn.classList.toggle('noPointerEvnC');
+                setTimeout(() => {
+                    ct1D1Btn.classList.remove('noPointerEvnC');
+                    ct1D1Btn.style.background = '';
+                }, 1000);
+                ct1DshortUrl = await getShortUrl(ct1DlongUrl);
+                if (ct1DshortUrl) {
+                    //clear the 'Shorten a link here...' field
+                     setTimeout(() => { ct1D1inp.value = '';
+                                        ct1D1inp.style.opacity = '1';
+                                        resetErrStyles();
+                                    }, 1700);
+                    //Delay to the next "Shorten It!" button push
+                     setTimeout(() => {rotatect1D1Btn.cancel();}, 1700);
+                     //Delay when the link is added..
+                      setTimeout(() => {UrlLinkDiv(ct1D1CpyLnkBtnId, ct1D1ShrtLnkPId, ct1DlongUrl, ct1DshortUrl, false);}, 1700);                   
+                } else {
+                    rotatect1D1Btn.cancel();
+                    // -- console.log('Error fetching url, please check internet connection..:' + error);
+                }
+            }
+        } else {
+            // -- console.log('Please add a link..')
+            if (!oneClickFlag || ct1DlongUrl == '') {
+                resetErrStyles();
+                plsAddLnkMsg();
+            }
+            oneClickFlag = true;
         }
-
-        // ── FIXED: Simple text-based check for login ──
-        const text = target.textContent.trim();
-        const href = target.getAttribute('href');
-        
-        // Check if this is a login link (by text or href)
-        if (text === 'Login' || href === '/login.html' || href === 'login.html') {
-            // Don't intercept if it's the logo area or desktop nav-left (if you want to keep those working)
-            // But since you want all Login to show modal, remove the exclusion
-            
-            e.preventDefault();
-            e.stopPropagation();
-            openModal(e);
-            return;
-        }
-
-        // Nav dropdown items
-        if (['BlazerBits', 'FAQ', 'Blog Profiles', 'Highlighted Posts'].includes(text) && 
-            (target.closest('.dropdown') || target.closest('.mob-submenu'))) {
-            e.preventDefault();
-            e.stopPropagation();
-            openModal(e);
-        }
-    }, true);
-
-    // ── Close handlers ──
-    if (closeBtn) closeBtn.onclick = closeModal;
-    if (gotItBtn) gotItBtn.onclick = closeModal;
-    if (notifyBtn) {
-        notifyBtn.onclick = () => {
-            alert('We\'ll notify you as soon as login is ready! 🚀');
-            closeModal();
-        };
     }
 
-    modal.onclick = (e) => {
-        if (e.target === modal) closeModal();
-    };
 
-    document.onkeydown = (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-            closeModal();
+    //BtnProc();
+
+    
+//})
+
+function plsAddLnkMsg() {
+    let childElem = document.getElementById("ct1D1Btn");
+    let textnode = document.createTextNode("Please add a link");
+    let newPElem = document.createElement("p");
+    newPElem.setAttribute('id', 'ct1D1AdLnkMsg');
+    newPElem.style.display = "flex";
+    newPElem.style.position = "relative";
+    newPElem.style.flexDirection = "column";
+    newPElem.style.justifyContent = "center";
+    newPElem.style.alignItems = "center";
+    if (window.innerWidth <= 700) {
+        newPElem.style.marginLeft = "-140px";
+        newPElem.style.marginTop = "-10px";
+        newPElem.style.color = "rgba(255, 0, 0, 0.500)";
+    } else {
+        newPElem.style.position = "absolute";
+        newPElem.style.marginLeft = "-70%";
+        newPElem.style.marginTop = "10vh";
+        newPElem.style.color = "rgba(255, 102, 102, 0.619)";
+    }
+    newPElem.style.fontsize = "12px";
+    newPElem.style.fontStyle = "italic";
+    newPElem.appendChild(textnode);
+    parentElemct1D1.insertBefore(newPElem, childElem);
+    ct1D1inp.classList.toggle('warn');
+    ct1D1inp.style.border = "inset 3px rgba(255, 0, 0, 0.500)";
+    if (window.innerWidth <= 700) {
+        parentElemct1D1.style.height = "182px";
+        ct1D1Btn.style.top = "110px"
+    }
+}
+
+function resetErrStyles() {
+    let ct1D1AdLnkMsg = document.getElementById('ct1D1AdLnkMsg');
+    if (ct1D1AdLnkMsg !== null) { ct1D1AdLnkMsg.remove(); }
+    ct1D1inp.classList.remove('warn');
+    ct1D1inp.style.border = "unset";
+    // -- console.log('window.innerWidth :' + window.innerWidth);
+    if (window.innerWidth <= 700) {
+        parentElemct1D1.style.height = "160px";
+        ct1D1Btn.style.top = "86px"
+    }
+}
+
+ct1D1inp.oninput = function() {
+    if (ct1D1inp.value === ct1D1inp.value[0]) {
+        resetErrStyles();
+    }
+};
+ct1D1inp.onpaste = function() {
+    resetErrStyles();
+};
+
+async function getShortUrl(ct1DlongUrl) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/shorten`, {
+            method: 'POST',
+            mode: 'cors',
+            signal: AbortSignal.timeout(15000),
+            // text/plain avoids a CORS preflight (it's a "safelisted" content-type);
+            // the payload is still JSON, just parsed server-side instead of via
+            // the Content-Type header. client_id moved into the body so we don't
+            // need a custom header either — Azure's built-in preflight handling
+            // can't cope with custom headers, so we sidestep it entirely.
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ url: ct1DlongUrl, client_id: CLIENT_ID })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data?.error || `Request failed (${response.status})`);
         }
-    };
+        return data.shortUrl;
+    } catch (err) {
+        error = err;
+        console.error('Error fetching url:' + err);
+        alert('Please Check internet connection, error fetching url:' + err);
+    }
 }
 
-// ── CALL ONCE, AT THE RIGHT TIME ──
-// Run AFTER navbar loads (ensure login links exist)
-if (document.readyState === 'complete') {
-    setTimeout(initializeLoginModal, 100);
-} else {
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initializeLoginModal, 100);
-    });
+async function urlValidator(ct1DlongUrl) {
+    let errMsg = "Invalid Url..." + "\n" + "\
+    -:  " + ct1DlongUrl + "\n" + "\ ";
+    try {
+        new URL(ct1DlongUrl);
+        return true;
+    } catch (err) {
+        rotatect1D1Btn.cancel();
+        ct1D1Btn.style.background = ""
+        error = err;
+        alert(errMsg + err);
+        return false;
+    }
 }
 
-// REMOVED: MutationObserver and fallback timeout (prevents duplicate bindings)
-
-// ── Call initialiser after navbar loads ──
-// Wrap in a small delay to ensure DOM is ready
-if (document.readyState === 'complete') {
-  initializeLoginModal();
-} else {
-  document.addEventListener('DOMContentLoaded', initializeLoginModal);
+function validateUrlLength(url, maxLength = 700) {
+    if (url.length > maxLength) {
+        error = `URL is too long. Maximum ${maxLength} characters allowed. Current length: ${url.length}`;
+        return false;
+    }
+    return true;
 }
 
-// Also re-initialise after navbar fetch (in case login links are injected)
-const origFetch = window.fetch;
-// We'll hook into the existing navbar fetch
-const navbarObserver = new MutationObserver(() => {
-  if (document.querySelector('.nav-right a[href="login.html"]')) {
-    initializeLoginModal();
-    navbarObserver.disconnect();
-  }
+let numChd = document.getElementById("ct1D").childElementCount;
+let ct1D1LnksN1 = document.getElementById("ct1D1LnksN1");
+let ct1Dsep = document.getElementById('ct1Dsep');
+let ct1D1ShrtLnkP = document.getElementById('ct1D1ShrtLnkP');
+let ct1D1CpyLnkBtn = document.getElementById('ct1D1CpyLnkBtn');
+let ct1DinitHt = document.getElementById('ct1D').clientHeight;
+let ct1D1CpyLnkBtnMap = new Map();
+
+let ctjnrD3D4 = document.getElementById('ctjoinerD3D4');
+ctjnrD3D4.style.top = (512 + "px");
+let ctjnrD4D5 = document.getElementById('ctjoinerD4D5');
+ctjnrD4D5.style.top = (550 + "px");
+
+// ─── PER-LINK ENCRYPTION STORAGE ──────────────────────────────────────
+
+async function encryptAndStoreLink(btnId, shortId, longUrl, shortUrl) {
+    const createdAt = new Date().toISOString();
+    const linkId = btnId;
+    const linkEncrypt = new LinkEncryption(linkId, createdAt);
+    
+    try {
+        const encryptedLong = await linkEncrypt.encrypt(longUrl);
+        const encryptedShort = await linkEncrypt.encrypt(shortUrl);
+        
+        return [
+            { 'ct1D1CpyLnkBtnId': btnId },
+            { 'ct1D1ShrtLnkPId': shortId },
+            { 'ct1DlongUrl': encryptedLong },
+            { 'ct1DshortUrl': encryptedShort },
+            { 'createdAt': createdAt },
+            { 'linkId': linkId }
+        ];
+    } catch (error) {
+        console.error('Encryption failed, storing plain text:', error);
+        return [
+            { 'ct1D1CpyLnkBtnId': btnId },
+            { 'ct1D1ShrtLnkPId': shortId },
+            { 'ct1DlongUrl': longUrl },
+            { 'ct1DshortUrl': shortUrl },
+            { 'createdAt': createdAt },
+            { 'linkId': linkId }
+        ];
+    }
+}
+
+async function decryptLinkData(linkData) {
+    const linkId = linkData[5]?.linkId || linkData[0].ct1D1CpyLnkBtnId;
+    const createdAt = linkData[4]?.createdAt || new Date().toISOString();
+    const longUrl = linkData[2].ct1DlongUrl;
+    const shortUrl = linkData[3].ct1DshortUrl;
+    
+    const isEncrypted = longUrl.length > 50 || longUrl.includes('=');
+    
+    if (isEncrypted) {
+        try {
+            const linkEncrypt = new LinkEncryption(linkId, createdAt);
+            const decryptedLong = await linkEncrypt.decrypt(longUrl);
+            const decryptedShort = await linkEncrypt.decrypt(shortUrl);
+            return {
+                longUrl: decryptedLong,
+                shortUrl: decryptedShort
+            };
+        } catch (error) {
+            console.warn('Decryption failed for link:', linkId, error);
+        }
+    }
+    return { longUrl, shortUrl };
+}
+
+// ─── URL LINK DIV ──────────────────────────────────────────────────────
+
+function UrlLinkDiv(ct1D1CpyLnkBtnId, ct1D1ShrtLnkPId, ct1DlongUrl, ct1DshortUrl, isLoading) {
+    if (typeof isLoading === 'undefined') {
+        isLoading = false;
+    }
+    
+    let parentElemct1D = document.getElementById("ct1D");
+    let childElem = document.getElementById("ct1D2");
+    let allClones = document.querySelectorAll('.ct1D1LnksN1Cls');
+    let cloneCount = allClones.length;
+
+    if (!isLoading) {
+        let linkCount = 0;
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if (key != null && key.slice(0, 14) === 'ct1D1CpyLnkBtn') {
+                linkCount++;
+            }
+        }
+        
+        if (linkCount >= maxRows) {
+            let oldestKey = null;
+            let oldestTimestamp = null;
+            let oldestElement = null;
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                if (key != null && key.slice(0, 14) === 'ct1D1CpyLnkBtn') {
+                    try {
+                        let data = JSON.parse(localStorage.getItem(key));
+                        if (data && data[4] && data[4].createdAt) {
+                            let timestamp = new Date(data[4].createdAt);
+                            if (!oldestTimestamp || timestamp < oldestTimestamp) {
+                                oldestTimestamp = timestamp;
+                                oldestKey = key;
+                            }
+                        }
+                    } catch (e) {}
+                }
+            }
+            
+            if (oldestKey) {
+                let data = JSON.parse(localStorage.getItem(oldestKey));
+                let btnId = data[0].ct1D1CpyLnkBtnId;
+                let allClonesList = document.querySelectorAll('.ct1D1LnksN1Cls');
+                for (let clone of allClonesList) {
+                    let cloneBtn = clone.querySelector('[id^="ct1D1CpyLnkBtn"]');
+                    if (cloneBtn && cloneBtn.id === btnId) {
+                        oldestElement = clone;
+                        break;
+                    }
+                }
+                if (oldestElement) {
+                    ct1D1CpyLnkBtnMap.delete(btnId);
+                    oldestElement.remove();
+                    localStorage.removeItem(oldestKey);
+                    // -- console.log('Removed oldest link from DOM and localStorage:', oldestKey);
+                }
+            }
+        }
+    }
+
+    ct1DlongUrlP.textContent = ct1DlongUrl;
+    ct1D1ShrtLnkP.textContent = ct1DshortUrl;
+
+    let ct1D1LnksN1Clnd = ct1D1LnksN1.cloneNode('true');
+    let cloneBtn = ct1D1LnksN1Clnd.querySelector('[id^="ct1D1CpyLnkBtn"]');
+    let cloneShortUrl = ct1D1LnksN1Clnd.querySelector('[id^="ct1D1ShrtLnkP"]');
+
+    let actualBtnId = ct1D1CpyLnkBtnId;
+    let actualShortId = ct1D1ShrtLnkPId;
+
+    if (isLoading) {
+        if (cloneBtn) cloneBtn.id = ct1D1CpyLnkBtnId;
+        if (cloneShortUrl) cloneShortUrl.id = ct1D1ShrtLnkPId;
+        let cloneLongUrl = ct1D1LnksN1Clnd.querySelector('[id^="ct1DlongUrlP"]');
+        if (cloneLongUrl) cloneLongUrl.id = 'ct1DlongUrlP' + (iKey);
+        if (cloneBtn && cloneShortUrl) {
+            ct1D1CpyLnkBtnMap.set(cloneBtn.id, cloneShortUrl.textContent);
+        }
+    } else {
+        let newBtnId = 'ct1D1CpyLnkBtn' + iKey;
+        let newShortId = 'ct1D1ShrtLnkP' + iKey;
+        let newLongId = 'ct1DlongUrlP' + iKey;
+        let newSepId = 'ct1Dsep' + iKey;
+
+        if (cloneBtn) cloneBtn.id = newBtnId;
+        if (cloneShortUrl) cloneShortUrl.id = newShortId;
+        let cloneLongUrl = ct1D1LnksN1Clnd.querySelector('[id^="ct1DlongUrlP"]');
+        let cloneSep = ct1D1LnksN1Clnd.querySelector('[id^="ct1Dsep"]');
+        if (cloneLongUrl) cloneLongUrl.id = newLongId;
+        if (cloneSep) cloneSep.id = newSepId;
+
+        ct1D1LnksN1.id = 'ct1D1LnksN1' + iKey;
+        ct1Dsep.id = 'ct1Dsep' + iKey;
+        ct1DlongUrlP.id = 'ct1DlongUrlP' + iKey;
+        ct1D1ShrtLnkP.id = 'ct1D1ShrtLnkP' + iKey;
+        ct1D1CpyLnkBtn.id = 'ct1D1CpyLnkBtn' + iKey;
+
+        actualBtnId = newBtnId;
+        actualShortId = newShortId;
+
+        if (cloneBtn && cloneShortUrl) {
+            ct1D1CpyLnkBtnMap.set(cloneBtn.id, cloneShortUrl.textContent);
+        }
+        ct1D1LnksN1Clnd.id = 'ct1D1LsN1Cld' + iKey;
+    }
+
+    ct1D1LnksN1Clnd.classList.add('ct1D1LnksN1Cls');
+    ct1D1LnksN1.after(ct1D1LnksN1Clnd);
+    ct1D1LnksN1Clnd.style.display = "flex";
+
+    if (window.innerWidth <= 700) {
+        if ((parentElemct1D.clientHeight) < ((ct1DinitHt) + (maxRows * 190))) {
+            let parElClntHt = (parentElemct1D.clientHeight + 190);
+            parentElemct1D.style.height = (parElClntHt + "px");
+        }
+    } else {
+        if (numChd <= (7 + maxRows)) {
+            let ctjnrD3D4Tp = Number((ctjnrD3D4.style.top).slice(0, -2));
+            ctjnrD3D4.style.top = ((ctjnrD3D4Tp + 88) + "px");
+            let ctjnrD4D5Tp = Number((ctjnrD4D5.style.top).slice(0, -2));
+            ctjnrD4D5.style.top = ((ctjnrD4D5Tp + 88) + "px");
+        }
+    }
+
+    let ct1D1Element = document.getElementById('ct1D1');
+    ct1D1Element.after(ct1D1LnksN1Clnd);
+    ct1D1LnksN1Clnd.focus();
+
+    if (!isLoading) {
+        encryptAndStoreLink(actualBtnId, actualShortId, ct1DlongUrl, ct1DshortUrl).then(cloneLinkData => {
+            onWriteLclStrg(actualBtnId, actualShortId, cloneLinkData);
+        });
+        iKey++;
+    }
+}
+
+addGlobalEventListener('click', 'button', e => {
+    // ─── COPY BUTTON ──────────────────────────────────────────────
+    if (e.target.id && e.target.id.slice(0, 14) === 'ct1D1CpyLnkBtn' && !e.target.id.includes('Delete')) {
+        let shortUrl = ct1D1CpyLnkBtnMap.get(e.target.id);
+        if (shortUrl) {
+            let elem = document.getElementById(e.target.id);
+            const effect2 = new KeyframeEffect(
+                elem,
+                [{ transform: 'scalex(0.5)' }, { transform: 'scalex(0.2)' }],
+                { duration: 250 }
+            );
+            const AnimcpyBtn = new Animation(effect2, document.timeline);
+            AnimcpyBtn.play();
+
+            const copyText = async () => {
+                try {
+                    await navigator.clipboard.writeText(shortUrl);
+                    // -- console.log('Short link copied to clipboard ok..:' + shortUrl);
+                } catch (error) {
+                    // -- console.log('Copy failed..:' + error.message);
+                    alert('Copy failed: timed out, please try again.:' + error.message);
+                }
+            };
+            copyText();
+            e.target.style.background = "linear-gradient(rgb(41, 33, 63),rgb(78, 61, 122))";
+            e.target.textContent = "Copied!";
+        }
+    }
+    
+    // ─── DELETE BUTTON ─────────────────────────────────────────────
+    if (e.target.id && e.target.id.includes('Delete')) {
+        const clone = e.target.closest('.ct1D1LnksN1Cls');
+        if (clone) {
+            const copyBtn = clone.querySelector('[id^="ct1D1CpyLnkBtn"]:not([id*="Delete"])');
+            if (copyBtn) {
+                deleteLink(copyBtn.id);
+            }
+        }
+        return;
+    }
+    
+    // ─── RESET COPY BUTTONS ────────────────────────────────────────
+    for (let [btnId, url] of ct1D1CpyLnkBtnMap) {
+        if (btnId !== e.target.id) {
+            let lnkBtnElem = document.getElementById(btnId);
+            if (lnkBtnElem) {
+                lnkBtnElem.style.background = "";
+                lnkBtnElem.textContent = "Copy";
+            }
+        }
+    }
 });
-navbarObserver.observe(document.body, { childList: true, subtree: true });
 
-// Fallback: re-run after 2 seconds
-setTimeout(initializeLoginModal, 2000);
+function addGlobalEventListener(type, selector, callback) {
+    document.addEventListener(type, e => {
+        if (e.target.matches(selector)) {
+            callback(e);
+        }
+    })
+};
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        // -- console.log('visibilitychange visibilityState changed to visible 1..');
+        ct1Cbtn.click();
+    }
+});
+
+function onWriteLclStrg(ct1D1CpyLnkBtnId, ct1D1ShrtLnkPId, cloneLinkData) {
+    localStorage.setItem(ct1D1CpyLnkBtnId, JSON.stringify(cloneLinkData));
+    // -- console.log('Stored link:', ct1D1CpyLnkBtnId);
+}
+
+async function wakeupAPIsite() {
+    try {
+        await fetch(`${API_BASE_URL}/health`, {
+            signal: AbortSignal.timeout(20000),
+            mode: 'cors'
+        });
+    } catch (err) {
+        console.warn('API warm-up ping failed (non-critical):', err);
+    }
+}
+
+function OnLoadLclStrg() {
+    // -- console.log("OnLoadLclStrg function..");
+    
+    const existingClones = document.querySelectorAll('.ct1D1LnksN1Cls');
+    existingClones.forEach(clone => clone.remove());
+    
+    ct1D1CpyLnkBtnMap.clear();
+    
+    checkAndCleanExpiredLinks();
+    
+    let allLinks = [];
+    let maxKeyNumber = 0;
+    const now = new Date();
+    const expiryDays = LINK_EXPIRY_DAYS;
+
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key != null && key.slice(0, 14) === 'ct1D1CpyLnkBtn') {
+            let keyV = localStorage.getItem(key);
+            try {
+                let LSkey = JSON.parse(keyV);
+                if (LSkey && LSkey[0] && LSkey[0].ct1D1CpyLnkBtnId) {
+                    if (LSkey[4] && LSkey[4].createdAt) {
+                        const createdDate = new Date(LSkey[4].createdAt);
+                        const daysOld = (now - createdDate) / (1000 * 60 * 60 * 24);
+                        if (daysOld >= expiryDays) {
+                            // -- console.log('Skipping expired link:', key);
+                            localStorage.removeItem(key);
+                            continue;
+                        }
+                    }
+                    
+                    let num = parseInt(key.replace('ct1D1CpyLnkBtn', '')) || 0;
+                    allLinks.push({
+                        key: key,
+                        data: LSkey,
+                        num: num,
+                        timestamp: LSkey[4]?.createdAt || null,
+                        btnId: LSkey[0].ct1D1CpyLnkBtnId,
+                        shortId: LSkey[1].ct1D1ShrtLnkPId
+                    });
+                    if (num > maxKeyNumber) maxKeyNumber = num;
+                }
+            } catch (e) {
+                console.warn('Failed to parse localStorage key:', key, e);
+            }
+        }
+    }
+
+    // -- console.log('Found ' + allLinks.length + ' links in localStorage');
+
+    allLinks.sort((a, b) => {
+        if (!a.timestamp) return 1;
+        if (!b.timestamp) return -1;
+        return new Date(b.timestamp) - new Date(a.timestamp);
+    });
+
+    // -- console.log('Link order after sorting (newest first):');
+    allLinks.forEach((link, index) => {
+        // -- console.log(`  ${index + 1}. ${link.data[2].ct1DlongUrl} (created: ${link.timestamp})`);
+    });
+
+    if (allLinks.length > maxRows) {
+        allLinks = allLinks.slice(0, maxRows);
+        // -- console.log('Limited to ' + maxRows + ' links');
+    }
+
+    for (let i = allLinks.length - 1; i >= 0; i--) {
+        let link = allLinks[i];
+        decryptLinkData(link.data).then(decrypted => {
+            link.data[2].ct1DlongUrl = decrypted.longUrl;
+            link.data[3].ct1DshortUrl = decrypted.shortUrl;
+            
+            UrlLinkDiv(
+                link.btnId,
+                link.shortId,
+                link.data[2].ct1DlongUrl,
+                link.data[3].ct1DshortUrl,
+                true
+            );
+        });
+    }
+
+    setTimeout(() => {
+        if (maxKeyNumber > 0) {
+            iKey = maxKeyNumber + 1;
+        } else {
+            iKey = 1;
+        }
+        // -- console.log('iKey set to:', iKey);
+        // wakeupAPIsite(); // disabled: /health route removed server-side to save executions
+    }, 100);
+}
+
+// ─── INITIALIZATION ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+    initTokenManagement();
+    OnLoadLclStrg();
+});
