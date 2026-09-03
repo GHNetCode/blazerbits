@@ -139,6 +139,16 @@ top:30%
 }
 
 
+/* ── Back button long-press prevention ── */
+.back-btn {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    touch-action: manipulation !important;
+}
+
+
 .back-btn {
       position: fixed;
       /* bottom: 10vh; */
