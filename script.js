@@ -428,16 +428,25 @@ function initFireflies() {
         const glowAlpha = (isFront ? randF(0.3, 0.6) : randF(0.1, 0.3));
         const shadow = `0 0 ${glowSpread}px ${glowSpread / 2}px rgba(${col.r},${col.g},${col.b},${glowAlpha})`;
 
-        // Drift path — gentle wander, slight upward bias
-        const x0 = rand(5, 95);
-        const y0 = rand(15, 90);
-        const xMid = Math.min(95, Math.max(5, x0 + rand(-20, 20)));
-        const yMid = Math.min(90, Math.max(5, y0 + rand(-20, 5)));
-        const x1 = Math.min(95, Math.max(5, x0 + rand(-25, 25)));
-        const y1 = Math.min(85, Math.max(5, y0 + rand(-30, 10)));
+        // Drift path — a short random walk of waypoints, slight upward bias.
+        // "reach" varies per-firefly: some wander in a tight little loop,
+        // others sweep across a much wider area — this is where path-length
+        // variation comes from, and it costs nothing extra to animate since
+        // it's still just 5 transform keyframes either way.
+        const reach = randF(0.5, 2.0);
+        const xs = [rand(5, 95)];
+        const ys = [rand(15, 90)];
+        for (let p = 0; p < 4; p++) {
+            xs.push(Math.min(95, Math.max(5, xs[p] + rand(-22, 22) * reach)));
+            ys.push(Math.min(90, Math.max(5, ys[p] + rand(-22, 12) * reach)));
+        }
+        const [x0, x1, x2, x3, x4] = xs;
+        const [y0, y1, y2, y3, y4] = ys;
 
-        // Durations — long and lazy
-        const duration = rand(20000, 55000);
+        // Durations — long and lazy. Scaled to reach so a firefly with a
+        // bigger wander distance also gets proportionally more time to
+        // cover it, instead of randomly ending up fast and darty.
+        const duration = rand(22000, 34000) + reach * 16000;
         const delay = rand(0, 30000);
 
         const el = document.createElement('div');
@@ -449,12 +458,11 @@ function initFireflies() {
             height: ${core}px;
             background: rgba(${col.r},${col.g},${col.b},1);
             box-shadow: ${shadow};
-            --x0: ${x0}vw;
-            --y0: ${y0}vh;
-            --xMid: ${xMid}vw;
-            --yMid: ${yMid}vh;
-            --x1: ${x1}vw;
-            --y1: ${y1}vh;
+            --x0: ${x0}vw; --y0: ${y0}vh;
+            --x1: ${x1}vw; --y1: ${y1}vh;
+            --x2: ${x2}vw; --y2: ${y2}vh;
+            --x3: ${x3}vw; --y3: ${y3}vh;
+            --x4: ${x4}vw; --y4: ${y4}vh;
             --dim: ${dim};
             --bright: ${bright};
             animation: firefly-drift ${duration}ms -${delay}ms infinite linear;
@@ -485,6 +493,7 @@ if (document.readyState === 'complete') {
 function initializeJustFireF() {
     const navbar = document.getElementById("navbar");
     const content = document.getElementById("content");
+    const footer = document.getElementById("attribution");
     const justFireFBtns = document.querySelectorAll("#JustFireF");
     const menu = document.getElementById("menu");
     const hamburger = document.getElementById("hamburger");
@@ -517,6 +526,48 @@ function initializeJustFireF() {
         }
     }
 
+    /* ── Fullscreen helpers (cross-browser) ── */
+    function isFullscreen() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+    }
+
+    function requestFS() {
+        const el = document.documentElement;
+        const rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+        if (!rfs) return;
+        try {
+            const result = rfs.call(el);
+            if (result && result.catch) {
+                result.catch(err => console.warn('Fullscreen request failed:', err));
+            }
+        } catch (err) {
+            console.warn('Fullscreen request failed:', err);
+        }
+    }
+
+    function exitFS() {
+        if (!isFullscreen()) return;
+        const efs = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+        if (!efs) return;
+        try {
+            const result = efs.call(document);
+            if (result && result.catch) {
+                result.catch(() => {});
+            }
+        } catch (err) {
+            // ignore
+        }
+    }
+
+    // If the user exits fullscreen some other way (system Esc, swipe on
+    // mobile, browser's own exit-fullscreen control), keep the page in sync.
+    document.addEventListener('fullscreenchange', () => {
+        if (!isFullscreen() && isFireflyMode) revert();
+    });
+    document.addEventListener('webkitfullscreenchange', () => {
+        if (!isFullscreen() && isFireflyMode) revert();
+    });
+
     /* ── Hide everything: enter firefly mode ── */
     function hide(e) {
         if (e) {
@@ -527,6 +578,10 @@ function initializeJustFireF() {
         if (isFireflyMode) return;
         isFireflyMode = true;
         
+        // Must be called synchronously within the click handler for the
+        // browser to honor it as a user gesture.
+        requestFS();
+
         // Clear any text selection
         clearSelection();
         document.body.classList.add('firefly-mode-active');
@@ -560,6 +615,10 @@ function initializeJustFireF() {
                 content.style.transition = "none";
                 content.style.display = "none";
             }
+            if (footer) {
+                footer.style.transition = "none";
+                footer.style.display = "none";
+            }
         }, 300);
 
         setTimeout(() => {
@@ -579,6 +638,7 @@ function initializeJustFireF() {
         if (!isFireflyMode) return;
         
         isFireflyMode = false;
+        exitFS();
         document.body.classList.remove('firefly-mode-active');
         toast.style.opacity = "0";
         clearSelection();
@@ -590,6 +650,10 @@ function initializeJustFireF() {
         if (content) {
             content.style.display = "";
             content.style.transition = "";
+        }
+        if (footer) {
+            footer.style.display = "";
+            footer.style.transition = "";
         }
         
         if (menu) {
