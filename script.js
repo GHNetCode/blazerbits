@@ -516,6 +516,7 @@ function initializeJustFireF() {
     // Track state
     let isFireflyMode = false;
     let pressTimer = null;
+    let toastTimer = null;
 
     // Clear selection helper
     function clearSelection() {
@@ -587,6 +588,11 @@ function initializeJustFireF() {
         document.body.classList.add('firefly-mode-active');
         toast.style.opacity = "1";
 
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.style.opacity = "0";
+        }, 2000);
+
         setTimeout(() => {
             // Close mobile menu
             if (menu) {
@@ -631,6 +637,7 @@ function initializeJustFireF() {
 
     function dismissToast(e) {
         e.stopPropagation();
+        clearTimeout(toastTimer);
         toast.style.opacity = "0";
     }
 
@@ -640,6 +647,7 @@ function initializeJustFireF() {
         isFireflyMode = false;
         exitFS();
         document.body.classList.remove('firefly-mode-active');
+        clearTimeout(toastTimer);
         toast.style.opacity = "0";
         clearSelection();
         
