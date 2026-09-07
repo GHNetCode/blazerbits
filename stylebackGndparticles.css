@@ -33,11 +33,11 @@
    This keeps the CSS static and minimal. */
 
 @keyframes firefly-drift {
-  0%   { transform: translate3d(var(--x0), var(--y0), 0); opacity: var(--dim);    }
-  20%  { transform: translate3d(var(--xMid), var(--yMid), 0); opacity: var(--bright); }
-  40%  {                                                   opacity: var(--dim);    }
-  60%  { transform: translate3d(var(--x1), var(--y1), 0); opacity: var(--bright); }
-  80%  {                                                   opacity: var(--dim);    }
+  0%   { transform: translate3d(var(--x0), var(--y0), 0); opacity: var(--dim);    animation-timing-function: ease-in-out; }
+  20%  { transform: translate3d(var(--x1), var(--y1), 0); opacity: var(--bright); animation-timing-function: ease-in-out; }
+  40%  { transform: translate3d(var(--x2), var(--y2), 0); opacity: var(--dim);    animation-timing-function: ease-in-out; }
+  60%  { transform: translate3d(var(--x3), var(--y3), 0); opacity: var(--bright); animation-timing-function: ease-in-out; }
+  80%  { transform: translate3d(var(--x4), var(--y4), 0); opacity: var(--dim);    animation-timing-function: ease-in-out; }
   100% { transform: translate3d(var(--x0), var(--y0), 0); opacity: var(--bright); }
 }
 
