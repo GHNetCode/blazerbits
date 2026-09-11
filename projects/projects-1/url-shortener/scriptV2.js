@@ -9,7 +9,7 @@ const API_BASE_URL = 'https://go.blazerbits.uk';
 
 // ─── CLIENT TOKEN ─────────────────────────────────────────────────────
 const CLIENT_ID_STORAGE_KEY = 'shortly_client_id';
-const LINK_EXPIRY_DAYS = 7;
+const LINK_EXPIRY_DAYS = 3;
 const MAX_ROWS = 7;
 
 function getOrCreateClientId() {
