@@ -1,0 +1,130 @@
+name: Check GitHub Pages Certificate
+
+on:
+  schedule:
+    # Run every day at 09:20 UTC
+    - cron: '20 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-certificate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check GitHub Pages certificate
+        shell: bash
+        run: |
+          set -e
+
+          DOMAIN="blazerbits.uk"
+          WARNING_DAYS=14
+          WARNING_SECONDS=$((WARNING_DAYS * 24 * 60 * 60))
+
+          # GitHub Pages IP addresses
+          IPS=(
+            "185.199.108.153"
+            "185.199.109.153"
+            "185.199.110.153"
+            "185.199.111.153"
+          )
+
+          FAILED=0
+          EARLIEST_EXPIRY=0
+          EARLIEST_EXPIRY_DATE=""
+          EARLIEST_IP=""
+
+          echo "========================================"
+          echo "GitHub Pages Certificate Check"
+          echo "Domain: $DOMAIN"
+          echo "Warning threshold: $WARNING_DAYS days"
+          echo "Date: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "========================================"
+          echo
+
+          for IP in "${IPS[@]}"; do
+            echo "Checking $DOMAIN via $IP..."
+
+            CERT_INFO=$(echo | openssl s_client \
+              -connect "${IP}:443" \
+              -servername "$DOMAIN" \
+              2>/dev/null | openssl x509 -noout -enddate 2>/dev/null || true)
+
+            if [ -z "$CERT_INFO" ]; then
+              echo "::error::Unable to retrieve certificate from $IP"
+              FAILED=1
+              echo
+              continue
+            fi
+
+            # Extract certificate expiry date
+            EXPIRY_RAW="${CERT_INFO#notAfter=}"
+
+            # Convert expiry date to Unix timestamp
+            EXPIRY_TIMESTAMP=$(date -d "$EXPIRY_RAW" +%s)
+            NOW_TIMESTAMP=$(date +%s)
+
+            SECONDS_REMAINING=$((EXPIRY_TIMESTAMP - NOW_TIMESTAMP))
+            DAYS_REMAINING=$((SECONDS_REMAINING / 86400))
+
+            EXPIRY_DATE=$(date -d "@$EXPIRY_TIMESTAMP" -u '+%A, %d %B %Y at %H:%M:%S UTC')
+
+            echo "Certificate expires: $EXPIRY_DATE"
+            echo "Days remaining: $DAYS_REMAINING"
+            echo
+
+            # Keep track of the earliest certificate expiry
+            if [ "$EARLIEST_EXPIRY" -eq 0 ] || [ "$EXPIRY_TIMESTAMP" -lt "$EARLIEST_EXPIRY" ]; then
+              EARLIEST_EXPIRY="$EXPIRY_TIMESTAMP"
+              EARLIEST_EXPIRY_DATE="$EXPIRY_DATE"
+              EARLIEST_IP="$IP"
+            fi
+
+            # Check whether certificate is already expired
+            if [ "$SECONDS_REMAINING" -le 0 ]; then
+              echo "::error::Certificate has EXPIRED!"
+              FAILED=1
+
+            # Check whether certificate expires within warning period
+            elif [ "$SECONDS_REMAINING" -le "$WARNING_SECONDS" ]; then
+              echo "::error::Certificate expires within $WARNING_DAYS days!"
+              FAILED=1
+
+            else
+              echo "✓ Certificate has more than $WARNING_DAYS days remaining."
+            fi
+
+            echo "----------------------------------------"
+          done
+
+          echo
+          echo "========================================"
+          echo "Summary"
+          echo "========================================"
+
+          if [ "$EARLIEST_EXPIRY" -ne 0 ]; then
+            NOW_TIMESTAMP=$(date +%s)
+            TOTAL_SECONDS=$((EARLIEST_EXPIRY - NOW_TIMESTAMP))
+            TOTAL_DAYS=$((TOTAL_SECONDS / 86400))
+
+            echo "Earliest certificate expiry:"
+            echo "$EARLIEST_EXPIRY_DATE"
+            echo "Days remaining: $TOTAL_DAYS"
+            echo "GitHub IP: $EARLIEST_IP"
+            echo
+
+            if [ "$TOTAL_SECONDS" -le 0 ]; then
+              echo "::error::ACTION REQUIRED: GitHub Pages certificate has expired."
+              exit 1
+            elif [ "$TOTAL_SECONDS" -le "$WARNING_SECONDS" ]; then
+              echo "::error::ACTION REQUIRED: GitHub Pages certificate expires in $TOTAL_DAYS days."
+              echo "::error::Expiry date: $EARLIEST_EXPIRY_DATE"
+              echo "::error::GitHub IP: $EARLIEST_IP"
+              exit 1
+            else
+              echo "✓ Certificate is healthy."
+              echo "✓ $TOTAL_DAYS days remaining."
+            fi
+          else
+            echo "::error::Could not retrieve a certificate from any GitHub Pages IP."
+            exit 1
+          fi
