@@ -1,3 +1,4 @@
+```yaml
 name: Check GitHub Pages Certificate
 
 on:
@@ -12,6 +13,7 @@ jobs:
 
     steps:
       - name: Check GitHub Pages certificate
+        id: certificate_check
         shell: bash
         run: |
           set -e
@@ -112,19 +114,144 @@ jobs:
             echo "GitHub IP: $EARLIEST_IP"
             echo
 
+            # Export values for the email step
+            {
+              echo "EXPIRY_DATE=$EARLIEST_EXPIRY_DATE"
+              echo "DAYS_REMAINING=$TOTAL_DAYS"
+              echo "GITHUB_IP=$EARLIEST_IP"
+              echo "CHECK_DATE=$(date -u '+%A, %d %B %Y at %H:%M:%S UTC')"
+            } >> "$GITHUB_ENV"
+
             if [ "$TOTAL_SECONDS" -le 0 ]; then
-              echo "::error::ACTION REQUIRED: GitHub Pages certificate has expired."
+              echo "ALERT_REQUIRED=true" >> "$GITHUB_ENV"
+              echo "::error::ACTION REQUIRED: GitHub Pages certificate has EXPIRED."
               exit 1
+
             elif [ "$TOTAL_SECONDS" -le "$WARNING_SECONDS" ]; then
+              echo "ALERT_REQUIRED=true" >> "$GITHUB_ENV"
               echo "::error::ACTION REQUIRED: GitHub Pages certificate expires in $TOTAL_DAYS days."
               echo "::error::Expiry date: $EARLIEST_EXPIRY_DATE"
               echo "::error::GitHub IP: $EARLIEST_IP"
               exit 1
+
             else
+              echo "ALERT_REQUIRED=false" >> "$GITHUB_ENV"
               echo "✓ Certificate is healthy."
               echo "✓ $TOTAL_DAYS days remaining."
             fi
+
           else
+            echo "ALERT_REQUIRED=true" >> "$GITHUB_ENV"
+            echo "EXPIRY_DATE=Unable to determine" >> "$GITHUB_ENV"
+            echo "DAYS_REMAINING=Unknown" >> "$GITHUB_ENV"
+            echo "GITHUB_IP=Unable to determine" >> "$GITHUB_ENV"
+            echo "CHECK_DATE=$(date -u '+%A, %d %B %Y at %H:%M:%S UTC')" >> "$GITHUB_ENV"
+
             echo "::error::Could not retrieve a certificate from any GitHub Pages IP."
             exit 1
           fi
+
+      - name: Send SSL warning email
+        if: always() && env.ALERT_REQUIRED == 'true'
+        uses: dawidd6/action-send-mail@v6
+        with:
+          server_address: smtp.mail.yahoo.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.YAHOO_EMAIL }}
+          password: ${{ secrets.YAHOO_APP_PASSWORD }}
+          subject: "ACTION REQUIRED: Blazerbits SSL certificate needs attention"
+          to: ghnetcode2020@yahoo.com
+          from: ghnetcode2020@yahoo.com
+          body: |
+            BLAZERBITS SSL CERTIFICATE ALERT
+            ========================================
+
+            New SSL Certificate failed due to Cloudflare setting to "Proxied".
+
+            Certificate status
+            ----------------------------------------
+            Domain: blazerbits.uk
+            Certificate expiry: ${{ env.EXPIRY_DATE }}
+            Days remaining: ${{ env.DAYS_REMAINING }}
+            GitHub IP: ${{ env.GITHUB_IP }}
+            Certificate check: ${{ env.CHECK_DATE }}
+
+            ACTION REQUIRED
+            ========================================
+
+            To issue a new certificate, do the following:
+
+            1. CLOUDFLARE
+
+            In Cloudflare, change the following records
+            from PROXIED to DNS-ONLY:
+
+            A    185.199.108.153
+            A    185.199.109.153
+            A    185.199.110.153
+            A    185.199.111.153
+            www  CNAME  ghnetcode.github.io
+
+            ----------------------------------------
+
+            2. GITHUB
+
+            Go to:
+
+            GitHub
+            -> Settings
+            -> Pages
+            -> Custom domain
+
+            Delete:
+
+            blazerbits.uk
+
+            Then add:
+
+            blazerbits.uk
+
+            again.
+
+            Wait for the custom-domain check to go GREEN.
+
+            Then enable:
+
+            Enforce HTTPS
+
+            Check that the website is reachable:
+
+            https://blazerbits.uk
+
+            ----------------------------------------
+
+            3. CLOUDFLARE
+
+            Go back to:
+
+            Cloudflare
+            -> Domains
+            -> Overview
+            -> DNS Records
+
+            Change the five records listed above
+            back to PROXIED.
+
+            ----------------------------------------
+
+            This SSL certificate monitor will continue
+            checking the GitHub Pages certificate daily.
+
+            GitHub repository:
+            GHNetCode/blazerbits
+
+            ========================================
+            END OF ALERT
+
+      - name: Fail workflow if certificate needs attention
+        if: env.ALERT_REQUIRED == 'true'
+        shell: bash
+        run: |
+          echo "Certificate requires attention."
+          exit 1
