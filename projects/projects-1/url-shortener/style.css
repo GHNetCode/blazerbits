@@ -1096,7 +1096,7 @@ body{
 /* ==========================================================================
    ATTRIBUTION
    ========================================================================== */
-.attribution{
+/* .attribution{
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.7rem;
   display: flex;
@@ -1106,4 +1106,20 @@ body{
   padding: 20px 0 30px;
   color: hsl(227, 21%, 57%);
 }
-.attribution a{ color: hsl(228, 45%, 44%); }
+.attribution a{ color: hsl(228, 45%, 44%); } */
+.attribution{
+      position: absolute;
+      /* bottom: 1%; */
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: calc(100vw - 2rem);
+      text-align: center;
+      z-index: 100;
+      display: flex;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.7rem;
+  /* text-decoration: none; */
+  /* padding: 20px 0 30px; */
+  color: hsl(227, 35%, 42%);
+    }
