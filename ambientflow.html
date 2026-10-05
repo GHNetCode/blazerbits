@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AmbientFlow — A GPU-friendly animated screensaver</title>
+<meta name="description" content="AmbientFlow is a lightweight animated screensaver for Windows. Minimal CPU and GPU usage, true multi-monitor spanning, and a full rainbow of colours.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0a0d14;
+    --bg-alt:    #0e1220;
+    --card:      #121828;
+    --card-hi:   #172035;
+    --border:    #1e2942;
+    --text:      #e6ecf5;
+    --text-g:    #c8cdd6;
+    --text-g2:    #97acca;
+    --text-dim:  #8b9ab3;
+    --text-mute: #5b6880;
+    --accent:    #509fff83;
+    --accent-2:  #7d5cff59;
+    --accent-3:  #22d3eee7;
+    --green:     #34d399;
+    --shadow:    0 20px 60px rgba(0,0,0,0.5);
+    --radius:    14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text-g);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background glow */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(80,160,255,0.14), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 85% 0%, rgba(124,92,255,0.12), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- Nav ---------- */
+  nav {
+    padding: 22px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 400;
+    font-size: 1.05rem;
+    letter-spacing: 0.2em;
+  }
+  .brand-mark {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: grid;
+    place-items: center;
+    box-shadow: 0 0 24px rgba(80,160,255,0.45);
+  }
+  .brand-mark svg { width: 17px; height: 17px; }
+  .brand a { color: inherit; text-decoration: none; }
+  .nav-links { display: flex; gap: 28px; font-size: 0.92rem; color: var(--text-dim); }
+  .nav-links a { color: inherit; text-decoration: none; transition: color .2s; }
+  .nav-links a:hover { color: var(--text); }
+  @media (max-width: 640px) { .nav-links { display: none; } }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 70px 0 90px;
+    text-align: center;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 15px;
+    border-radius: 999px;
+    background: rgba(80,160,255,0.10);
+    border: 1px solid rgba(80,160,255,0.28);
+    color: var(--accent-3);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-bottom: 26px;
+  }
+  .pill .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  h1 {
+    font-size: clamp(2.3rem, 5.5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 22px;
+  }
+  h1 .grad {
+    background: linear-gradient(120deg, var(--accent-3), var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .lede {
+    font-size: clamp(1rem, 1.6vw, 1.1rem);
+    color: var(--text-dim);
+    max-width: 700px;
+    margin: 0 auto 26px;
+    text-align: left;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 20px;
+    border-radius: 11px;
+    font-weight: 600;
+    font-size: 0.97rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform .15s ease, box-shadow .2s ease, background .2s;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: linear-gradient(90deg, #0f2a4b, #134077,#0f2a4b);
+    color: #86b4b6;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 1px 4px rgba(80,160,255,0.55);
+  }
+  .btn-ghost {
+    background: rgba(255,255,255,0.03);
+    border-color: var(--border);
+    color: var(--text-g);
+  }
+  .btn-ghost:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--accent);
+  }
+
+  .fineprint {
+    font-size: 0.83rem;
+    color: var(--text-mute);
+    margin-top: 6px;
+  }
+
+  /* ---------- Preview frame ---------- */
+  .preview {
+    margin: 60px auto 0;
+    max-width: 980px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: #06080e;
+    padding: 10px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .preview-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px 12px;
+  }
+  .preview-bar .dots { display: flex; gap: 6px; }
+  .preview-bar .dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #2a3550;
+  }
+  .preview-bar .title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-mute);
+    margin-left: auto;
+  }
+  .preview-canvas {
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    background: #05070c;
+    position: relative;
+    overflow: hidden;
+  }
+  .preview-canvas svg {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .preview-canvas canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ---------- Example settings panel ---------- */
+  .settings-panel {
+    max-width: 900px;
+    margin: 40px auto 0;
+    padding: 30px 34px 34px;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--card), var(--bg-alt));
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .settings-head {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  .settings-head .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent-3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .settings-head h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .settings-head .note {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .settings-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 26px;
+  }
+  @media (max-width: 640px) {
+    .settings-columns { grid-template-columns: 1fr; gap: 0; }
+  }
+
+  .settings-list {
+    list-style: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+  .settings-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 7px;
+    border-bottom: 1px solid rgba(30,41,66,0.6);
+    transition: background .15s;
+  }
+  .settings-list li:last-child { border-bottom: none; }
+  .settings-list li:hover {
+    background: rgba(80,160,255,0.05);
+  }
+  .settings-list .key {
+    color: var(--text-dim);
+    letter-spacing: 0.01em;
+  }
+  .settings-list .val {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .settings-list .val.on   { color: var(--green); }
+  .settings-list .val.off  { color: #e07a7a; }
+
+  /* ---------- Sections ---------- */
+  section { padding: 90px 0; position: relative; }
+  .section-head {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .kicker {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-3);
+    margin-bottom: 14px;
+  }
+  h2 {
+    font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .section-head p {
+    color: var(--text-dim);
+    max-width: 620px;
+    margin: 0 auto;
+    font-size: 1.02rem;
+  }
+
+  /* ---------- Feature grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+  }
+  .card {
+    background: linear-gradient(180deg, var(--card), var(--bg-alt));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px 28px;
+    transition: border-color .25s, transform .25s, background .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    border-color: rgba(80,160,255,0.45);
+    transform: translateY(-4px);
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(80,160,255,0.4), transparent);
+    opacity: 0;
+    transition: opacity .25s;
+  }
+  .card:hover::after { opacity: 1; }
+
+  .icon {
+    width: 46px; height: 46px;
+    border-radius: 11px;
+    background: rgba(80,160,255,0.10);
+    border: 1px solid rgba(80,160,255,0.22);
+    display: grid;
+    place-items: center;
+    margin-bottom: 20px;
+  }
+  .icon svg { width: 22px; height: 22px; stroke: var(--accent-3); }
+  .card h3 {
+    font-size: 1.12rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .card p {
+    color: var(--text-dim);
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  /* ---------- Highlight strip ---------- */
+  .highlight {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    padding: 42px 40px;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, rgba(80,160,255,0.08), rgba(124,92,255,0.06));
+    border: 1px solid var(--border);
+  }
+  .stat { text-align: center; }
+  .stat .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    background: linear-gradient(120deg, var(--accent-3), #509fff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+  }
+  .stat .label {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- Steps ---------- */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    counter-reset: step;
+  }
+  .step {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 26px;
+    position: relative;
+  }
+  .step::before {
+    counter-increment: step;
+    content: counter(step, decimal-leading-zero);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-3);
+    display: block;
+    margin-bottom: 14px;
+    letter-spacing: 0.08em;
+  }
+  .step h3 {
+    font-size: 1.02rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .step p {
+    color: var(--text-dim);
+    font-size: 0.92rem;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq { max-width: 780px; margin: 0 auto; }
+  details {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    transition: border-color .2s;
+  }
+  details[open] { border-color: rgba(80,160,255,0.35); }
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.98rem;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    color: var(--text);
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: '+';
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--accent-3);
+    transition: transform .25s;
+    flex-shrink: 0;
+  }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p {
+    color: var(--text-dim);
+    font-size: 0.93rem;
+    margin-top: 14px;
+    line-height: 1.65;
+  }
+  details code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: rgba(80,160,255,0.10);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent-3);
+  }
+
+  /* ---------- Final CTA ---------- */
+  .final-cta {
+    text-align: center;
+    padding: 80px 30px;
+    border-radius: var(--radius);
+    background:
+      radial-gradient(ellipse 600px 300px at 50% 0%, rgba(80,160,255,0.18), transparent 70%),
+      linear-gradient(180deg, var(--card), var(--bg-alt));
+    border: 1px solid var(--border);
+  }
+  .final-cta h2 { margin-bottom: 14px; }
+  .final-cta p {
+    color: var(--text-dim);
+    max-width: 520px;
+    margin: 0 auto 32px;
+  }
+
+       .back-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 100;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      background: rgba(10, 10, 26, 0.75);
+      border: 1px solid rgba(86, 178, 221, 0.411);
+      border-radius: 100px;
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      user-select: none;
+      -webkit-user-select: none;
+      will-change: transform;
+      contain: layout style paint;
+    }
+
+    .back-btn:hover {
+      background: rgba(20, 20, 40, 0.85);
+      border: 1px solid rgba(114, 197, 235, 0.596);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-btn:active {
+      transform: translateY(0) scale(0.97);
+      transition-duration: 0.1s;
+    }
+
+    .back-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      transition: transform 0.3s ease;
+    }
+
+    .back-btn:hover svg {
+      transform: translateX(-3px);
+    }
+
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 34px 0;
+    text-align: center;
+    color: var(--text-mute);
+    font-size: 0.85rem;
+  }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--accent-3); }
+
+  /* ---------- Fade-in on scroll ---------- */
+  .fade {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .fade.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Nav -->
+  <nav>
+    <div class="brand">
+      <a href="https://blazerbits.uk">BlazerBits</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <!-- <div class="pill"><span class="dot"></span>Built for Windows · Free download</div>
+    <h3>An animated screensaver that<br><span class="grad">respects your hardware.</span></h2> -->
+
+    <p class="lede">
+      <strong >AmbientFlow.scr</strong> has been created to render flowing waves across your entire desktop,
+      that has been designed to use minimal CPU and GPU usage (depending on settings set). In addition it has been designed to span across every monitor
+      (currently tested with 2). To save previous settings please copy the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;background:rgba(80,160,255,0.10);padding:2px 6px;border-radius:4px;color:var(--accent-3);">AmbientFlow.ini</code>
+      file located in the same directory as the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;background:rgba(80,160,255,0.10);padding:2px 6px;border-radius:4px;color:var(--accent-3);">AmbientFlow.scr</code>
+      file. Please do note the AmbientFlow.ini file only appears after the settings have been applied by clicking the
+      &ldquo;OK&rdquo; button on the screensaver settings dialogue screen.
+    </p>
+
+    <!-- Example performance settings -->
+    <div class="settings-panel fade">
+      <div class="settings-head">
+        <div class="tag">Reference configuration</div>
+        <h3 style="color:var(--text-g2);">Example performance</h3>
+        <p class="note">
+          Measured on an HP ProBook 440 G6 laptop driving two 24&Prime; monitors:
+          <strong style="color:var(--text-g2);">~1% CPU</strong> and
+          <strong style="color:var(--text-g2);">~16% GPU</strong> with the settings below.
+        </p>
+      </div>
+
+      <div class="settings-columns">
+
+        <!-- Left column -->
+        <ul class="settings-list">
+          <li><span class="key">FPS</span>                  <span class="key">30</span></li>
+          <li><span class="key">ResolutionScale</span>      <span class="key">0.3</span></li>
+          <li><span class="key">Speed</span>                <span class="key">1.51</span></li>
+          <li><span class="key">MaxOffscreenSeconds</span>  <span class="key">0</span></li>
+          <li><span class="key">WaveCount</span>            <span class="key">4</span></li>
+          <li><span class="key">Amplitude</span>            <span class="key">1.1</span></li>
+          <li><span class="key">Wavelength</span>           <span class="key">1.94</span></li>
+          <li><span class="key">Thickness</span>            <span class="key">17.9</span></li>
+          <li><span class="key">Brightness</span>           <span class="key">1.19</span></li>
+          <li><span class="key">SharpLines</span>           <span class="key">false</span></li>
+          <li><span class="key">DarkTheme</span>            <span class="key">true</span></li>
+        </ul>
+
+        <!-- Right column -->
+        <ul class="settings-list">
+          <li><span class="key">Fluidity</span>             <span class="key">1</span></li>
+          <li><span class="key">WaveTravel</span>           <span class="key">0.96</span></li>
+          <li><span class="key">RandomStart</span>          <span class="key">true</span></li>
+          <li><span class="key">ColorRed</span>             <span class="key">true</span></li>
+          <li><span class="key">ColorOrange</span>          <span class="key">true</span></li>
+          <li><span class="key">ColorYellow</span>          <span class="key">true</span></li>
+          <li><span class="key">ColorGreen</span>           <span class="key">true</span></li>
+          <li><span class="key">ColorBlue</span>            <span class="key">true</span></li>
+          <li><span class="key">ColorIndigo</span>          <span class="key">true</span></li>
+          <li><span class="key">ColorViolet</span>          <span class="key">true</span></li>
+          <li><span class="key">SpanMonitors</span>         <span class="key">true</span></li>
+        </ul>
+
+      </div>
+    </div>
+
+    <div class="cta-row" style="margin-top: 40px;">
+      <a href="apps/AmbientFlow.scr" class="btn btn-primary" download>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12m0 0l-4-4m4 4l4-4"/>
+          <path d="M5 21h14"/>
+        </svg>
+        Download AmbientFlow.scr
+      </a>
+      <!-- <a href="#how" class="btn btn-ghost">See how it works</a> -->
+    </div>
+    <p class="fineprint">Windows 10 or 11 · 64-bit · Self-contained, no extra installs</p>
+
+    <!-- Live preview -->
+    <div class="preview">
+      <div class="preview-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="title">AmbientFlow.scr — Live preview</span>
+      </div>
+      <div class="preview-canvas">
+        <canvas id="wavePreview" aria-label="Animated preview of AmbientFlow"></canvas>
+      </div>
+    </div>
+
+  </header>
+
+</div>
+
+<!-- Features -->
+<section id="features">
+  <div class="wrap">
+    <div class="section-head fade">
+      <div class="kicker">Why AmbientFlow</div>
+      <h2>Designed to be kind to your PC</h2>
+      <p>Most screensavers push the GPU hard for a few seconds of animation. AmbientFlow is built the opposite way — it targets the lowest possible hardware cost while still looking alive.</p>
+    </div>
+
+    <!-- <div class="grid">
+      <div class="card fade">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="4" width="16" height="16" rx="2"/>
+            <path d="M9 9h6v6H9z"/>
+          </svg>
+        </div>
+        <h3>Minimal CPU &amp; GPU usage</h3>
+        <p>The render loop is paced to a target frame rate and the shader does a single pass over the pixels. On a modern laptop, AmbientFlow typically uses around 1% CPU and a fraction of the GPU — often less than a static desktop wallpaper animation.</p>
+      </div>
+
+      <div class="card fade">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="9" height="7" rx="1"/>
+            <rect x="13" y="4" width="9" height="7" rx="1"/>
+            <rect x="2" y="13" width="9" height="7" rx="1"/>
+            <rect x="13" y="13" width="9" height="7" rx="1"/>
+          </svg>
+        </div>
+        <h3>True multi-monitor spanning</h3>
+        <p>When <em>Span monitors</em> is on, AmbientFlow treats your entire desktop as one canvas. Waves flow continuously from one monitor to the next, filling the whole screen area instead of hiding in the centre of a single display.</p>
+      </div>
+
+      <div class="card fade">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 3v18M3 12h18"/>
+          </svg>
+        </div>
+        <h3>Full rainbow palette</h3>
+        <p>Seven wave colours — red, orange, yellow, green, blue, indigo, violet — cycling across your display. Any colour can be disabled from the settings panel if you want a tighter palette.</p>
+      </div>
+
+      <div class="card fade">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20v-6M10 20V8M16 20v-9M22 20V4"/>
+          </svg>
+        </div>
+        <h3>Fine-tune every parameter</h3>
+        <p>Speed, amplitude, wavelength, thickness, brightness, wave count, fluidity, travel — all adjustable from the settings dialog with a live preview, so you can dial in the exact look you want.</p>
+      </div>
+
+      <div class="card fade">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/>
+          </svg>
+        </div>
+        <h3>Saves settings to an INI</h3>
+        <p>Every preference is stored in a plain-text <code>AmbientFlow.ini</code> next to the screensaver. Easy to back up, easy to share, easy to hand-edit if you prefer.</p>
+      </div>
+
+      <div class="card fade">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <h3>Ready in seconds</h3>
+        <p>Self-contained <code>.scr</code> file — no .NET runtime to install, no Visual C++ redistributables, no DirectX downloads. Right-click → Install and you're done.</p>
+      </div>
+    </div> -->
+  </div>
+</section>
+
+<!-- Highlight strip -->
+<section>
+  <div class="wrap">
+    <div class="highlight fade">
+      <div class="stat">
+        <div class="value">~1%</div>
+        <div class="label">Typical CPU usage</div>
+      </div>
+      <div class="stat">
+        <div class="value">DirectX 11</div>
+        <div class="label">Hardware-accelerated rendering</div>
+      </div>
+      <div class="stat">
+        <div class="value">2+</div>
+        <div class="label">Monitors, seamlessly spanned</div>
+      </div>
+      <div class="stat">
+        <div class="value">0</div>
+        <div class="label">Extra runtime installs required</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section id="how">
+  <div class="wrap">
+    <div class="section-head fade">
+      <div class="kicker">Getting started</div>
+      <h2>Three steps, about a minute</h2>
+      <p>No installer, no wizard, no reboot. AmbientFlow is a standard Windows screensaver — it just lives in a single file.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step fade">
+        <h3>Download the file</h3>
+        <p>Grab <code>AmbientFlow.scr</code> from the button at the top of this page. It's a self-contained binary — everything it needs is inside.</p>
+      </div>
+      <div class="step fade">
+        <h3>Install it</h3>
+        <p>Right-click the downloaded file and choose <strong>Install</strong>. Windows will place it in the screensaver list automatically. (You can install it from <code>%appdata%\ScreenSavers</code> if you prefer.)</p>
+      </div>
+      <div class="step fade">
+        <h3>Pick it in Screen Saver Settings</h3>
+        <p>Open <strong>Settings → Personalisation → Lock screen → Screen saver</strong>, choose <em>AmbientFlow</em>, and click <strong>Settings</strong> to fine-tune the look with a live preview.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+  <!-- ============================================================
+       BACK BUTTON - Bottom Right
+       ============================================================ -->
+  <button class="back-btn" onclick="history.back()">
+    <svg viewBox="0 0 24 24">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    <span>Back</span>
+  </button>
+  
+
+<!-- Footer -->
+<footer>
+  <div class="wrap">
+    <p>
+      © Blazerbits Website • Designed by Mark Sheard
+    </p>
+    <p style="margin-top: 8px; font-size: 0.78rem;">
+      AmbientFlow is free to use. Please don't redistribute without credit.
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Fade-in on scroll
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    }
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade').forEach(el => io.observe(el));
+
+  /* ============================================================
+     AmbientFlow live preview
+     Approximates the actual HLSL pixel shader using a 2D canvas.
+     ============================================================ */
+  (function () {
+    const canvas = document.getElementById('wavePreview');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: false });
+
+    // Match the real screensaver defaults.
+    const NUM_WAVES   = 4;
+    const SPEED       = 2.0;
+    const AMPLITUDE   = 1.10;
+    const WAVELENGTH  = 1.94;
+    const THICKNESS   = 5.9;
+    const BRIGHTNESS  = 0.55;
+    const FLUIDITY    = 5.00;
+    const WAVE_TRAVEL = 0.0;
+
+    const PALETTE = [
+      [255,  64,  64],
+      [255, 153,  38],
+      [255, 242,  64],
+      [ 77, 230,  90],
+      [ 64, 140, 255],
+      [ 90,  77, 242],
+      [191,  77, 242],
+    ];
+
+    const waves = [];
+    let seed = 0x9E3779B9 >>> 0;
+    function rand() {
+      seed ^= seed << 13; seed >>>= 0;
+      seed ^= seed >> 17; seed >>>= 0;
+      seed ^= seed << 5;  seed >>>= 0;
+      return (seed & 0xFFFFFF) / 0xFFFFFF;
+    }
+    for (let i = 0; i < NUM_WAVES; i++) {
+      const t = NUM_WAVES === 1 ? 0.5 : 0.15 + (i / (NUM_WAVES - 1)) * 0.70;
+      waves.push({
+        speedBase: 0.045 + rand() * 0.16,
+        phase:     rand() * Math.PI * 2,
+        harm1:     1.6 + rand() * 1.5,
+        ampScale:  0.60 + rand() * 0.80,
+        homePos:   t,
+        driftPhase: rand() * Math.PI * 2,
+        driftSpeed: 0.03 + rand() * 0.07,
+        driftAmt:   0.4 + rand() * 0.6,
+        travelPhase: rand() * Math.PI * 2,
+        travelSpeed: 0.012 + rand() * 0.028,
+        travelAmt:   0.55 + rand() * 0.45,
+      });
+    }
+
+    let cssW = 0, cssH = 0, dpr = 1;
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cssW = rect.width;
+      cssH = rect.height;
+      canvas.width  = Math.max(2, Math.round(cssW * dpr));
+      canvas.height = Math.max(2, Math.round(cssH * dpr));
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const t0 = performance.now();
+
+    function draw() {
+      const now = (performance.now() - t0) / 1000;
+      const W = canvas.width;
+      const H = canvas.height;
+
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = '#05070c';
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.globalCompositeOperation = 'lighter';
+
+      const strokePx = THICKNESS * 24 * (W / 1920) * 0.9;
+      const halfWidth = Math.max(4, strokePx * 0.5);
+
+      const step = 2 * dpr;
+      for (let w = 0; w < NUM_WAVES; w++) {
+        const wv = waves[w];
+        const colour = PALETTE[w % PALETTE.length];
+
+        const speed = wv.speedBase * SPEED * ((w & 1) ? -1 : 1);
+        const baseFreq = 1.1 + w * 0.15;
+        const freq = baseFreq / Math.max(0.3, WAVELENGTH);
+        const amp = 0.075 * AMPLITUDE * wv.ampScale;
+
+        let basePos = wv.homePos;
+        basePos += Math.sin(now * wv.travelSpeed * SPEED + wv.travelPhase)
+                   * 0.9 * WAVE_TRAVEL * wv.travelAmt;
+        basePos += Math.sin(now * wv.driftSpeed * SPEED + wv.driftPhase)
+                   * 0.10 * FLUIDITY * wv.driftAmt;
+
+        drawWavePass(wv, colour, freq, amp, basePos, speed, now,
+                     halfWidth * 2.6, 0.16, step, W, H);
+        drawWavePass(wv, colour, freq, amp, basePos, speed, now,
+                     halfWidth * 0.7, 0.85, step, W, H);
+      }
+    }
+
+    function drawWavePass(wv, colour, freq, amp, basePos, speed, now,
+                          lineWidth, intensity, step, W, H) {
+      ctx.filter = `blur(${Math.max(2, lineWidth * 0.45)}px)`;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      const [r, g, b] = colour;
+      const alpha = Math.min(1, 0.55 * intensity * BRIGHTNESS);
+      ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+
+      let prevY = null;
+      ctx.beginPath();
+      let subPathOpen = false;
+
+      for (let x = 0; x <= W + step; x += step) {
+        const gx = x / W;
+
+        const arg1 = gx * Math.PI * 2 * freq + now * speed + wv.phase;
+        const arg2 = gx * Math.PI * 2 * freq * wv.harm1
+                     - now * speed * 0.55 + wv.phase * 1.7;
+        const disp = Math.sin(arg1) * amp + Math.sin(arg2) * amp * 0.35;
+
+        const y = basePos + disp;
+        const py = y * H;
+
+        if (prevY === null) {
+          ctx.moveTo(x, py);
+          subPathOpen = true;
+        } else if (Math.abs(py - prevY) > H * 0.5) {
+          if (subPathOpen) ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(x, py);
+          subPathOpen = true;
+        } else {
+          ctx.lineTo(x, py);
+        }
+        prevY = py;
+      }
+      if (subPathOpen) ctx.stroke();
+
+      ctx.filter = 'none';
+    }
+
+    function loop() {
+      draw();
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  })();
+</script>
+
+</body>
+</html>
