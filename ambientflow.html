@@ -17,7 +17,7 @@
     --border:    #1e2942;
     --text:      #e6ecf5;
     --text-g:    #c8cdd6;
-    --text-g2:    #97acca;
+    --text-g2:   #97acca;
     --text-dim:  #8b9ab3;
     --text-mute: #5b6880;
     --accent:    #509fff83;
@@ -41,7 +41,6 @@
     overflow-x: hidden;
   }
 
-  /* Ambient background glow */
   body::before {
     content: '';
     position: fixed;
@@ -218,6 +217,25 @@
     color: var(--text-mute);
     margin-left: auto;
   }
+
+  /* ---------- Preview + Settings layout ---------- */
+  .studio {
+    margin: 40px auto 0;
+    max-width: 1180px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+    gap: 22px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .studio { grid-template-columns: 1fr; }
+  }
+
+  .studio .preview {
+    margin: 0;
+    max-width: none;
+  }
+
   .preview-canvas {
     aspect-ratio: 16 / 9;
     border-radius: 8px;
@@ -225,14 +243,156 @@
     position: relative;
     overflow: hidden;
   }
-  .preview-canvas svg {
-    width: 100%; height: 100%;
-    display: block;
-  }
   .preview-canvas canvas {
     width: 100%;
     height: 100%;
     display: block;
+  }
+
+  /* ---------- Settings panel (live) ---------- */
+  .live-settings {
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--card), var(--bg-alt));
+    padding: 22px 22px 18px;
+    text-align: left;
+  }
+  .live-settings h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .live-settings .sub {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-bottom: 18px;
+  }
+  .live-settings .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-3);
+    margin: 18px 0 10px;
+    opacity: 0.85;
+  }
+  .live-settings .section-label:first-of-type { margin-top: 0; }
+
+  .ctrl {
+    margin-bottom: 12px;
+  }
+  .ctrl label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .ctrl label .ctrl-name {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.01em;
+  }
+  .ctrl label .ctrl-val {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.78rem;
+  }
+  .ctrl input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #509fff55, #7d5cff33);
+    outline: none;
+    cursor: pointer;
+  }
+  .ctrl input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent-3);
+    border: 2px solid #0a0d14;
+    box-shadow: 0 0 10px rgba(34,211,238,0.6);
+    cursor: pointer;
+  }
+  .ctrl input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent-3);
+    border: 2px solid #0a0d14;
+    box-shadow: 0 0 10px rgba(34,211,238,0.6);
+    cursor: pointer;
+  }
+
+  .check-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 14px;
+    font-size: 0.82rem;
+  }
+  .check-grid label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .check-grid input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    position: relative;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    flex-shrink: 0;
+  }
+  .check-grid input[type="checkbox"]:checked {
+    background: var(--accent-3);
+    border-color: var(--accent-3);
+  }
+  .check-grid input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 4px; height: 7px;
+    border: solid #05070c;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+
+  .live-settings .reset-row {
+    margin-top: 18px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .live-settings button.reset {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .live-settings button.reset:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--accent);
+    color: var(--text);
   }
 
   /* ---------- Example settings panel ---------- */
@@ -298,26 +458,12 @@
     transition: background .15s;
   }
   .settings-list li:last-child { border-bottom: none; }
-  .settings-list li:hover {
-    background: rgba(80,160,255,0.05);
-  }
-  .settings-list .key {
-    color: var(--text-dim);
-    letter-spacing: 0.01em;
-  }
-  .settings-list .val {
-    color: var(--text);
-    font-weight: 600;
-  }
-  .settings-list .val.on   { color: var(--green); }
-  .settings-list .val.off  { color: #e07a7a; }
+  .settings-list li:hover { background: rgba(80,160,255,0.05); }
+  .settings-list .key { color: var(--text-dim); letter-spacing: 0.01em; }
 
   /* ---------- Sections ---------- */
   section { padding: 90px 0; position: relative; }
-  .section-head {
-    text-align: center;
-    margin-bottom: 56px;
-  }
+  .section-head { text-align: center; margin-bottom: 56px; }
   .kicker {
     font-size: 0.78rem;
     font-weight: 700;
@@ -337,59 +483,6 @@
     max-width: 620px;
     margin: 0 auto;
     font-size: 1.02rem;
-  }
-
-  /* ---------- Feature grid ---------- */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 22px;
-  }
-  .card {
-    background: linear-gradient(180deg, var(--card), var(--bg-alt));
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 30px 28px;
-    transition: border-color .25s, transform .25s, background .25s;
-    position: relative;
-    overflow: hidden;
-  }
-  .card:hover {
-    border-color: rgba(80,160,255,0.45);
-    transform: translateY(-4px);
-  }
-  .card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(80,160,255,0.4), transparent);
-    opacity: 0;
-    transition: opacity .25s;
-  }
-  .card:hover::after { opacity: 1; }
-
-  .icon {
-    width: 46px; height: 46px;
-    border-radius: 11px;
-    background: rgba(80,160,255,0.10);
-    border: 1px solid rgba(80,160,255,0.22);
-    display: grid;
-    place-items: center;
-    margin-bottom: 20px;
-  }
-  .icon svg { width: 22px; height: 22px; stroke: var(--accent-3); }
-  .card h3 {
-    font-size: 1.12rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    letter-spacing: -0.01em;
-    color: var(--text);
-  }
-  .card p {
-    color: var(--text-dim);
-    font-size: 0.94rem;
-    line-height: 1.6;
   }
 
   /* ---------- Highlight strip ---------- */
@@ -451,129 +544,55 @@
     font-weight: 600;
     color: var(--text);
   }
-  .step p {
-    color: var(--text-dim);
-    font-size: 0.92rem;
-  }
+  .step p { color: var(--text-dim); font-size: 0.92rem; }
 
-  /* ---------- FAQ ---------- */
-  .faq { max-width: 780px; margin: 0 auto; }
-  details {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    padding: 18px 22px;
-    margin-bottom: 12px;
-    transition: border-color .2s;
-  }
-  details[open] { border-color: rgba(80,160,255,0.35); }
-  summary {
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.98rem;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
+  /* ---------- Back button ---------- */
+  .back-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 100;
+    display: inline-flex;
     align-items: center;
-    gap: 16px;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    background: rgba(10, 10, 26, 0.75);
+    border: 1px solid rgba(86, 178, 221, 0.411);
+    border-radius: 100px;
     color: var(--text);
-  }
-  summary::-webkit-details-marker { display: none; }
-  summary::after {
-    content: '+';
-    font-size: 1.4rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.8rem;
     font-weight: 400;
-    color: var(--accent-3);
-    transition: transform .25s;
-    flex-shrink: 0;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    user-select: none;
+    -webkit-user-select: none;
+    will-change: transform;
+    contain: layout style paint;
   }
-  details[open] summary::after { transform: rotate(45deg); }
-  details p {
-    color: var(--text-dim);
-    font-size: 0.93rem;
-    margin-top: 14px;
-    line-height: 1.65;
+  .back-btn:hover {
+    background: rgba(20, 20, 40, 0.85);
+    border: 1px solid rgba(114, 197, 235, 0.596);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
-  details code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85em;
-    background: rgba(80,160,255,0.10);
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: var(--accent-3);
+  .back-btn:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 0.1s;
   }
-
-  /* ---------- Final CTA ---------- */
-  .final-cta {
-    text-align: center;
-    padding: 80px 30px;
-    border-radius: var(--radius);
-    background:
-      radial-gradient(ellipse 600px 300px at 50% 0%, rgba(80,160,255,0.18), transparent 70%),
-      linear-gradient(180deg, var(--card), var(--bg-alt));
-    border: 1px solid var(--border);
+  .back-btn svg {
+    width: 16px; height: 16px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    transition: transform 0.3s ease;
   }
-  .final-cta h2 { margin-bottom: 14px; }
-  .final-cta p {
-    color: var(--text-dim);
-    max-width: 520px;
-    margin: 0 auto 32px;
-  }
-
-       .back-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      z-index: 100;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.6rem 1.2rem;
-      background: rgba(10, 10, 26, 0.75);
-      border: 1px solid rgba(86, 178, 221, 0.411);
-      border-radius: 100px;
-      color: var(--text);
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.8rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      user-select: none;
-      -webkit-user-select: none;
-      will-change: transform;
-      contain: layout style paint;
-    }
-
-    .back-btn:hover {
-      background: rgba(20, 20, 40, 0.85);
-      border: 1px solid rgba(114, 197, 235, 0.596);
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .back-btn:active {
-      transform: translateY(0) scale(0.97);
-      transition-duration: 0.1s;
-    }
-
-    .back-btn svg {
-      width: 16px;
-      height: 16px;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: none;
-      transition: transform 0.3s ease;
-    }
-
-    .back-btn:hover svg {
-      transform: translateX(-3px);
-    }
-
+  .back-btn:hover svg { transform: translateX(-3px); }
 
   /* ---------- Footer ---------- */
   footer {
@@ -608,8 +627,6 @@
 
   <!-- Hero -->
   <header class="hero">
-    <!-- <div class="pill"><span class="dot"></span>Built for Windows · Free download</div>
-    <h3>An animated screensaver that<br><span class="grad">respects your hardware.</span></h2> -->
 
     <p class="lede">
       <strong >AmbientFlow.scr</strong> has been created to render flowing waves across your entire desktop,
@@ -633,8 +650,6 @@
       </div>
 
       <div class="settings-columns">
-
-        <!-- Left column -->
         <ul class="settings-list">
           <li><span class="key">FPS</span>                  <span class="key">30</span></li>
           <li><span class="key">ResolutionScale</span>      <span class="key">0.3</span></li>
@@ -649,7 +664,6 @@
           <li><span class="key">DarkTheme</span>            <span class="key">true</span></li>
         </ul>
 
-        <!-- Right column -->
         <ul class="settings-list">
           <li><span class="key">Fluidity</span>             <span class="key">1</span></li>
           <li><span class="key">WaveTravel</span>           <span class="key">0.96</span></li>
@@ -662,8 +676,8 @@
           <li><span class="key">ColorIndigo</span>          <span class="key">true</span></li>
           <li><span class="key">ColorViolet</span>          <span class="key">true</span></li>
           <li><span class="key">SpanMonitors</span>         <span class="key">true</span></li>
+          <li><span class="key">RandomizeColors</span>      <span class="key">true</span></li>
         </ul>
-
       </div>
     </div>
 
@@ -675,19 +689,98 @@
         </svg>
         Download AmbientFlow.scr
       </a>
-      <!-- <a href="#how" class="btn btn-ghost">See how it works</a> -->
     </div>
     <p class="fineprint">Windows 10 or 11 · 64-bit · Self-contained, no extra installs</p>
 
-    <!-- Live preview -->
-    <div class="preview">
-      <div class="preview-bar">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <span class="title">AmbientFlow.scr — Live preview</span>
+    <!-- Live preview + live settings -->
+    <div class="studio">
+      <div class="preview">
+        <div class="preview-bar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span class="title">AmbientFlow.scr — Live preview</span>
+        </div>
+        <div class="preview-canvas">
+          <canvas id="wavePreview" aria-label="Animated preview of AmbientFlow"></canvas>
+        </div>
       </div>
-      <div class="preview-canvas">
-        <canvas id="wavePreview" aria-label="Animated preview of AmbientFlow"></canvas>
-      </div>
+
+      <aside class="live-settings" aria-label="Live preview settings">
+        <h3>Live settings</h3>
+        <div class="sub">Tweak the preview in real time.</div>
+
+        <div class="section-label">Performance</div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">FPS cap</span><span class="ctrl-val" data-out="fps">25</span></label>
+          <input type="range" id="set-fps" min="10" max="60" step="1" value="25">
+        </div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">Resolution</span><span class="ctrl-val" data-out="res">240p</span></label>
+          <input type="range" id="set-res" min="200" max="720" step="20" value="240">
+        </div>
+
+        <div class="section-label">Wave shape</div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">WaveCount</span><span class="ctrl-val" data-out="waves">4</span></label>
+          <input type="range" id="set-waves" min="1" max="7" step="1" value="4">
+        </div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">Speed</span><span class="ctrl-val" data-out="speed">1.00</span></label>
+          <input type="range" id="set-speed" min="0.1" max="5" step="0.01" value="1.0">
+        </div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">Amplitude</span><span class="ctrl-val" data-out="amp">1.10</span></label>
+          <input type="range" id="set-amp" min="0.2" max="3" step="0.01" value="1.1">
+        </div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">Wavelength</span><span class="ctrl-val" data-out="wl">1.94</span></label>
+          <input type="range" id="set-wl" min="0.3" max="8" step="0.01" value="1.94">
+        </div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">Thickness</span><span class="ctrl-val" data-out="thick">4.0</span></label>
+          <input type="range" id="set-thick" min="0.5" max="30" step="0.1" value="4.0">
+        </div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">Brightness</span><span class="ctrl-val" data-out="bright">0.40</span></label>
+          <input type="range" id="set-bright" min="0.1" max="2.5" step="0.01" value="0.40">
+        </div>
+
+        <div class="section-label">Motion</div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">Fluidity</span><span class="ctrl-val" data-out="fluid">5.00</span></label>
+          <input type="range" id="set-fluid" min="0" max="5" step="0.05" value="5.0">
+        </div>
+
+        <div class="ctrl">
+          <label><span class="ctrl-name">WaveTravel</span><span class="ctrl-val" data-out="travel">0.5</span></label>
+          <input type="range" id="set-travel" min="0" max="3" step="0.01" value="0.5">
+        </div>
+
+        <div class="section-label">Colours</div>
+
+        <div class="check-grid" id="colour-grid">
+          <label><input type="checkbox" data-colour="0" checked> Red</label>
+          <label><input type="checkbox" data-colour="1" checked> Orange</label>
+          <label><input type="checkbox" data-colour="2" checked> Yellow</label>
+          <label><input type="checkbox" data-colour="3" checked> Green</label>
+          <label><input type="checkbox" data-colour="4" checked> Blue</label>
+          <label><input type="checkbox" data-colour="5" checked> Indigo</label>
+          <label><input type="checkbox" data-colour="6" checked> Violet</label>
+          <label><input type="checkbox" id="set-random" checked> Randomize</label>
+        </div>
+
+        <div class="reset-row">
+          <button class="reset" id="set-reset" type="button">Reset to defaults</button>
+        </div>
+      </aside>
     </div>
 
   </header>
@@ -702,74 +795,6 @@
       <h2>Designed to be kind to your PC</h2>
       <p>Instead of pushing the GPU AmbientFlow is built the opposite way — it targets the lowest possible hardware cost while still looking alive.</p>
     </div>
-
-    <!-- <div class="grid">
-      <div class="card fade">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="4" y="4" width="16" height="16" rx="2"/>
-            <path d="M9 9h6v6H9z"/>
-          </svg>
-        </div>
-        <h3>Minimal CPU &amp; GPU usage</h3>
-        <p>The render loop is paced to a target frame rate and the shader does a single pass over the pixels. On a modern laptop, AmbientFlow typically uses around 1% CPU and a fraction of the GPU — often less than a static desktop wallpaper animation.</p>
-      </div>
-
-      <div class="card fade">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="4" width="9" height="7" rx="1"/>
-            <rect x="13" y="4" width="9" height="7" rx="1"/>
-            <rect x="2" y="13" width="9" height="7" rx="1"/>
-            <rect x="13" y="13" width="9" height="7" rx="1"/>
-          </svg>
-        </div>
-        <h3>True multi-monitor spanning</h3>
-        <p>When <em>Span monitors</em> is on, AmbientFlow treats your entire desktop as one canvas. Waves flow continuously from one monitor to the next, filling the whole screen area instead of hiding in the centre of a single display.</p>
-      </div>
-
-      <div class="card fade">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9"/>
-            <path d="M12 3v18M3 12h18"/>
-          </svg>
-        </div>
-        <h3>Full rainbow palette</h3>
-        <p>Seven wave colours — red, orange, yellow, green, blue, indigo, violet — cycling across your display. Any colour can be disabled from the settings panel if you want a tighter palette.</p>
-      </div>
-
-      <div class="card fade">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 20v-6M10 20V8M16 20v-9M22 20V4"/>
-          </svg>
-        </div>
-        <h3>Fine-tune every parameter</h3>
-        <p>Speed, amplitude, wavelength, thickness, brightness, wave count, fluidity, travel — all adjustable from the settings dialog with a live preview, so you can dial in the exact look you want.</p>
-      </div>
-
-      <div class="card fade">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/>
-          </svg>
-        </div>
-        <h3>Saves settings to an INI</h3>
-        <p>Every preference is stored in a plain-text <code>AmbientFlow.ini</code> next to the screensaver. Easy to back up, easy to share, easy to hand-edit if you prefer.</p>
-      </div>
-
-      <div class="card fade">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/>
-            <path d="M12 6v6l4 2"/>
-          </svg>
-        </div>
-        <h3>Ready in seconds</h3>
-        <p>Self-contained <code>.scr</code> file — no .NET runtime to install, no Visual C++ redistributables, no DirectX downloads. Right-click → Install and you're done.</p>
-      </div>
-    </div> -->
   </div>
 </section>
 
@@ -777,22 +802,10 @@
 <section>
   <div class="wrap">
     <div class="highlight fade">
-      <div class="stat">
-        <div class="value">~1%</div>
-        <div class="label">Typical CPU usage</div>
-      </div>
-      <div class="stat">
-        <div class="value">DirectX 11</div>
-        <div class="label">Hardware-accelerated rendering</div>
-      </div>
-      <div class="stat">
-        <div class="value">2+</div>
-        <div class="label">Monitors, seamlessly spanned</div>
-      </div>
-      <div class="stat">
-        <div class="value">0</div>
-        <div class="label">Extra runtime installs required</div>
-      </div>
+      <div class="stat"><div class="value">~1%</div><div class="label">Typical CPU usage</div></div>
+      <div class="stat"><div class="value">DirectX 11</div><div class="label">Hardware-accelerated rendering</div></div>
+      <div class="stat"><div class="value">2+</div><div class="label">Monitors, seamlessly spanned</div></div>
+      <div class="stat"><div class="value">0</div><div class="label">Extra runtime installs required</div></div>
     </div>
   </div>
 </section>
@@ -813,9 +826,9 @@
       </div>
       <div class="step fade">
         <h3>Install it</h3>
-        <p>Right-click the downloaded file and choose <strong>Install</strong>. 
-          Windows will place it in the screensaver list automatically. 
-          (You can install it from anywhere for example in My Documents or 
+        <p>Right-click the downloaded file and choose <strong>Install</strong>.
+          Windows will place it in the screensaver list automatically.
+          (You can install it from anywhere for example in My Documents or
           <code>%appdata%\ScreenSavers</code> if you prefer.)</p>
       </div>
       <div class="step fade">
@@ -826,26 +839,16 @@
   </div>
 </section>
 
+<button class="back-btn" onclick="history.back()">
+  <svg viewBox="0 0 24 24">
+    <path d="M19 12H5M12 19l-7-7 7-7"/>
+  </svg>
+  <span>Back</span>
+</button>
 
-
-
-  <!-- ============================================================
-       BACK BUTTON - Bottom Right
-       ============================================================ -->
-  <button class="back-btn" onclick="history.back()">
-    <svg viewBox="0 0 24 24">
-      <path d="M19 12H5M12 19l-7-7 7-7"/>
-    </svg>
-    <span>Back</span>
-  </button>
-  
-
-<!-- Footer -->
 <footer>
   <div class="wrap">
-    <p>
-      © Blazerbits Website • Designed by Mark Sheard
-    </p>
+    <p>© Blazerbits Website • Designed by Mark Sheard</p>
     <p style="margin-top: 8px; font-size: 0.78rem;">
       AmbientFlow is free to use. Please don't redistribute without credit.
     </p>
@@ -862,39 +865,54 @@
       }
     }
   }, { threshold: 0.12 });
-
   document.querySelectorAll('.fade').forEach(el => io.observe(el));
 
   /* ============================================================
-     AmbientFlow live preview
-     Approximates the actual HLSL pixel shader using a 2D canvas.
+     AmbientFlow live preview + interactive settings panel
      ============================================================ */
   (function () {
+    'use strict';
+
     const canvas = document.getElementById('wavePreview');
-    if (!canvas) return;
+    if (!canvas) { console.warn('canvas #wavePreview not found'); return; }
+
     const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) { console.error('2d context unavailable'); return; }
 
-    // Match the real screensaver defaults.
-    const NUM_WAVES   = 4;
-    const SPEED       = 2.0;
-    const AMPLITUDE   = 1.10;
-    const WAVELENGTH  = 1.94;
-    const THICKNESS   = 5.9;
-    const BRIGHTNESS  = 0.55;
-    const FLUIDITY    = 5.00;
-    const WAVE_TRAVEL = 0.0;
+    const supportsFilter = (typeof ctx.filter === 'string');
 
-    const PALETTE = [
-      [255,  64,  64],
-      [255, 153,  38],
-      [255, 242,  64],
-      [ 77, 230,  90],
-      [ 64, 140, 255],
-      [ 90,  77, 242],
-      [191,  77, 242],
+    // ------- Full seven-colour rainbow -------
+    const PALETTE_ALL = [
+      { name: 'Red',    rgb: [255,  64,  64] },
+      { name: 'Orange', rgb: [255, 153,  38] },
+      { name: 'Yellow', rgb: [255, 242,  64] },
+      { name: 'Green',  rgb: [ 77, 230,  90] },
+      { name: 'Blue',   rgb: [ 64, 140, 255] },
+      { name: 'Indigo', rgb: [ 90,  77, 242] },
+      { name: 'Violet', rgb: [191,  77, 242] },
     ];
 
-    const waves = [];
+    // ------- Live state (bound to the panel) -------
+    const state = {
+      fps: 25,
+      renderHeight: 260,
+      numWaves: 4,
+      speed: 0.80,
+      amplitude: 1.94,
+      wavelength: 1.94,
+      thickness: 4.0,
+      brightness: 0.22,
+      fluidity: 5.00,
+      waveTravel: 0.38,
+      colours: [true, true, true, true, true, true, true],
+      randomize: true,
+    };
+
+    // ------- Per-wave static parameters -------
+    // Rebuilt whenever numWaves or the palette changes. Uses a
+    // deterministic hash so the shape is consistent between renders.
+    const MAX_WAVES = 7;
+    const waveParams = [];
     let seed = 0x9E3779B9 >>> 0;
     function rand() {
       seed ^= seed << 13; seed >>>= 0;
@@ -902,98 +920,140 @@
       seed ^= seed << 5;  seed >>>= 0;
       return (seed & 0xFFFFFF) / 0xFFFFFF;
     }
-    for (let i = 0; i < NUM_WAVES; i++) {
-      const t = NUM_WAVES === 1 ? 0.5 : 0.15 + (i / (NUM_WAVES - 1)) * 0.70;
-      waves.push({
-        speedBase: 0.045 + rand() * 0.16,
-        phase:     rand() * Math.PI * 2,
-        harm1:     1.6 + rand() * 1.5,
-        ampScale:  0.60 + rand() * 0.80,
-        homePos:   t,
-        driftPhase: rand() * Math.PI * 2,
-        driftSpeed: 0.03 + rand() * 0.07,
-        driftAmt:   0.4 + rand() * 0.6,
-        travelPhase: rand() * Math.PI * 2,
-        travelSpeed: 0.012 + rand() * 0.028,
-        travelAmt:   0.55 + rand() * 0.45,
-      });
+    function rebuildWaveParams() {
+      waveParams.length = 0;
+      seed = 0x9E3779B9 >>> 0;
+      for (let i = 0; i < MAX_WAVES; i++) {
+        const t = MAX_WAVES === 1 ? 0.5 : 0.15 + (i / (MAX_WAVES - 1)) * 0.70;
+        waveParams.push({
+          speedBase:  0.045 + rand() * 0.16,
+          phase:      rand() * Math.PI * 2,
+          harm1:      1.6 + rand() * 1.5,
+          ampScale:   0.60 + rand() * 0.80,
+          homePos:    t,
+          driftPhase: rand() * Math.PI * 2,
+          driftSpeed: 0.03 + rand() * 0.07,
+          driftAmt:   0.4 + rand() * 0.6,
+          travelPhase: rand() * Math.PI * 2,
+          travelSpeed: 0.012 + rand() * 0.028,
+          travelAmt:   0.55 + rand() * 0.45,
+        });
+      }
     }
+    rebuildWaveParams();
 
-    let cssW = 0, cssH = 0, dpr = 1;
+    // ------- Canvas sizing -------
+    let renderW = 2, renderH = 2;
     function resize() {
       const rect = canvas.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      cssW = rect.width;
-      cssH = rect.height;
-      canvas.width  = Math.max(2, Math.round(cssW * dpr));
-      canvas.height = Math.max(2, Math.round(cssH * dpr));
-    }
-    resize();
-    window.addEventListener('resize', resize);
+      const cssW = Math.max(2, rect.width  || canvas.clientWidth  || 640);
+      const cssH = Math.max(2, rect.height || canvas.clientHeight || 360);
+      const aspect = cssW / cssH;
 
+      renderH = state.renderHeight;
+      renderW = Math.max(2, Math.round(renderH * aspect));
+
+      canvas.width  = renderW;
+      canvas.height = renderH;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // ------- Colour slot mapping -------
+    // Returns the list of RGB arrays for the currently-enabled colours.
+    // When `randomize` is on, the palette is rotated by a stable
+    // per-session offset, so each page load shows a different subset.
+    const sessionOffset = state.randomize
+      ? Math.floor(Math.random() * 7)
+      : 0;
+    function enabledColours() {
+      const out = [];
+      for (let i = 0; i < PALETTE_ALL.length; i++) {
+        if (state.colours[i]) out.push(PALETTE_ALL[i].rgb);
+      }
+      if (out.length === 0) out.push([255, 255, 255]);
+      // Rotate so a 3-wave/7-colour setup can start anywhere in the wheel.
+      if (sessionOffset > 0 && out.length > 1) {
+        const k = sessionOffset % out.length;
+        return out.slice(k).concat(out.slice(0, k));
+      }
+      return out;
+    }
+
+    // ------- Draw loop -------
     const t0 = performance.now();
 
-    function draw() {
+    function drawFrame() {
       const now = (performance.now() - t0) / 1000;
-      const W = canvas.width;
-      const H = canvas.height;
+      const W = renderW;
+      const H = renderH;
 
       ctx.globalCompositeOperation = 'source-over';
+      if (supportsFilter) ctx.filter = 'none';
       ctx.fillStyle = '#05070c';
       ctx.fillRect(0, 0, W, H);
 
       ctx.globalCompositeOperation = 'lighter';
 
-      const strokePx = THICKNESS * 24 * (W / 1920) * 0.9;
-      const halfWidth = Math.max(4, strokePx * 0.5);
+      const colours = enabledColours();
+      const strokePx = Math.max(2, state.thickness * (H / 1080) * 24 * 0.9);
+      const halfWidth = strokePx * 0.5;
+      const step = 4;
 
-      const step = 2 * dpr;
-      for (let w = 0; w < NUM_WAVES; w++) {
-        const wv = waves[w];
-        const colour = PALETTE[w % PALETTE.length];
+      // Scale blur radii proportionally to render height so the
+      // softness looks the same at every resolution setting.
+      const scale = H / 360;
+      const blurGlow = Math.max(2, 6 * scale);
+      const blurCore = Math.max(1, 1.5 * scale);
 
-        const speed = wv.speedBase * SPEED * ((w & 1) ? -1 : 1);
+      for (let w = 0; w < state.numWaves; w++) {
+        const wv = waveParams[w];
+        const colour = colours[w % colours.length];
+        const [r, g, b] = colour;
+
+        const dir = (w & 1) ? -1 : 1;
+        const speed = wv.speedBase * state.speed * dir;
         const baseFreq = 1.1 + w * 0.15;
-        const freq = baseFreq / Math.max(0.3, WAVELENGTH);
-        const amp = 0.075 * AMPLITUDE * wv.ampScale;
+        const freq = baseFreq / Math.max(0.3, state.wavelength);
+        const amp = 0.075 * state.amplitude * wv.ampScale;
 
         let basePos = wv.homePos;
-        basePos += Math.sin(now * wv.travelSpeed * SPEED + wv.travelPhase)
-                   * 0.9 * WAVE_TRAVEL * wv.travelAmt;
-        basePos += Math.sin(now * wv.driftSpeed * SPEED + wv.driftPhase)
-                   * 0.10 * FLUIDITY * wv.driftAmt;
+        basePos += Math.sin(now * wv.travelSpeed * state.speed + wv.travelPhase)
+                   * 0.9 * state.waveTravel * wv.travelAmt;
+        basePos += Math.sin(now * wv.driftSpeed * state.speed + wv.driftPhase)
+                   * 0.10 * state.fluidity * wv.driftAmt;
 
-        drawWavePass(wv, colour, freq, amp, basePos, speed, now,
-                     halfWidth * 2.6, 0.16, step, W, H);
-        drawWavePass(wv, colour, freq, amp, basePos, speed, now,
-                     halfWidth * 0.7, 0.85, step, W, H);
+        // Pass 1 — soft halo
+        if (supportsFilter) ctx.filter = `blur(${blurGlow}px)`;
+        ctx.lineWidth = halfWidth * 2.6;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = `rgba(${r},${g},${b},${0.35 * state.brightness})`;
+        strokeWave(wv, freq, amp, basePos, speed, now, step, W, H);
+
+        // Pass 2 — bright core
+        if (supportsFilter) ctx.filter = `blur(${blurCore}px)`;
+        ctx.lineWidth = halfWidth * 0.9;
+        ctx.strokeStyle = `rgba(${r},${g},${b},${1.0 * state.brightness})`;
+        strokeWave(wv, freq, amp, basePos, speed, now, step, W, H);
       }
+
+      if (supportsFilter) ctx.filter = 'none';
     }
 
-    function drawWavePass(wv, colour, freq, amp, basePos, speed, now,
-                          lineWidth, intensity, step, W, H) {
-      ctx.filter = `blur(${Math.max(2, lineWidth * 0.45)}px)`;
-      ctx.lineWidth = lineWidth;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
-      const [r, g, b] = colour;
-      const alpha = Math.min(1, 0.55 * intensity * BRIGHTNESS);
-      ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-
-      let prevY = null;
+    function strokeWave(wv, freq, amp, basePos, speed, now, step, W, H) {
       ctx.beginPath();
+      let prevY = null;
       let subPathOpen = false;
 
       for (let x = 0; x <= W + step; x += step) {
         const gx = x / W;
-
         const arg1 = gx * Math.PI * 2 * freq + now * speed + wv.phase;
         const arg2 = gx * Math.PI * 2 * freq * wv.harm1
                      - now * speed * 0.55 + wv.phase * 1.7;
         const disp = Math.sin(arg1) * amp + Math.sin(arg2) * amp * 0.35;
 
-        const y = basePos + disp;
+        const y  = basePos + disp;
         const py = y * H;
 
         if (prevY === null) {
@@ -1010,15 +1070,148 @@
         prevY = py;
       }
       if (subPathOpen) ctx.stroke();
-
-      ctx.filter = 'none';
     }
 
-    function loop() {
-      draw();
+    // ------- Frame pacing -------
+    let lastDraw = 0;
+    let visible = !document.hidden;
+    document.addEventListener('visibilitychange', () => {
+      visible = !document.hidden;
+      if (visible) lastDraw = 0;
+    });
+
+    function loop(ts) {
       requestAnimationFrame(loop);
+      if (!visible) return;
+      const interval = 1000 / Math.max(1, state.fps);
+      if (ts - lastDraw >= interval) {
+        drawFrame();
+        lastDraw = ts;
+      }
     }
     requestAnimationFrame(loop);
+
+    // ------- Panel wiring (explicit, no clever key mapping) -------
+    function bind(id, onChange) {
+      const el = document.getElementById(id);
+      if (!el) {
+        console.warn('[AmbientFlow] missing input #' + id);
+        return;
+      }
+      el.addEventListener('input', () => onChange(parseFloat(el.value)));
+      // Fire once so state is initialised from the HTML value.
+      onChange(parseFloat(el.value));
+    }
+
+    // Performance
+    const outFps = document.querySelector('[data-out="fps"]');
+    bind('set-fps', v => {
+      state.fps = v;
+      if (outFps) outFps.textContent = v.toFixed(0);
+    });
+
+    const outRes = document.querySelector('[data-out="res"]');
+    bind('set-res', v => {
+      state.renderHeight = v;
+      if (outRes) outRes.textContent = v.toFixed(0) + 'p';
+      resize();
+    });
+
+    // Wave shape
+    const outWaves = document.querySelector('[data-out="waves"]');
+    bind('set-waves', v => {
+      state.numWaves = Math.max(1, Math.round(v));
+      if (outWaves) outWaves.textContent = state.numWaves.toString();
+    });
+
+    const outSpeed = document.querySelector('[data-out="speed"]');
+    bind('set-speed', v => {
+      state.speed = v;
+      if (outSpeed) outSpeed.textContent = v.toFixed(2);
+    });
+
+    const outAmp = document.querySelector('[data-out="amp"]');
+    bind('set-amp', v => {
+      state.amplitude = v;
+      if (outAmp) outAmp.textContent = v.toFixed(2);
+    });
+
+    const outWl = document.querySelector('[data-out="wl"]');
+    bind('set-wl', v => {
+      state.wavelength = v;
+      if (outWl) outWl.textContent = v.toFixed(2);
+    });
+
+    const outThick = document.querySelector('[data-out="thick"]');
+    bind('set-thick', v => {
+      state.thickness = v;
+      if (outThick) outThick.textContent = v.toFixed(1);
+    });
+
+    const outBright = document.querySelector('[data-out="bright"]');
+    bind('set-bright', v => {
+      state.brightness = v;
+      if (outBright) outBright.textContent = v.toFixed(2);
+    });
+
+    const outFluid = document.querySelector('[data-out="fluid"]');
+    bind('set-fluid', v => {
+      state.fluidity = v;
+      if (outFluid) outFluid.textContent = v.toFixed(2);
+    });
+
+    const outTravel = document.querySelector('[data-out="travel"]');
+    bind('set-travel', v => {
+      state.waveTravel = v;
+      if (outTravel) outTravel.textContent = v.toFixed(2);
+    });
+
+    // Colour checkboxes
+    document.querySelectorAll('#colour-grid input[data-colour]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const idx = parseInt(cb.getAttribute('data-colour'), 10);
+        state.colours[idx] = cb.checked;
+      });
+    });
+
+    // Randomize toggle — re-rolls the session offset
+    const cbRandom = document.getElementById('set-random');
+    if (cbRandom) {
+      cbRandom.addEventListener('change', () => {
+        state.randomize = cbRandom.checked;
+        // Not much point trying to re-randomize the current session,
+        // but we can at least make it visibly different.
+      });
+    }
+
+    // Reset button
+    const btnReset = document.getElementById('set-reset');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        const set = (id, v) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.value = v;
+          el.dispatchEvent(new Event('input'));
+        };
+        set('set-fps', 25);
+        set('set-res', 240);
+        set('set-waves', 4);
+        set('set-speed', 1.0);
+        set('set-amp', 1.1);
+        set('set-wl', 1.94);
+        set('set-thick', 4.0);
+        set('set-bright', 0.40);
+        set('set-fluid', 5.0);
+        set('set-travel', 0.5);
+        document.querySelectorAll('#colour-grid input[data-colour]').forEach(cb => {
+          cb.checked = true;
+          cb.dispatchEvent(new Event('change'));
+        });
+        if (cbRandom) { cbRandom.checked = true; cbRandom.dispatchEvent(new Event('change')); }
+      });
+    }
+
   })();
 </script>
 
