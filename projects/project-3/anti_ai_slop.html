@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111318">
+<title>Anti-AI Slop — Make It Make Sense</title>
+<style>
+:root{color-scheme:dark;--bg:#111318;--panel:#1b1f27;--ink:#f3f0e8;--muted:#a6abb7;--line:#343a46;--accent:#c7f36b;--accentInk:#17200b}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:28px;background:radial-gradient(ellipse at 12% 10%,#293323 0,transparent 38%),radial-gradient(ellipse at 90% 90%,#252a3a 0,transparent 42%),var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+main{width:min(760px,100%)}.eyebrow{color:var(--accent);text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;font-weight:800}
+h1{margin:10px 0 8px;font-size:clamp(2.5rem,8vw,5.4rem);line-height:.98;letter-spacing:-.065em}.intro{color:var(--muted);max-width:56ch;margin:18px 0 28px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:clamp(20px,5vw,34px);box-shadow:0 24px 80px #0006}
+.label{display:flex;align-items:center;gap:9px;margin-bottom:12px;color:var(--muted);font-size:.75rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.dot{width:8px;height:8px;border-radius:50%;background:#ff8878}#copy{min-height:150px;font-size:clamp(1.08rem,2.6vw,1.35rem);line-height:1.65}#copy.clean{color:#fff}
+.actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:28px}button{border:0;border-radius:999px;padding:15px 22px;background:var(--accent);color:var(--accentInk);font:inherit;font-weight:850;cursor:pointer;transition:transform .15s,filter .15s}
+button:hover{transform:translateY(-2px);filter:brightness(1.06)}button:focus-visible{outline:3px solid white;outline-offset:4px}.hint{color:var(--muted);font-size:.88rem}.status{min-height:1.5em;color:var(--accent);font-size:.88rem;margin-top:15px}footer{color:#777e8b;font-size:.78rem;margin:20px 4px 0}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">A small act of digital hygiene</div>
+<h1>Anti‑AI<br>Slop.</h1>
+<p class="intro">A button for when the words are plentiful, the meaning is missing, and everyone is pretending that’s fine.</p>
+<section class="card" aria-live="polite">
+<div class="label"><span class="dot" id="dot"></span><span id="state">Before · maximum slop</span></div>
+<div id="copy">In today's rapidly evolving landscape, it is absolutely essential to leverage a holistic, next-generation approach that empowers meaningful synergies. By thinking outside the box and harnessing innovative possibilities, we can unlock transformative outcomes and drive impactful value across the entire ecosystem.</div>
+<div class="actions"><button id="cleanButton" type="button">✦ Anti‑AI Slop: make it make sense</button><span class="hint">One click. Less fog. More meaning.</span></div>
+<div class="status" id="status" role="status"></div>
+</section>
+<footer>Less “leverage synergies.” More saying what you mean.</footer>
+</main>
+<script>
+const button=document.getElementById('cleanButton'),copy=document.getElementById('copy'),state=document.getElementById('state'),dot=document.getElementById('dot'),status=document.getElementById('status');
+const slop="In today's rapidly evolving landscape, it is absolutely essential to leverage a holistic, next-generation approach that empowers meaningful synergies. By thinking outside the box and harnessing innovative possibilities, we can unlock transformative outcomes and drive impactful value across the entire ecosystem.";
+const plain="Things are changing quickly. We should choose a practical approach, try it, and measure whether it works. If it helps, keep doing it. If it doesn't, change course.";
+let cleaned=false;
+button.addEventListener('click',()=>{cleaned=!cleaned;copy.textContent=cleaned?plain:slop;copy.classList.toggle('clean',cleaned);state.textContent=cleaned?'After · actual meaning':'Before · maximum slop';dot.style.background=cleaned?'#c7f36b':'#ff8878';button.textContent=cleaned?'↺ Bring back the slop':'✦ Anti‑AI Slop: make it make sense';status.textContent=cleaned?'Translation complete: the point is now clear.':'Slop restored. You know what to do.';});
+</script>
+</body>
+</html>
