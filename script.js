@@ -1,16 +1,24 @@
 //const root = document.documentElement;
 
-// Determine base path for assets
+// Determine base path for assets - Navbar
 function getBasePath() {
     const path = window.location.pathname.toLowerCase();
     
-    if (path.includes('/projects/')&& !path.includes('/projects/projects-1/')) {
-        console.log("found: /projects/")
-        return '../';
-     }else if (path.includes('/projects/projects-1/')) {
+    if (path.includes('/projects/')
+        && !path.includes('/projects/projects-1/')
+        && !path.includes('/projects/projects-2/')
+        && !path.includes('/projects/projects-3/'))
+        {console.log("found: /projects/")
+        return '../';}
+    else if (path.includes('/projects/projects-1/')) {
          console.log("found: /projects/projects-1/ ")
-         return '../../';
-    }
+         return '../../';}
+    else if (path.includes('/projects/projects-2/')) {
+         console.log("found: /projects/projects-2/ ")
+         return '../../';}
+    else if (path.includes('/projects/projects-3/')) {
+         console.log("found: /projects/projects-3/ ")
+         return '../../';}
     else{
         return ''; 
     }

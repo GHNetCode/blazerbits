@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI_Projects | BlazerBits</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  
+
+  <style>
+
+    
+body{
+        background:  rgba(8, 14, 20, 0.901);
+}
+
+
+
+
+    /* --- Projects Hero --- */
+    .projects-hero {
+      min-height: 40vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      background: radial-gradient(circle at 50% 40%, rgba(60, 108, 120, 0.45), transparent 60%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .projects-hero h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(3rem, 8vw, 4.5rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .projects-hero p {
+      font-size: 1.1rem;
+      /* color: var(--muted, #a7b1c2); */
+      color: var(--accent);
+      max-width: 600px;
+      opacity: 0.7;
+    }
+
+    /* --- Project Grid --- */
+    .projects-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    /* --- Project Tile --- */
+    .project-tile {
+      display: flex;
+      flex-direction: column;
+      align-self: flex-start;
+      text-decoration: none;
+      
+      background: var(--card, rgba(255, 255, 255, 0.04));
+      border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+      border-radius: 24px;
+      padding: 2rem 1.5rem 1.8rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      backdrop-filter: blur(4px);
+      
+      color: var(--text);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      
+      /* CRITICAL: Aggressive touch prevention */
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-touch-callout: none !important;
+      -webkit-user-select: none !important;
+      user-select: none !important;
+      touch-action: manipulation !important;
+      -webkit-user-drag: none !important;
+      
+      /* Prevent text selection entirely */
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    /* When a tile has been "reset", force it to look normal */
+.project-tile.reset {
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+    .project-tile:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(2, 89, 143, 0.10);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Tile Header */
+    .project-tile-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      pointer-events: none;
+    }
+
+    .project-tile-header .project-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .project-tile-header .project-icon-img {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      pointer-events: none;
+      -webkit-user-drag: none;
+    }
+
+    .project-tile-header h2 {
+      font-family: Inter,system-ui,sans-serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      margin: 0;
+      pointer-events: none;
+    }
+
+    .project-status {
+      align-self: flex-start;
+      background: rgba(255, 210, 80, 0.12);
+      color: #ffd200;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 210, 80, 0.15);
+      margin-bottom: 0.75rem;
+      pointer-events: none;
+    }
+
+    .project-tile p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      /* color: var(--muted, #a7b1c2); */
+            color: var(--accent);
+      margin-bottom: 1.5rem;
+      flex: 1;
+      pointer-events: none;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: auto;
+      pointer-events: none;
+    }
+
+    .project-tags span {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       PROJECT TILE ARROW - FIXED
+       ============================================================ */
+    .project-tile::after {
+      content: "→";
+      position: absolute;
+      top: 10px;
+      right: 0.5rem;
+      font-size: 1.7rem;
+      opacity: 0;
+      color: rgb(255, 136, 0);
+      /* Shorter, snappier transition - 0.15s both directions */
+      transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;
+      transform: translateX(-8px);
+      pointer-events: none;
+      will-change: opacity, transform;
+    }
+
+    /* Only show on actual hover (desktop) */
+    @media (hover: hover) {
+      .project-tile:hover::after {
+        opacity: 0.6;
+        transform: translateX(0);
+      }
+    }
+
+    /* On touch devices, show on active/tap state */
+    @media (hover: none) {
+      .project-tile:active::after {
+        opacity: 0.6;
+        transform: translateX(0);
+      }
+      
+      /* Also show on focus for accessibility */
+      .project-tile:focus::after {
+        opacity: 0.6;
+        transform: translateX(0);
+      }
+    }
+
+    /* ============================================================
+       BACK BUTTON - Bottom Right
+       ============================================================ */
+    .back-btn {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 100;
+      
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem; 
+      padding: 0.6rem 1.0rem;
+      background: rgba(21, 43, 50, 0.75);
+      border: 1px solid rgba(203, 142, 50, 0.411);
+      border-radius: 999px;
+      
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      
+      user-select: none;
+      -webkit-user-select: none;
+      
+      will-change: transform;
+      contain: layout style paint;
+      
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-touch-callout: none !important;
+      touch-action: manipulation !important;
+    }
+
+    .back-btn:hover {
+      /* background: rgba(20, 20, 40, 0.85); */
+      border: 1px solid rgba(251, 202, 128, 0.346);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-btn:active {
+      transform: translateY(0) scale(0.97);
+      transition-duration: 0.1s;
+    }
+
+    .back-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      transition: transform 0.3s ease;
+    }
+
+    .back-btn:hover svg {
+      transform: translateX(-3px);
+    }
+
+    /* Light theme */
+    body.light-theme .back-btn {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .back-btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-theme .project-tile {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .project-tile:hover {
+      border-color: rgba(0, 0, 0, 0.15);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .project-tags span {
+      background: rgba(0, 0, 0, 0.04);
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-theme .project-status {
+      background: rgba(247, 151, 30, 0.1);
+      border-color: rgba(247, 151, 30, 0.2);
+      color: #b8730e;
+    }
+
+    @media (max-width: 640px) {
+      .projects-grid {
+        grid-template-columns: 1fr;
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .project-tile {
+        padding: 1.5rem;
+      }
+
+      .project-tile-header h2 {
+        font-size: 1.4rem;
+      }
+
+      .back-btn {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.7rem;
+      }
+
+      .back-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .back-btn span {
+        display: none;
+      }
+    }
+
+    .nav-left {
+      margin-left: 0;
+    }
+
+    .theme-control {
+      left: 18%;
+    }
+
+    @media (max-width: 875px) {
+      .theme-control {
+        left: 3.5vw;
+      }
+    }
+
+     #attribution{
+      position: absolute;
+      /* bottom: 5px; */
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: calc(100vw - 2rem);
+      text-align: center;
+      z-index: 100;
+      display: inline-flex;
+    }
+
+
+
+  </style>
+</head>
+<body>
+
+  <div id="navbar"></div>
+  <div id="loginModalContainer"></div>
+
+  <section class="projects-hero">
+    <h1>Artificial Intelligence</h1>
+    <p>Scalable AI demo projects </p>
+  </section>
+
+  <section class="projects-grid">
+
+
+<!-- PROJECT 1: Self-Healing Lab -->
+<a href="SHL-Lab/Self-Healing_Lab.html" class="project-tile">
+    <!-- <a href="#" class="project-tile" data-modal-trigger> -->
+      <div class="project-tile-header">
+        <!-- <span class="project-icon">🔭</span> -->
+        <h2>Self-Healing Lab: Part 1</h2>
+      </div>
+      <span class="project-status">In progress</span>
+      <p>A learning project around AI Agents. 
+        A team of four agents test and repair broken scripts 
+        (Python, JavaScript, PowerShell and Shell) in disposable 
+        sandboxes, using a small local language model
+        to diagnose each failure.</p>
+      <div class="project-tags">
+        <span>VirtualBox</span>
+        <span>Firecracker</span>
+        <span>NodeJS</span>
+        <span>Python</span>
+        <span>Ollama</span>
+        <span>SQLite</span>
+      </div>
+    </a>
+
+  <!-- PROJECT 3: URL Shortener -->
+  <!-- <a href="#" class="project-tile" data-modal-trigger> -->
+    <!-- <a href="url-shortener/index.html" class="project-tile">
+      <div class="project-tile-header">
+        <span class="project-icon">🔗</span>
+        <h2>Project: URL Shortener</h2>
+      </div>
+      <span class="project-status">LIVE</span>
+      <p>URL shortening service with custom aliases and click tracking.</p>
+      <div class="project-tags">
+        <span>JavaScript</span>
+        <span>CSS</span>
+        <span>API</span>
+        <span>AZ Functions (Nodejs)</span>
+      </div>
+    </a> -->
+
+  </section>
+
+  <button class="back-btn" onclick="history.back()">
+    <svg viewBox="0 0 24 24">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    <span>Back</span>
+  </button>
+
+  <footer id="attribution">
+    © BlazerBits Website • Designed by Mark Sheard
+  </footer>
+
+  <script src="../../script.js"></script>
+  <script src="../projectsscripts.js"></script>
+
+
+</body>
+</html>

@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
 
   <style>
@@ -67,6 +69,7 @@ body{
       letter-spacing: 0.04em;
       margin-bottom: 0.5rem;
     }
+  
 
     .projects-hero p {
       font-size: 1.1rem;
@@ -130,6 +133,9 @@ body{
       letter-spacing: 0.02em;
       margin: 0;
     }
+
+   
+ 
 
     .project-status {
       align-self: flex-start;
@@ -250,15 +256,15 @@ body{
 
      .back-btn {
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
+      bottom: 1rem;
+      right: 1rem;
       z-index: 100;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.6rem 1.2rem;
-      background: rgba(10, 10, 26, 0.75);
-      border: 1px solid rgba(251, 202, 128, 0.7);
+      padding: 0.6rem 1.0rem;
+      background: rgba(15, 29, 41, 0.75);
+      border: 1px solid rgba(251, 202, 128, 0.37);
       border-radius: 100px;
       color: var(--text);
       font-family: 'Inter', system-ui, sans-serif;
@@ -276,7 +282,7 @@ body{
     }
 
     .back-btn:hover {
-      background: rgba(20, 20, 40, 0.85);
+      /* background: rgba(20, 20, 40, 0.85); */
       border: 1px solid rgba(251, 202, 128, 0.346);
       transform: translateY(-2px) scale(1.03);
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
@@ -419,46 +425,48 @@ body{
     <!-- PROJECT 1 -->
     <a href="projects-1/index.html" class="project-tile">
       <div class="project-tile-header">
-        <span class="project-icon">🌐</span>
+        <!-- <span class="project-icon">🌐</span> -->
         <h2>FrontEnd Mentor Challenges</h2>
       </div>
       <span class="project-status">Live</span>
       <p>Challenges on FrontEnd Mentor Website with some favourite ones included here on BlazerBits.</p>
       <div class="project-tags">
-        <span>CSS</span>
-        <span>JavaScript</span>
-        <span>API</span>
-        <span>NodeJS</span>
+        <span>IP Address Locator</span>
+        <span>URL Shortener</span>
+        <span>Advice-Generator</span>
+        <!-- <span>NodeJS</span> -->
       </div>
     </a>
 
     <!-- PROJECT 2 -->
-    <a href="#" class="project-tile" data-modal-trigger>
+    <!-- <a href="#" class="project-tile" data-modal-trigger> -->
+    <a href="projects-2/index.html" class="project-tile">
       <div class="project-tile-header">
-        <span class="project-icon">📝</span>
-        <h2>Example Project: Note-Taking App</h2>
+        <!-- <span class="project-icon"></span> -->
+        <h2>AI Projects</h2>
       </div>
       <span class="project-status">In Progress</span>
-      <p>Minimalist note-taking with local storage. Create, edit, and delete notes with a smooth UI.</p>
+      <p>Collection of AI Projects.</p>
       <div class="project-tags">
-        <span>React</span>
-        <span>LocalStorage</span>
-        <span>CSS</span>
+        <span>Self-Healing Lab</span>
+        <!-- <span> -- </span> -->
+        <!-- <span>Node</span> -->
       </div>
     </a>
 
     <!-- PROJECT 3 -->
-    <a href="#" class="project-tile" data-modal-trigger>
+    <!-- <a href="#" class="project-tile" data-modal-trigger> -->
+    <a href="projects-3/index.html" class="project-tile">
       <div class="project-tile-header">
-        <span class="project-icon">🎨</span>
-        <h2>Example Project: Color Palette Generator</h2>
+        <!-- <span class="project-icon">🎨</span> -->
+        <h2>Adhoc Projects</h2>
       </div>
       <span class="project-status">Coming Soon</span>
-      <p>Generate harmonious color palettes with a single click. Copy hex codes and preview combinations.</p>
+      <p>A collection of miscellaneous generated projects and guides.</p>
       <div class="project-tags">
-        <span>JavaScript</span>
-        <span>CSS</span>
-        <span>Design</span>
+        <span>Postman</span>
+        <!-- <span>C</span> -->
+        <!-- <span>Design</span> -->
       </div>
     </a>
 

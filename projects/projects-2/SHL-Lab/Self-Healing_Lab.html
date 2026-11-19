@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Self-Healing Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap">
+<style>
+/* Layout: BlazerBits look. Fixed top bar (logo, Light/Dark button on the left, page links on the right),
+   a hero with a soft radial glow, then rounded tiles on a grid. Dark first, light mirrored.
+   Theme-specific values are tokens, so the system-light and the Light-button themes always match. */
+
+/* ---- dark (default) ---- */
+:root{
+  --bg:#182430; --text:#eaeaeabe; --text1:#b4c1ca; --accent:#b4c1ca;
+  --card:rgba(255,255,255,.04); --border:rgba(255,255,255,.08); --border-hover:rgba(255,255,255,.15);
+  --nav-bg:rgba(0,0,0,.55); --nav-line:rgba(0,81,255,.08);
+  --glow:rgba(60,80,120,.15); --shadow:rgba(2,89,143,.10);
+  --gold:#ffd200; --gold-soft:rgba(255,210,80,.12); --gold-line:rgba(255,210,80,.15); --step-no:#e7d47ff8;
+  --blue:#7fc0ff; --blue-soft:rgba(79,163,255,.12); --blue-line:rgba(79,163,255,.2);
+  --tag-bg:rgba(255,255,255,.06); --tag-line:rgba(255,255,255,.05);
+  --btn-line:rgba(251,202,128,.7); --arrow:rgb(255,136,0); --code-bg:rgba(255,255,255,.07);
+  --serif:"Cormorant Garamond",Georgia,serif;
+  --sans:"Inter",system-ui,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular",Consolas,monospace;
+  /* theme-specific type and image tuning */
+  --body-weight:300; --body-size:16px; --h3-weight:300; --subh-size:1.7rem;
+  --img-filter:invert(1) hue-rotate(184deg) brightness(.9) contrast(.8);
+  color-scheme:dark;
+}
+
+/* ---- light: used when the device is light and nothing is chosen, and when the Light button is pressed ---- */
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#ececec; --text:#141414; --text1:#4b5560; --accent:#3a4650;
+    --card:rgba(255,255,255,.185); --border:rgba(0,0,0,.06); --border-hover:rgba(0,0,0,.15);
+    --nav-bg:rgba(255,255,255,.521); --nav-line:rgba(0,0,0,.08);
+    --glow:rgba(60,80,120,.08); --shadow:rgba(0,0,0,.06);
+    --gold:#b8730e; --gold-soft:rgba(247,151,30,.1); --gold-line:rgba(247,151,30,.2); --step-no:#8a5608;
+    --blue:#0b5a96; --blue-soft:rgba(2,89,143,.08); --blue-line:rgba(2,89,143,.18);
+    --tag-bg:rgba(0,0,0,.04); --tag-line:rgba(0,0,0,.06);
+    --btn-line:rgba(184,115,14,.5); --code-bg:rgba(0,0,0,.06);
+    --body-weight:400; --body-size:17px; --h3-weight:400; --subh-size:1.9rem;
+    --img-filter:contrast(.8);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#ececec; --text:#141414; --text1:#4b5560; --accent:#3a4650;
+  --card:rgba(255,255,255,.185); --border:rgba(0,0,0,.06); --border-hover:rgba(0,0,0,.15);
+  --nav-bg:rgba(255,255,255,.521); --nav-line:rgba(0,0,0,.08);
+  --glow:rgba(60,80,120,.08); --shadow:rgba(0,0,0,.06);
+  --gold:#b8730e; --gold-soft:rgba(247,151,30,.1); --gold-line:rgba(247,151,30,.2); --step-no:#8a5608;
+  --blue:#0b5a96; --blue-soft:rgba(2,89,143,.08); --blue-line:rgba(2,89,143,.18);
+  --tag-bg:rgba(0,0,0,.04); --tag-line:rgba(0,0,0,.06);
+  --btn-line:rgba(184,115,14,.5); --code-bg:rgba(0,0,0,.06);
+  --body-weight:400; --body-size:17px; --h3-weight:400; --subh-size:1.9rem;
+  --img-filter:contrast(.8);
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:var(--body-weight);font-size:var(--body-size);line-height:1.6;transition:background .4s ease,color .4s ease;overflow-x:hidden}
+img{max-width:100%;height:auto}
+h1,h2,h3{font-family:var(--sans);font-weight:300;letter-spacing:.02em;line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+code{font-family:var(--mono);font-size:.82em;background:var(--code-bg);padding:.1em .4em;border-radius:5px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.gut{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+
+/* ---- top bar ---- */
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav-bg);border-bottom:1px solid var(--nav-line);
+  padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:14px;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;
+  padding-left:max(30px,env(safe-area-inset-left,0px));padding-right:max(30px,env(safe-area-inset-right,0px));
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.nav-left{display:flex;align-items:center;gap:20px}
+.logo{font-family:var(--serif);font-size:1.1rem;font-weight:400;letter-spacing:.12em;text-decoration:none;opacity:.85;transition:.3s}
+.logo:hover{opacity:1}
+.mode-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .95rem;background:transparent;color:var(--text);
+  border:1px solid var(--btn-line);border-radius:100px;font-family:var(--sans);font-size:.78rem;font-weight:400;letter-spacing:.04em;cursor:pointer;transition:all .3s ease}
+.mode-btn:hover{transform:translateY(-1px);border-color:var(--border-hover)}
+.mode-btn svg{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.nav-right{display:flex;gap:4px 26px;flex-wrap:wrap}
+.nav-right a{text-decoration:none;font-size:.9rem;font-weight:400;opacity:.8;transition:.3s}
+.nav-right a:hover{opacity:1}
+
+/* ---- hero ---- */
+.hero{min-height:40vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;
+  padding-top:9.5rem;padding-bottom:3.5rem;background:radial-gradient(circle at 50% 40%,var(--glow),transparent 60%);border-bottom:1px solid var(--border)}
+.hero h1{font-size:clamp(3rem,8vw,4.5rem);letter-spacing:.04em}
+.hero p.sub{font-size:1.1rem;max-width:640px;opacity:.75}
+.status{display:inline-block;background:var(--gold-soft);color:var(--gold);font-size:.62rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .85rem;border-radius:999px;border:1px solid var(--gold-line)}
+.status.blue{background:var(--blue-soft);color:var(--blue);border-color:var(--blue-line)}
+.tags{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.tags span{background:var(--tag-bg);padding:.25rem .75rem;border-radius:999px;font-size:.7rem;font-weight:400;letter-spacing:.04em;text-transform:uppercase;opacity:.65;border:1px solid var(--tag-line)}
+
+/* ---- content ---- */
+section.block{max-width:1200px;margin:0 auto;padding-top:4.5rem;padding-bottom:1rem}
+.head{margin-bottom:2rem}
+.head h2{font-size:clamp(2rem,5vw,2.8rem);margin-bottom:.6rem}
+.head p{max-width:680px;color:var(--text1);opacity:.9}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem}
+.grid.g5{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.tile{display:flex;flex-direction:column;gap:.7rem;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:1.8rem 1.5rem;min-width:0;
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.tile:hover{transform:translateY(-6px);box-shadow:0 20px 40px var(--shadow);border-color:var(--border-hover)}
+.tile h3{font-size:1.55rem;font-weight:var(--h3-weight)}
+.tile p,.tile li{font-size:.95rem;line-height:1.6;color:var(--accent)}
+.tile .status{align-self:flex-start}
+.tile ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.35rem}
+.step-no{font-family:var(--mono);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--step-no)}
+
+.principle{margin-top:2rem;padding:1.4rem 1.6rem;border:1px solid var(--border);background:var(--card);border-radius:24px;max-width:820px;margin-left:auto;margin-right:auto;text-align:center}
+.principle p{font-family:var(--serif);font-size:1.35rem;font-weight:500;line-height:1.5}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;max-width:900px;margin:2.2rem auto 0;width:100%}
+.fact{text-align:center;padding:.4rem .5rem}
+.fact b{display:block;font-family:var(--serif);font-weight:300;font-size:2.6rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.fact span{font-size:.8rem;opacity:.65}
+
+/* two sides diagram */
+.sides{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:.8rem;align-items:stretch;margin-bottom:.8rem}
+.sides .tile:hover{transform:none;box-shadow:none}
+.link{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--text1)}
+.link i{font-style:normal;font-size:1.3rem;color:var(--arrow)}
+.cap{font-size:.9rem;color:var(--text1);margin-bottom:3rem}
+.sub-h{font-family:var(--serif);font-size:var(--subh-size);font-weight:500;margin:0 0 1rem}
+
+/* architecture picture */
+.center-container{display:block;margin-top:3rem;text-align:center;filter:var(--img-filter)}
+.center-container img{display:inline-block}
+.img-note{margin-top:.6rem;font-size:.8rem;color:var(--text1);text-align:center}
+
+
+
+
+footer{text-align:center;padding:4rem 1rem 2.5rem;font-size:.8rem;opacity:.6;padding-bottom:calc(2.5rem + env(safe-area-inset-bottom,0px))}
+
+@media (max-width:760px){
+  .top-nav{padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+  .nav-right{width:100%;gap:2px 20px}
+  .hero{padding-top:10.5rem}
+  .sides{grid-template-columns:1fr}
+  .link{flex-direction:row;gap:.6rem;padding:.1rem 0}
+  .link i{transform:rotate(90deg)}
+  .tile{padding:1.5rem}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tile,.mode-btn{transition:none}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav" aria-label="Site">
+  <div class="nav-left">
+    <a class="logo" href="../../../index.html">BlazerBits</a>
+    <button class="mode-btn" id="modeBtn" type="button" aria-label="Switch between light and dark">
+      <svg id="modeIcon" viewBox="0 0 24 24" aria-hidden="true"></svg>
+      <span id="modeLabel">Light</span>
+    </button>
+  </div>
+  <div class="nav-right">
+    <!-- To add a page later: add another link here. -->
+    <a href="#how">How it works</a>
+    <a href="#status">Status</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="/projects/projects.html">Projects</a>
+  </div>
+</nav>
+
+<main id="top">
+  <section class="hero gut">
+    <h1>Self-Healing Lab</h1>
+    <p class="sub">A team of four small agents working together
+      with an LLM to help test &amp; resolve scripts in a disposable MicroVM.</p>
+
+    <!-- <div class="tags"><span>Python</span><span>Node.js</span><span>SQLite</span><span>Firecracker</span><span>Ollama</span></div> -->
+  </section>
+
+  <section class="block gut" id="overview">
+    <div class="principle"><p>The LLM never decides if the test passes or fails.
+                              The results (pass or fail) only come from the sandbox 
+                              that the agents read from.</p></div>
+    <div class="facts">
+      <div class="fact"><b>4</b><span>agents</span></div>
+      <div class="fact"><b>20</b><span>bugged practice apps</span></div>
+      <div class="fact"><b>4B</b><span>parameter local model</span></div>
+    </div>
+  </section>
+
+  <section class="block gut" id="how">
+    <div class="head">
+      <h2>How it works</h2>
+      <p>The agents accept submitted tasks communicating with each other via a shared SQLite DB
+        where they then access the sandbox through the Control-Plane (NodeJS Environment)
+        to perform testing, attempting to fix the script.</p>
+    </div>
+
+    <div class="sides" role="group" aria-label="Agents call fc-core over HTTP; fc-core reaches the Firecracker MicroVM over SSH">
+      <div class="tile"><h3>Agents</h3><p>The Agents, SQLite and Ollama all run as an ordinary user and never execute the code directly during testing. The code only runs inside the sandbox, separated by the Control Plane.</p></div>
+      <div class="link"><i>⇄</i>HTTP</div>
+      <div class="tile"><h3>fc-core (Control Plane)</h3><p>The Node.js server on port 3000. It is the only part with admin/root rights: it mounts the image, boots the VM and cleans up.</p></div>
+      <div class="link"><i>⇄</i>SSH</div>
+      <div class="tile"><h3>Firecracker MicroVM (Sandbox)</h3><p>Has its own kernel and no internet. Built from a small Alpine image and deleted after every run.</p></div>
+    </div>
+    <p class="cap">Agents know one call: <code>POST /sandbox/run</code>. The sandbox technology can change without touching an agent.</p>
+
+    <h3 class="sub-h">Journey resolving a bug</h3>
+    <div class="grid g5">
+      <div class="tile"><span class="step-no">Step 1</span><h3>Submit a task</h3><p><code>cli.submit</code> or <code>cli.submit_prompt</code> writes a task to the inbox file for the script to be checked. The Supervisor then moves it into the <code>tasks</code> table.</p></div>
+      <div class="tile"><span class="step-no">Step 2</span><h3>Test Engineer</h3><p>Picks up the task and runs the script in a fresh sandbox. Exit code 0 means the script ran successfully. Anything else opens an incident.</p></div>
+      <div class="tile"><span class="step-no">Step 3</span><h3>Debugger</h3><p>The incident is passed to the Debugger, which reads the source, runs a static check and asks the LLM what is wrong. It then proposes a fix but edits nothing.</p></div>
+      <div class="tile"><span class="step-no">Step 4</span><h3>Repair</h3><p>The Repair agent copies and patches the submitted script, then runs the real test in a new sandbox. If it fails, the task goes back to the Debugger for further diagnosis.</p></div>
+      <div class="tile"><span class="step-no">Step 5</span><h3>Confirm</h3><p>The Test Engineer tests the patched script. A pass resolves the incident. After five failed rounds it is escalated to a person.</p></div>
+    </div>
+
+    <div class="grid" style="margin-top:1.5rem">
+      <div class="tile">
+        <h3>What submit_prompt asks</h3>
+        <ul>
+          <li>B: Path &amp; params used to run the script</li>
+          <li>B2: How many times to submit this task</li>
+          <li>C1: Exit code</li>
+          <li>C2: Text expected in the console output</li>
+          <li>C3: Files the script should create</li>
+          <li>C4: Key words inside those files</li>
+          <li>C5: Treat a miss in C2 to C4 as a "Caution" instead of a real failure</li>
+        </ul>
+      </div>
+      <div class="tile">
+        <h3>Recovery</h3>
+        <ul>
+          <li>Each agent reports a heartbeat every 3 s</li>
+          <li>No heartbeat for 47 s puts its task back in the queue</li>
+          <li>Tasks past 480 s are re-queued</li>
+          <li>The Supervisor relaunches dead agents without using the model</li>
+        </ul>
+      </div>
+      <div class="tile">
+        <h3>Staying stable</h3>
+        <ul>
+          <li>One heavy job at a time, with pauses between jobs</li>
+          <li>Model calls and sandbox boots take turns sharing one file lock</li>
+          <li>A resource check on disk, memory and CPU before each boot</li>
+          <li>VM capped at 95% CPU. The latest 15-cycle test ran without a freeze</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="center-container">
+      <a href="Self-Healing_Lab_Architecture_Overview.png" target="_blank" rel="noopener">
+        <img src="Self-Healing_Lab_Architecture_Overview.png"
+             alt="Architecture overview of the Self-Healing Lab: Python agents, SQLite and the local LLM on the trusted side, the fc-core control plane in the middle, and disposable Firecracker MicroVMs on the sandbox side, all inside a VirtualBox Ubuntu VM on a Windows 11 laptop.">
+      </a>
+    </div>
+    <p class="img-note">Select the picture to open it full size.</p>
+  </section>
+
+  <section class="block gut" id="status">
+    <!-- <div class="head">
+      <h2>Where it is now</h2>
+      <p>The test, diagnose and repair loop works end to end on a local machine. Retrieval, tool access and a goal-driven layer are next.</p>
+    </div> -->
+    <div class="grid g5">
+      <div class="tile"><span class="status blue">Working</span><h3>Repair loop</h3>
+        <p>When a test fails, the lab diagnoses the problem, fixes a copy of the script
+           and tests it in a new sandbox. A failed fix goes back for another attempt, up to 5 rounds.
+           Your real files are only updated once a fix passes, and the Test Engineer then re-runs the
+           script to confirm.</p>
+      </div>
+      <div class="tile"><span class="status blue">Working</span><h3>Supervisor</h3>
+        <p>Watches every agent’s heartbeat. If an agent crashes or hangs, its task goes
+          back in the queue to be picked up again, the agent is restarted, and a task that
+          keeps failing is escalated to a person.</p>
+      </div>
+      <!-- <div class="tile"><span class="status blue">Working</span><h3>Spec checks</h3>
+        <p>Describe correct behaviour with <code>cli.submit_prompt</code> and the checks C1 to C5.</p>
+      </div> -->
+      <div class="tile"><span class="status blue">Built, off by default</span><h3>Audit trail</h3>
+        <p>An optional, off-by-default record of everything the lab did: every task, model prompt
+          and reply, sandbox run and applied fix. Entries are chained with hashes, so any later edit
+          can be detected. Replay a whole incident with <code>cli.audit_report</code>.</p>
+      </div>
+      <div class="tile"><span class="status blue">Available</span><h3>Bug Zoo</h3>
+        <p>Twenty deliberately bugged apps with an answer key. Comes with an install
+          script that makes it easy to revert fixed scripts to their bugged state
+          for further testing.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block gut" id="roadmap">
+    <div class="head">
+      <h2>Roadmap</h2>
+      <p>Three steps, in this order. Each builds on the one before.</p>
+    </div>
+    <div class="grid">
+      <div class="tile">
+        <span class="status">Next</span>
+        <h3>RAG (Retrieval-Augmented Generation)</h3>
+        <p>Today the Debugger reads the source directly and remembers nothing. RAG will first look up the most relevant code and past incidents (the failure, the diagnosis and the fix that worked) and give them to the model along with the new failure.</p>
+        <p>The lab will keep a searchable index of this material, like the index of a book. It lives outside <code>agents.db</code>, so searching never slows the agents down. Work starts in  <code>/source_files.py</code> and the Debugger’s prompt builder.</p>
+      </div>
+      <div class="tile">
+        <span class="status">Then</span>
+        <h3>MCP server (Model Context Protocol)</h3>
+        <p>MCP is a standard way for an AI assistant to use outside designated tools that the lab will offer.: submit a spec check, list incidents and their status, read an audit report, and read a file in a test project.</p>
+        <p>It goes through the same entry points as the command line, so an assistant has no shortcut into the database. Any change it makes is subject to the same checks as today.</p>
+      </div>
+      <div class="tile">
+        <span class="status">After</span>
+        <h3>Agentic layer</h3>
+        <p>A "Team Lead" that takes a goal such as "make these five scripts pass", writes the specs, submits them, watches incidents and reports back.</p>
+        <p>It sits on top of the MCP tools. The Supervisor stays as it is, so the lab keeps working if the model stalls.</p>
+      </div>
+    </div>
+  </section>
+
+
+
+</main>
+
+
+<footer>© BlazerBits Website • Designed by Mark Sheard</footer>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('modeBtn');
+  var icon=document.getElementById('modeIcon'), label=document.getElementById('modeLabel');
+  var SUN='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  var MOON='<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>';
+  function current(){
+    var a=root.getAttribute('data-theme');
+    if(a==='dark'||a==='light')return a;
+    return window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+  }
+  function paint(){
+    var next=current()==='dark'?'light':'dark';
+    label.textContent=next==='light'?'Light':'Dark';
+    icon.innerHTML=next==='light'?SUN:MOON;
+  }
+  try{var saved=localStorage.getItem('shl-theme');if(saved==='dark'||saved==='light')root.setAttribute('data-theme',saved)}catch(e){}
+  btn.addEventListener('click',function(){
+    var next=current()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('shl-theme',next)}catch(e){}
+    paint();
+  });
+  paint();
+})();
+</script>
+
+</body>
+</html>
