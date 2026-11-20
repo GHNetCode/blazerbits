@@ -232,21 +232,21 @@ footer{text-align:center;padding:4rem 1rem 2.5rem;font-size:.8rem;opacity:.6;pad
         </ul>
       </div>
       <div class="tile">
-        <h3>Recovery</h3>
+        <h3>Agent & Task Recovery</h3>
         <ul>
-          <li>Each agent reports a heartbeat every 3 s</li>
-          <li>No heartbeat for 47 s puts its task back in the queue</li>
-          <li>Tasks past 480 s are re-queued</li>
+          <li>Each agent reports a heartbeat every 3s</li>
+          <li>No heartbeat for 47s puts its task back in the queue</li>
+          <li>Tasks past 480s are re-queued</li>
           <li>The Supervisor relaunches dead agents without using the model</li>
         </ul>
       </div>
       <div class="tile">
-        <h3>Staying stable</h3>
+        <h3>Vbox Staying stable</h3>
         <ul>
-          <li>One heavy job at a time, with pauses between jobs</li>
-          <li>Model calls and sandbox boots take turns sharing one file lock</li>
-          <li>A resource check on disk, memory and CPU before each boot</li>
-          <li>VirtualBox VM capped at 95% CPU.</li>
+          <li>One heavy job at a time, with pauses between jobs (Synchronous).</li>
+          <li>Model calls and sandbox boots take turns sharing one file lock.</li>
+          <li>A resource check on disk, memory and CPU before each Sandbox boot.</li>
+          <li>VirtualBox VM capped at 95% CPU with other Vbox tweaks.</li>
         </ul>
       </div>
     </div>
@@ -268,7 +268,7 @@ footer{text-align:center;padding:4rem 1rem 2.5rem;font-size:.8rem;opacity:.6;pad
     <div class="grid g5">
       <div class="tile">
         <!-- <span class="status blue">Working</span> -->
-        <h3>Repair loop</h3>
+        <h3>A Tasks Repair loop</h3>
         <p>When a test fails, the lab diagnoses the problem, fixes a copy of the script
            and tests it in a new sandbox. A failed fix goes back for another attempt, up to 5 rounds.
            Your real files are only updated once a fix passes, and the Test Engineer then re-runs the
@@ -276,7 +276,7 @@ footer{text-align:center;padding:4rem 1rem 2.5rem;font-size:.8rem;opacity:.6;pad
       </div>
       <div class="tile">
         <!-- <span class="status blue">Working</span> -->
-        <h3>Supervisor</h3>
+        <h3>Supervisor (watchdog)</h3>
         <p>Watches every agent’s heartbeat. If an agent crashes or hangs, its task goes
           back in the queue to be picked up again, the agent is restarted, and a task that
           keeps failing is escalated to a person.</p>
