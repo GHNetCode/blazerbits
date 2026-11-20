@@ -104,7 +104,7 @@ section.block{max-width:1200px;margin:0 auto;padding-top:4.5rem;padding-bottom:1
 .head{margin-bottom:2rem}
 .head h2{font-size:clamp(2rem,5vw,2.8rem);margin-bottom:.6rem}
 .head p{max-width:680px;color:var(--text1);opacity:.9}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;padding-top: 2rem;}
 .grid.g5{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
 .tile{display:flex;flex-direction:column;gap:.7rem;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:1.8rem 1.5rem;min-width:0;
   transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
@@ -123,16 +123,19 @@ section.block{max-width:1200px;margin:0 auto;padding-top:4.5rem;padding-bottom:1
 .fact b{display:block;font-family:var(--serif);font-weight:300;font-size:2.6rem;line-height:1.1;font-variant-numeric:tabular-nums}
 .fact span{font-size:.8rem;opacity:.65}
 
+#roadmap{padding-top: 10rem; }
+
+
 /* two sides diagram */
 .sides{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:.8rem;align-items:stretch;margin-bottom:.8rem}
 .sides .tile:hover{transform:none;box-shadow:none}
 .link{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--text1)}
 .link i{font-style:normal;font-size:1.3rem;color:var(--arrow)}
 .cap{font-size:.9rem;color:var(--text1);margin-bottom:3rem}
-.sub-h{font-family:var(--serif);font-size:var(--subh-size);font-weight:500;margin:0 0 1rem}
+.sub-h{font-family:var(--serif);font-size:var(--subh-size);font-weight:500;padding-top: 5rem;}
 
 /* architecture picture */
-.center-container{display:block;margin-top:3rem;text-align:center;filter:var(--img-filter)}
+.center-container{display:block;margin-top:6rem;text-align:center;filter:var(--img-filter)}
 .center-container img{display:inline-block}
 .img-note{margin-top:.6rem;font-size:.8rem;color:var(--text1);text-align:center}
 
@@ -207,7 +210,7 @@ footer{text-align:center;padding:4rem 1rem 2.5rem;font-size:.8rem;opacity:.6;pad
       <div class="link"><i>⇄</i>SSH</div>
       <div class="tile"><h3>Firecracker MicroVM (Sandbox)</h3><p>Has its own kernel and no internet. Built from a small Alpine image and deleted after every run.</p></div>
     </div>
-    <p class="cap">Agents know one call: <code>POST /sandbox/run</code>. The sandbox technology can change without touching an agent.</p>
+    <!-- <p class="cap">Agents know one call: <code>POST /sandbox/run</code>. The sandbox technology can change without touching an agent.</p> -->
 
     <h3 class="sub-h">Journey resolving a bug</h3>
     <div class="grid g5">
@@ -257,7 +260,7 @@ footer{text-align:center;padding:4rem 1rem 2.5rem;font-size:.8rem;opacity:.6;pad
              alt="Architecture overview of the Self-Healing Lab: Python agents, SQLite and the local LLM on the trusted side, the fc-core control plane in the middle, and disposable Firecracker MicroVMs on the sandbox side, all inside a VirtualBox Ubuntu VM on a Windows 11 laptop.">
       </a>
     </div>
-    <p class="img-note">Select the picture to open it full size.</p>
+    <!-- <p class="img-note">Select the picture to open it full size.</p> -->
   </section>
 
   <section class="block gut" id="status">
@@ -269,10 +272,10 @@ footer{text-align:center;padding:4rem 1rem 2.5rem;font-size:.8rem;opacity:.6;pad
       <div class="tile">
         <!-- <span class="status blue">Working</span> -->
         <h3>A Tasks Repair loop</h3>
-        <p>When a test fails, the lab diagnoses the problem, fixes a copy of the script
-           and tests it in a new sandbox. A failed fix goes back for another attempt, up to 5 rounds.
+        <p>When a test fails, the lab diagnoses the problem and patches a copy of the script
+           then tests it in a new sandbox. A failed fix goes back for another attempt, up to 5 rounds.
            Your real files are only updated once a fix passes, and the Test Engineer then re-runs the
-           script to confirm.</p>
+           script to confirm it works.</p>
       </div>
       <div class="tile">
         <!-- <span class="status blue">Working</span> -->
@@ -294,8 +297,8 @@ footer{text-align:center;padding:4rem 1rem 2.5rem;font-size:.8rem;opacity:.6;pad
       <div class="tile">
         <!-- <span class="status blue">Available</span> -->
         <h3>Bug Zoo</h3>
-        <p>A collection of twenty deliberately bugged apps with an answer key. Comes with an install
-          script that makes it easy to revert fixed scripts to their bugged state
+        <p>A collection of twenty deliberately bugged apps with prefilled cli.submit_prompt runs. 
+          Comes with an install script that makes it easy to revert fixed scripts to their bugged state
           for further testing.</p>
       </div>
     </div>
